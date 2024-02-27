@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "95266989084",
+    "project_id": "nostack-508d9",
+    "storage_bucket": "nostack-508d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95266989084:android:96e6100455d0127f17abd9",
+        "android_client_info": {
+          "package_name": "com.example.nostack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw7q9iV99UToj_U_A1WL_LzzE4RbshNoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
