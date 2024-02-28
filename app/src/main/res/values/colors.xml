@@ -4,8 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#828282</color>
     <color name="text">#FFFEF8</color>
-    <color name="button1">#FFD60A</color>
-    <color name="primary">#87CEEB</color>
-    <color name="secondary">#003566</color>
+    <color name="yellow">#FFD60A</color>
+    <color name="lightBlue">#87CEEB</color>
+    <color name="darkBlue">#003566</color>
     <color name="transparent">#00ffffff</color>
 </resources>
