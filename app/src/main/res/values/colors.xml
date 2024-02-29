@@ -7,5 +7,6 @@
     <color name="yellow">#FFD60A</color>
     <color name="lightBlue">#87CEEB</color>
     <color name="darkBlue">#003566</color>
+    <color name="red">#F24E1E</color>
     <color name="transparent">#00ffffff</color>
 </resources>
