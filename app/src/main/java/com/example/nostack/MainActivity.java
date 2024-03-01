@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.nostack.Profile.Profile;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -28,25 +29,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseFirestore.getInstance();
-        userRef = db.collection("users");
-
-        userRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Snackbar.make(findViewById(android.R.id.content), "No users found", Snackbar.LENGTH_LONG).show();
-                    Log.e("MainActivity", "onEvent: ", error);
-                    return;
-                }
-
-                for (QueryDocumentSnapshot doc : value) {
-                    if (doc.get("name") != null) {
-                        Snackbar.make(findViewById(android.R.id.content), "Name: " + doc.get("name"), Snackbar.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
+        // Check for user profile
+        Profile profile = new Profile(this);
+        
 
     }
 }
