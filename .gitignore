@@ -28,3 +28,4 @@ replay_pid*
 *.ipr
 .idea
 .vscode
+.gradle
