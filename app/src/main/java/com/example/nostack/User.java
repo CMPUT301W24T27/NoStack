@@ -14,6 +14,7 @@ public class User {
     private String phone_number;
     private String gender;
     private String role;
+    private String uuid;
 
     public String getRole() {
         return role;
@@ -72,11 +73,19 @@ public class User {
         this.phone_number = phone_number;
     }
 
-    public User(String first_name, String last_name, String username, String email_address, String phone_number) {
+    public String getUuid() {
+        return uuid;
+    }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public User(String first_name, String last_name, String username, String email_address, String phone_number, String uuid) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
         this.email_address = email_address;
         this.phone_number = phone_number;
+        this.uuid = uuid;
     }
 }
