@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.nostack.Profile.Profile;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +26,7 @@ public class AttendeeHome extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView userWelcome;
 
     public AttendeeHome() {
         // Required empty public constructor
@@ -56,8 +60,14 @@ public class AttendeeHome extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_attendee_home, container, false);
+
+        // Change text_userWelcome to the user's name
+        Profile profile = new Profile(getActivity());
+        userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
+        userWelcome.setText("Welcome, " + profile.getName() + "!");
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_attendee_home, container, false);
     }
