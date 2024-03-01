@@ -1,3 +1,5 @@
+package com.example.nostack;
+
 public class Milestone {
     private String milestone_title;
     private Integer milestone_value;
