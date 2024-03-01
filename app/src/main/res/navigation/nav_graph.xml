@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startUp">
+
+    <fragment
+        android:id="@+id/startUp"
+        android:name="com.example.nostack.StartUp"
+        android:label="fragment_start_up"
+        tools:layout="@layout/fragment_start_up" >
+        <action
+            android:id="@+id/action_startUp_to_attendeeHome3"
+            app:destination="@id/attendeeHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/attendeeHome"
+        android:name="com.example.nostack.AttendeeHome"
+        android:label="fragment_attendee_home"
+        tools:layout="@layout/fragment_attendee_home" />
+    <fragment
+        android:id="@+id/attendeeEvent"
+        android:name="com.example.nostack.AttendeeEvent"
+        android:label="fragment_attendee_event"
+        tools:layout="@layout/fragment_attendee_event" />
+
+
+</navigation>
