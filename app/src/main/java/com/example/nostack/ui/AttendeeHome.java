@@ -94,40 +94,7 @@ public class AttendeeHome extends Fragment {
             }
         });
 
-        // Change text_userWelcome to the user's name
-        // User user = createUserFromDatabase(uuid);
-        // Log.d("AttendeeHome", "Welcome, " + user.getFirst_name() + "!");
-        // userWelcome.setText("Welcome, " + user.getUuid() + "!");
-
         // Return the modified layout
         return rootView;
-    }
-
-    public User createUserFromDatabase(String uuid) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference userRef = db.collection("users");
-        User user = new User();
-        userRef.whereEqualTo("uuid", uuid).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.w("Profile", "Listen failed.", error);
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "UUID does not exist. Creating new profile.", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                for (QueryDocumentSnapshot doc : value) {
-                    if (doc.exists()) {
-                        user.setEmailAddress(doc.getString("email"));
-                        user.setFirstName(doc.getString("first_name"));
-                        user.setUuid(doc.getString("uuid"));
-                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Hello, " + user.getFirstName(), Snackbar.LENGTH_LONG).show();
-                    }
-                }
-
-            }
-        });
-
-        return user;
     }
 }

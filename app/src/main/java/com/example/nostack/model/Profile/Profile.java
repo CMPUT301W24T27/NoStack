@@ -19,8 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /*
@@ -31,6 +29,7 @@ import java.util.UUID;
  * 
  */
 public class Profile  {
+    // TODO: May consider refactor into User class as it seems repetitive
     public Activity activity;
     private FirebaseFirestore db;
     private CollectionReference userRef;
@@ -40,10 +39,13 @@ public class Profile  {
     private String email;
     private String uuid;
 
+    /**
+     * Constructor for Profile
+     * @param activity Activity reference to the current activity
+     */
     public Profile(Activity activity){
         this.activity = activity;
-        // Check if UUID exists in local storage
-        // Check shared preferences for UUID
+        // Check if UUID exists in local storage in shared preferences for UUID
 
         preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
         String uuid = preferences.getString("uuid", null);
@@ -58,7 +60,6 @@ public class Profile  {
         else{
             // Retrieve user data from firestore by checking if Document ID of the UUID exists
             retrieveProfile(uuid);
-
         }
     }
 
@@ -91,7 +92,10 @@ public class Profile  {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-    
+
+    /**
+     * Create a new user profile
+     */
     public void createProfile(){
         uuid = UUID.randomUUID().toString();
         preferences.edit().putString("uuid", uuid).apply();
@@ -105,6 +109,12 @@ public class Profile  {
         Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Retrieve user profile from firestore by UUID
+     * Then store the user data in the ViewModel state
+     *
+     * @param uuid UUID of the user
+     */
     public void retrieveProfile(String uuid){
         UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
 
@@ -120,7 +130,7 @@ public class Profile  {
 
                 for (QueryDocumentSnapshot doc : value) {
                     if (doc.exists()) {
-                        setName(doc.getString("first_name"));
+                        setName(doc.getString("firstName"));
                         setEmail(doc.getString("email"));
                         setUuid(doc.getString("uuid"));
 

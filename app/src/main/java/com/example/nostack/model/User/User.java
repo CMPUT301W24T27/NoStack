@@ -40,7 +40,6 @@ public class User {
         this.gender = gender;
     }
 
-
     public String getFirstName() {
         return firstName;
     }
