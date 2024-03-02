@@ -1,4 +1,4 @@
-package com.example.nostack.Profile;
+package com.example.nostack.model.Profile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.model.User.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;

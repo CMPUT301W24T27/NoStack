@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,9 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.nostack.Profile.Profile;
-import com.example.nostack.Profile.User;
-import com.example.nostack.Profile.UserViewModel;
+import com.example.nostack.R;
+import com.example.nostack.model.User.User;
+import com.example.nostack.model.State.UserViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -86,8 +86,8 @@ public class AttendeeHome extends Fragment {
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
             if (user != null) {
-                Log.d("AttendeeHome", "Welcome, " + user.getFirst_name() + "!");
-                userWelcome.setText("Welcome, " + user.getFirst_name() + "!");
+                Log.d("AttendeeHome", "Welcome, " + user.getFirstName() + "!");
+                userWelcome.setText("Welcome, " + user.getFirstName() + "!");
             }
             else{
                 Log.d("AttendeeHome", "User is null");
@@ -118,10 +118,10 @@ public class AttendeeHome extends Fragment {
 
                 for (QueryDocumentSnapshot doc : value) {
                     if (doc.exists()) {
-                        user.setEmail_address(doc.getString("email"));
-                        user.setFirst_name(doc.getString("first_name"));
+                        user.setEmailAddress(doc.getString("email"));
+                        user.setFirstName(doc.getString("first_name"));
                         user.setUuid(doc.getString("uuid"));
-                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Hello, " + user.getFirst_name(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Hello, " + user.getFirstName(), Snackbar.LENGTH_LONG).show();
                     }
                 }
 

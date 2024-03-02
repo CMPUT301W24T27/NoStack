@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.model.User;
 /**
  * Organizer can
  *      Browse own events

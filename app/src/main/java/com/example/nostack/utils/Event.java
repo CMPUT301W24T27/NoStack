@@ -1,4 +1,7 @@
-package com.example.nostack;
+package com.example.nostack.utils;
+
+import com.example.nostack.model.User.Attendee;
+import com.example.nostack.qrCode;
 
 import java.util.ArrayList;
 import java.util.Date;

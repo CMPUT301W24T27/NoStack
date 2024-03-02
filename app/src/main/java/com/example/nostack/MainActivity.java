@@ -13,9 +13,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.nostack.Profile.Profile;
-import com.example.nostack.Profile.User;
-import com.example.nostack.Profile.UserViewModel;
+import com.example.nostack.model.Profile.Profile;
+import com.example.nostack.model.*;
+import com.example.nostack.model.User.Attendee;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference userRef;
-    private ArrayList<com.example.nostack.Attendee> attendeeList;
+    private ArrayList<Attendee> attendeeList;
 
 
     @Override
