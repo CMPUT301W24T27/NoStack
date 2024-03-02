@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference userRef;
-    private ArrayList<Attendee> attendeeList;
+    private ArrayList<com.example.nostack.Attendee> attendeeList;
 
 
     @Override
