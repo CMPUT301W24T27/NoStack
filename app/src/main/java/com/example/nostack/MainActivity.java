@@ -2,7 +2,6 @@ package com.example.nostack;
 
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -10,7 +9,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -19,9 +17,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference userRef;
+    private ArrayList<Attendee> attendeeList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users");
+
+        attendeeList = new ArrayList<>();
 
         userRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
