@@ -94,4 +94,6 @@ public class User {
         this.phone_number = phone_number;
         this.uuid = uuid;
     }
+
+    public User(){}
 }

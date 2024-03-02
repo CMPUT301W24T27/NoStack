@@ -7,12 +7,15 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.nostack.Profile.Profile;
+import com.example.nostack.Profile.User;
+import com.example.nostack.Profile.UserViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -33,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
         // Check for user profile
         Profile profile = new Profile(this);
 
-
-
     }
+
+
 }
 
 

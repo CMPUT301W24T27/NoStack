@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -54,26 +55,7 @@ public class Profile  {
         }
         else{
             // Retrieve user data from firestore by checking if Document ID of the UUID exists
-            userRef.whereEqualTo("uuid", uuid).addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                    if (error != null) {
-                        Log.w("Profile", "Listen failed.", error);
-                        Snackbar.make(activity.findViewById(android.R.id.content), "UUID does not exist. Creating new profile.", Snackbar.LENGTH_LONG).show();
-                        createProfile();
-                        return;
-                    }
-
-                    for (QueryDocumentSnapshot doc : value) {
-                        if (doc.exists()) {
-                            setName(doc.getString("first_name"));
-                            setEmail(doc.getString("email"));
-                            setUuid(doc.getString("uuid"));
-                        }
-                    }
-                    Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getName(), Snackbar.LENGTH_LONG).show();
-                }
-            });
+            retrieveProfile(uuid);
 
         }
     }
@@ -121,4 +103,31 @@ public class Profile  {
         Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
     }
 
+    public void retrieveProfile(String uuid){
+        UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
+
+        userRef.whereEqualTo("uuid", uuid).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.w("Profile", "Listen failed.", error);
+                    Snackbar.make(activity.findViewById(android.R.id.content), "UUID does not exist. Creating new profile.", Snackbar.LENGTH_LONG).show();
+                    createProfile();
+                    return;
+                }
+
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc.exists()) {
+                        setName(doc.getString("first_name"));
+                        setEmail(doc.getString("email"));
+                        setUuid(doc.getString("uuid"));
+
+                        User user = new User(getName(), "", "", getEmail(), "", getUuid());
+                        userViewModel.setUser(user);
+                    }
+                }
+                Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getName(), Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
 }
