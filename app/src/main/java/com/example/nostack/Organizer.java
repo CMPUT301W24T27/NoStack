@@ -8,8 +8,8 @@ package com.example.nostack;
  */
 
 public class Organizer extends User{
-    public Organizer(String first_name, String last_name, String username, String email_address, String phone_number) {
-        super(first_name, last_name, username, email_address, phone_number);
+    public Organizer(String firstName, String lastName, String username, String emailAddress, String phoneNumber) {
+        super(firstName, lastName, username, emailAddress, phoneNumber);
         setRole("Organizer");
     }
 }

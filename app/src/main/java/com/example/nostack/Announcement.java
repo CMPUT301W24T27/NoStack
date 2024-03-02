@@ -5,24 +5,24 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Announcement {
-    private String announcement_message;
-    private LocalDateTime announcement_dateTime;
+    private String announcementMessage;
+    private LocalDateTime announcementDateTime;
     private String priority;
 
-    public String getAnnouncement_message() {
-        return announcement_message;
+    public String getAnnouncementMessage() {
+        return announcementMessage;
     }
 
-    public void setAnnouncement_message(String announcement_message) {
-        this.announcement_message = announcement_message;
+    public void setAnnouncementMessage(String announcementMessage) {
+        this.announcementMessage = announcementMessage;
     }
 
-    public LocalDateTime getAnnouncement_dateTime() {
-        return announcement_dateTime;
+    public LocalDateTime getAnnouncementFateTime() {
+        return announcementDateTime;
     }
 
-    public void setAnnouncement_dateTime(LocalDateTime announcement_dateTime) {
-        this.announcement_dateTime = announcement_dateTime;
+    public void setAnnouncementDateTime(LocalDateTime announcementDateTime) {
+        this.announcementDateTime = announcementDateTime;
     }
 
     public String getPriority() {
@@ -33,9 +33,9 @@ public class Announcement {
         this.priority = priority;
     }
 
-    public Announcement(String announcement_message, LocalDateTime announcement_dateTime, String priority) {
-        this.announcement_message = announcement_message;
-        this.announcement_dateTime = announcement_dateTime;
+    public Announcement(String announcementMessage, LocalDateTime announcementDateTime, String priority) {
+        this.announcementMessage = announcementMessage;
+        this.announcementDateTime = announcementDateTime;
         this.priority = priority;
     }
 }

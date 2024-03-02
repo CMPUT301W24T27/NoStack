@@ -6,8 +6,8 @@ package com.example.nostack;
  *      Remove Profiles, Events, and Images
  */
 public class Admin extends User{
-    public Admin(String first_name, String last_name, String username, String email_address, String phone_number) {
-        super(first_name, last_name, username, email_address, phone_number);
+    public Admin(String firstName, String lastName, String username, String emailAddress, String phoneNumber) {
+        super(firstName, lastName, username, emailAddress, phoneNumber);
         setRole("Admin");
     }
 }

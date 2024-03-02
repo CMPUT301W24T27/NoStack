@@ -7,11 +7,11 @@ package com.example.nostack;
  *      Generate a profile picture from the profile name.
  */
 public class User {
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String username;
-    private String email_address;
-    private String phone_number;
+    private String emailAddress;
+    private String phoneNumber;
     private String gender;
     private String role;
     private String uuid;
@@ -41,36 +41,36 @@ public class User {
     }
 
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getEmail_address() {
-        return email_address;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setEmail_address(String email_address) {
-        this.email_address = email_address;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUuid() {
@@ -80,12 +80,12 @@ public class User {
         this.uuid = uuid;
     }
 
-    public User(String first_name, String last_name, String username, String email_address, String phone_number, String uuid) {
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public User(String firstName, String lastName, String username, String emailAddress, String phoneNumber, String uuid) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
-        this.email_address = email_address;
-        this.phone_number = phone_number;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
         this.uuid = uuid;
     }
 }

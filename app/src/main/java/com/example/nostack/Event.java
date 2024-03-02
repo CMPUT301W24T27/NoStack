@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
-    private String event_name;
-    private String event_location;
-    private String event_id;
+    private String eventName;
+    private String eventLocation;
+    private String eventId;
     private ArrayList<Attendee> attendees;
-    private Date event_date;
+    private Date eventDate;
     private qrCode qrcode;
 
     public qrCode getQrcode() {
@@ -19,36 +19,36 @@ public class Event {
         this.qrcode = qrcode;
     }
 
-    public Date getEvent_date() {
-        return event_date;
+    public Date getEventDate() {
+        return eventDate;
     }
 
-    public void setEvent_date(Date event_date) {
-        this.event_date = event_date;
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 
-    public String getEvent_name() {
-        return event_name;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setEvent_name(String event_name) {
-        this.event_name = event_name;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
-    public String getEvent_location() {
-        return event_location;
+    public String getEventLocation() {
+        return eventLocation;
     }
 
-    public void setEvent_location(String event_location) {
-        this.event_location = event_location;
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
     }
 
-    public String getEvent_id() {
-        return event_id;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setEvent_id(String event_id) {
-        this.event_id = event_id;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public ArrayList<Attendee> getAttendeeList() {
@@ -65,16 +65,16 @@ public class Event {
         attendees.remove(attendee);
     }
 
-    public Event(String event_name, String event_id) {
-        this.event_name = event_name;
-        this.event_id = event_id;
+    public Event(String eventName, String eventId) {
+        this.eventName = eventName;
+        this.eventId = eventId;
         this.attendees = new ArrayList<>();
     }
 
-    public Event(String event_name, String event_id, String event_location) {
-        this.event_name = event_name;
-        this.event_id = event_id;
-        this.event_location = event_location;
+    public Event(String eventName, String eventId, String eventLocation) {
+        this.eventName = eventName;
+        this.eventId = eventId;
+        this.eventLocation = eventLocation;
         this.attendees = new ArrayList<>();
     }
 }
