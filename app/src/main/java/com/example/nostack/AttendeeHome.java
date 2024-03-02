@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,14 +62,16 @@ public class AttendeeHome extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_attendee_home, container, false);
+        // Inflate the layout for this fragment only once
+        View rootView = inflater.inflate(R.layout.fragment_attendee_home, container, false);
 
         // Change text_userWelcome to the user's name
         Profile profile = new Profile(getActivity());
-        userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
-        userWelcome.setText("Welcome, " + profile.getName() + "!");
+        TextView userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
+        Log.d("AttendeeHome", "Welcome, " + profile.getUuid() + "!");
+        userWelcome.setText("Welcome, " + profile.getUuid() + "!");
 
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendee_home, container, false);
+        // Return the modified layout
+        return rootView;
     }
 }
