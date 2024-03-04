@@ -86,8 +86,8 @@ public class AttendeeHome extends Fragment {
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
             if (user != null) {
-                Log.d("AttendeeHome", "Welcome, " + user.getFirstName() + "!");
-                userWelcome.setText("Welcome, " + user.getFirstName() + "!");
+                Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
+                userWelcome.setText(user.getFirstName());
             }
             else{
                 Log.d("AttendeeHome", "User is null");
