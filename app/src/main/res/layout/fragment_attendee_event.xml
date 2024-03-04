@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:srcCompat="@android:drawable/ic_media_previous"
+            app:srcCompat="@drawable/outline_arrow_back_24"
             android:backgroundTint="@color/black"
             app:tint="@color/yellow"
             app:borderWidth="0dp"

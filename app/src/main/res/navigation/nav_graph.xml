@@ -18,12 +18,20 @@
         android:id="@+id/attendeeHome"
         android:name="com.example.nostack.AttendeeHome"
         android:label="fragment_attendee_home"
-        tools:layout="@layout/fragment_attendee_home" />
+        tools:layout="@layout/fragment_attendee_home" >
+        <action
+            android:id="@+id/action_attendeeHome_to_attendeeEvent"
+            app:destination="@id/attendeeEvent" />
+    </fragment>
     <fragment
         android:id="@+id/attendeeEvent"
         android:name="com.example.nostack.AttendeeEvent"
         android:label="fragment_attendee_event"
-        tools:layout="@layout/fragment_attendee_event" />
+        tools:layout="@layout/fragment_attendee_event" >
+        <action
+            android:id="@+id/action_attendeeEvent_to_attendeeHome"
+            app:destination="@id/attendeeHome" />
+    </fragment>
 
 
 </navigation>
