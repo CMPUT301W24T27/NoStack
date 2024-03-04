@@ -97,4 +97,15 @@ public class AttendeeHome extends Fragment {
         // Return the modified layout
         return rootView;
     }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+    }
+
+
 }

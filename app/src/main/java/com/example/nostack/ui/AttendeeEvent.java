@@ -3,6 +3,8 @@ package com.example.nostack;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavHost;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +60,20 @@ public class AttendeeEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_attendee_event, container, false);
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                NavHostFragment.findNavController(AttendeeEvent.this)
+                        .navigate(R.id.action_attendeeEvent_to_attendeeHome);
+            }
+        });
     }
 }
