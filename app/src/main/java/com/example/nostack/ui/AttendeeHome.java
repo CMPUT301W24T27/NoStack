@@ -103,8 +103,6 @@ public class AttendeeHome extends Fragment {
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(AttendeeHome.this)
-                        .navigate(R.id.action_attendeeHome_to_attendeeEvent);
             }
         });
     }
