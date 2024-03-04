@@ -27,4 +27,9 @@ replay_pid*
 *.iml
 *.ipr
 .idea
+.vscode
+.gradle
 
+#Local
+*.env
+local.properties
