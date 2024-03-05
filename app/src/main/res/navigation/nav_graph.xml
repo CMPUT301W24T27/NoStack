@@ -32,6 +32,11 @@
             android:id="@+id/action_attendeeEvent_to_attendeeHome"
             app:destination="@id/attendeeHome" />
     </fragment>
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="com.example.nostack.ui.UserProfile"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" />
 
 
 </navigation>
