@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,6 +104,8 @@ public class AttendeeHome extends Fragment {
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                NavHostFragment.findNavController(AttendeeHome.this)
+                        .navigate(R.id.action_attendeeHome_to_userProfile);
             }
         });
     }

@@ -3,6 +3,8 @@ package com.example.nostack.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavHost;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,43 @@ public class UserProfile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                NavHostFragment.findNavController(UserProfile.this)
+                        .navigate(R.id.action_userProfile_to_attendeeHome);
+            }
+        });
+
+        view.findViewById(R.id.editProfileButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                View editProfileButton = view.findViewById(R.id.editProfileButton);
+                View saveProfileButton = view.findViewById(R.id.saveChangesButton);
+                View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
+
+                editProfileButton.setVisibility(View.GONE);
+                saveProfileButton.setVisibility(View.VISIBLE);
+                editProfilePictureButtons.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        view.findViewById(R.id.saveChangesButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                View editProfileButton = view.findViewById(R.id.editProfileButton);
+                View saveProfileButton = view.findViewById(R.id.saveChangesButton);
+                View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
+                editProfileButton.setVisibility(View.VISIBLE);
+                saveProfileButton.setVisibility(View.GONE);
+                editProfilePictureButtons.setVisibility(View.GONE);
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+        return view;
     }
 }

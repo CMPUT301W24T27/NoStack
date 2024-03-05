@@ -71,7 +71,7 @@
 
         <LinearLayout
             android:id="@+id/editProfilePictureButtons"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -98,7 +98,7 @@
                 app:layout_constraintVertical_bias="0.02" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/editProfilePictureButton"
+                android:id="@+id/changeProfilePictureButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -221,6 +221,23 @@
                 app:layout_row="8"/>
 
         </GridLayout>
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Changes"
+            android:backgroundTint="@color/lightBlue"
+            android:textColor="@color/black"
+            android:paddingHorizontal="90dp"
+            android:paddingVertical="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/allUserInfo"
+            app:layout_constraintVertical_bias="0.7" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
