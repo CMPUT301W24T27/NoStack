@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_startUp_to_attendeeHome3"
             app:destination="@id/attendeeHome" />
+        <action
+            android:id="@+id/action_startUp_to_organizerHome"
+            app:destination="@id/organizerHome" />
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
@@ -31,6 +34,24 @@
         <action
             android:id="@+id/action_attendeeEvent_to_attendeeHome"
             app:destination="@id/attendeeHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerHome"
+        android:name="com.example.nostack.ui.OrganizerHome"
+        android:label="fragment_organizer_home"
+        tools:layout="@layout/fragment_organizer_home" >
+        <action
+            android:id="@+id/action_organizerHome_to_organizerEvent"
+            app:destination="@id/organizerEvent" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerEvent"
+        android:name="com.example.nostack.ui.OrganizerEvent"
+        android:label="fragment_organizer_event"
+        tools:layout="@layout/fragment_organizer_event" >
+        <action
+            android:id="@+id/action_organizerEvent_to_organizerHome"
+            app:destination="@id/organizerHome" />
     </fragment>
 
 
