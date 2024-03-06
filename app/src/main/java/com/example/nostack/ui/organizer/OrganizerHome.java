@@ -1,8 +1,9 @@
-package com.example.nostack.ui;
+package com.example.nostack.ui.organizer;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,10 @@ import com.example.nostack.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerEvent#newInstance} factory method to
+ * Use the {@link OrganizerHome#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OrganizerEvent extends Fragment {
+public class OrganizerHome extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +27,7 @@ public class OrganizerEvent extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public OrganizerEvent() {
+    public OrganizerHome() {
         // Required empty public constructor
     }
 
@@ -36,11 +37,11 @@ public class OrganizerEvent extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment OrganizerEvent.
+     * @return A new instance of fragment organizer_home.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrganizerEvent newInstance(String param1, String param2) {
-        OrganizerEvent fragment = new OrganizerEvent();
+    public static OrganizerHome newInstance(String param1, String param2) {
+        OrganizerHome fragment = new OrganizerHome();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,7 +61,17 @@ public class OrganizerEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_event, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
+
+        view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerHome.this)
+                        .navigate(R.id.action_organizerHome_to_organizerEvent);
+            }
+        });
+
+        return view;
     }
 }

@@ -14,12 +14,12 @@
             android:id="@+id/action_startUp_to_attendeeHome3"
             app:destination="@id/attendeeHome" />
         <action
-            android:id="@+id/action_startUp_to_organizerHome"
-            app:destination="@id/organizerHome" />
+            android:id="@+id/action_startUp_to_organizerSignIn"
+            app:destination="@id/organizerSignIn" />
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
-        android:name="com.example.nostack.ui.AttendeeHome"
+        android:name="com.example.nostack.ui.attendee.AttendeeHome"
         android:label="fragment_attendee_home"
         tools:layout="@layout/fragment_attendee_home" >
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/organizerHome"
-        android:name="com.example.nostack.ui.OrganizerHome"
+        android:name="com.example.nostack.ui.organizer.OrganizerHome"
         android:label="fragment_organizer_home"
         tools:layout="@layout/fragment_organizer_home" >
         <action
@@ -46,11 +46,29 @@
     </fragment>
     <fragment
         android:id="@+id/organizerEvent"
-        android:name="com.example.nostack.ui.OrganizerEvent"
+        android:name="com.example.nostack.ui.organizer.OrganizerEvent"
         android:label="fragment_organizer_event"
         tools:layout="@layout/fragment_organizer_event" >
         <action
             android:id="@+id/action_organizerEvent_to_organizerHome"
+            app:destination="@id/organizerHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerSignIn"
+        android:name="com.example.nostack.ui.organizer.OrganizerSignIn"
+        android:label="fragment_organizer_sign_in"
+        tools:layout="@layout/fragment_organizer_sign_in" >
+        <action
+            android:id="@+id/action_organizerSignIn_to_organizerHome"
+            app:destination="@id/organizerHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerSignUp"
+        android:name="com.example.nostack.ui.organizer.OrganizerSignUp"
+        android:label="fragment_organizer_sign_up"
+        tools:layout="@layout/fragment_organizer_sign_up" >
+        <action
+            android:id="@+id/action_organizerSignUp_to_organizerHome"
             app:destination="@id/organizerHome" />
     </fragment>
 
