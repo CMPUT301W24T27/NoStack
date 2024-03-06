@@ -1,10 +1,17 @@
 package com.example.nostack.utils;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -26,7 +33,7 @@ public class ImageUploader {
      * @param imageUri The URI of the image to upload
      * @param listener The listener to handle the upload success or failure
      */
-    public void uploadImage(String path,Uri imageUri, UploadListener listener) {
+    public void uploadImage(String path, Uri imageUri, UploadListener listener) {
         if (imageUri == null) {
             listener.onUploadFailure(new IllegalArgumentException("Image URI cannot be null"));
             return;
@@ -53,5 +60,30 @@ public class ImageUploader {
                             });
                 })
                 .addOnFailureListener(listener::onUploadFailure);
+    }
+
+    /** Save image to local storage
+     * @param imageBitmap The bitmap of the image to save
+     * @param filename The filename to save the image as
+     */
+    public static Uri saveImage(Bitmap imageBitmap, String filename) {
+        // Save to Pictures directory
+        String PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+        filename = PATH + "/" + filename;
+
+        try {
+            FileOutputStream out = new FileOutputStream(filename);
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving image to local storage", e);
+        }
+
+        // Return URI to image
+        File image = new File(filename);
+        Uri imageUri = Uri.fromFile(image);
+
+        return imageUri;
     }
 }

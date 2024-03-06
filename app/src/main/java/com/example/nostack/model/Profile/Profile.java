@@ -3,6 +3,8 @@ package com.example.nostack.model.Profile;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -11,6 +13,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.model.User.User;
+import com.example.nostack.utils.GenerateProfileImage;
+import com.example.nostack.utils.Image;
+import com.example.nostack.utils.ImageUploader;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.UUID;
 
@@ -79,8 +86,8 @@ public class Profile extends User{
 
         // Add new user to firestore
         User user = new User(
-            getFirstName(),
-            getLastName(),
+            getFirstName() == null ? "First Name" : getFirstName(),
+            getLastName() == null ? "Last Name" : getLastName(),
             "username_placeholder",
             getEmailAddress(),
             getPhoneNumber(),
@@ -88,15 +95,35 @@ public class Profile extends User{
         );
 
         // Generate a profile picture from the profile name
-        // TODO: THIS IS A PLACEHOLDER, replace with actual code for it later
-        user.setProfileImageUrl("https://ui-avatars.com/api/?name=" + getFirstName() + "+" + getLastName());
+        Bitmap profileImage = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
+
 
         // Add a new document with the UUID as the document ID
         userRef.document(uuid).set(user)
             .addOnSuccessListener(unused -> {
-                UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
-                userViewModel.setUser(this);
-                Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
+                // upload the profile image to Firebase Cloud Storage
+                ImageUploader imageUploader = new ImageUploader();
+
+                // Save the profile image to local storage
+                Uri imageUri = ImageUploader.saveImage(profileImage, getUuid()+ ".jpg");
+
+                imageUploader.uploadImage("user/profile/", imageUri, new ImageUploader.UploadListener() {
+                    @Override
+                    public void onUploadSuccess(String imageUrl) {
+                        user.setProfileImageUrl(imageUrl);
+                        UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
+                        userViewModel.setUser(user);
+                        Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onUploadFailure(Exception exception) {
+                        Log.w("User edit", "Profile image upload failed:", exception);
+                        // TODO: Show error to user
+                    }
+                });
+
+
             })
             .addOnFailureListener(e -> Log.w("Profile Class", "Error creating user profile", e));
     }
