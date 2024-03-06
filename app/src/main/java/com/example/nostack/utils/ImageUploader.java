@@ -67,8 +67,8 @@ public class ImageUploader {
      * @param filename The filename to save the image as
      */
     public static Uri saveImage(Bitmap imageBitmap, String filename) {
-        // Save to Pictures directory
-        String PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+        // Save to app's own directory
+        String PATH = Environment.getDataDirectory() + "/NoStack";
         filename = PATH + "/" + filename;
 
         try {
@@ -86,4 +86,6 @@ public class ImageUploader {
 
         return imageUri;
     }
+
+
 }

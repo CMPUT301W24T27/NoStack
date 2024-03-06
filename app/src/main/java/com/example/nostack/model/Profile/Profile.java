@@ -85,44 +85,22 @@ public class Profile extends User{
         preferences.edit().putString(PREF_KEY_UUID, uuid).apply();
 
         // Add new user to firestore
+        // TODO: Profile set up page to remove the placeholder values
         User user = new User(
-            getFirstName() == null ? "First Name" : getFirstName(),
-            getLastName() == null ? "Last Name" : getLastName(),
+            "First Name",
+            "Last Name",
             "username_placeholder",
             getEmailAddress(),
             getPhoneNumber(),
             uuid
         );
 
-        // Generate a profile picture from the profile name
-        Bitmap profileImage = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-
-
         // Add a new document with the UUID as the document ID
         userRef.document(uuid).set(user)
             .addOnSuccessListener(unused -> {
-                // upload the profile image to Firebase Cloud Storage
-                ImageUploader imageUploader = new ImageUploader();
-
-                // Save the profile image to local storage
-                Uri imageUri = ImageUploader.saveImage(profileImage, getUuid()+ ".jpg");
-
-                imageUploader.uploadImage("user/profile/", imageUri, new ImageUploader.UploadListener() {
-                    @Override
-                    public void onUploadSuccess(String imageUrl) {
-                        user.setProfileImageUrl(imageUrl);
-                        UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
-                        userViewModel.setUser(user);
-                        Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onUploadFailure(Exception exception) {
-                        Log.w("User edit", "Profile image upload failed:", exception);
-                        // TODO: Show error to user
-                    }
-                });
-
+                UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
+                userViewModel.setUser(user);
+                Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
 
             })
             .addOnFailureListener(e -> Log.w("Profile Class", "Error creating user profile", e));

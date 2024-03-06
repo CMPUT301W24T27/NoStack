@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.GenerateProfileImage;
 import com.example.nostack.utils.ImageUploader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -215,6 +216,14 @@ public class UserProfile extends Fragment {
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);
                 });
+            }
+            else{
+                // generate profile image if user has no profile image
+                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 250, 250, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                d.setCornerRadius(100f);
+                profileImage.setImageDrawable(d);
             }
         });
     }
