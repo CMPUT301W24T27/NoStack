@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Start Date & Time"
+            android:text="Start Date and Time"
             android:textColor="@color/SignInUpTextColor"
             app:layout_constraintEnd_toStartOf="@+id/EventCreationSetTimeButton"
             app:layout_constraintStart_toEndOf="@+id/EventCreationSetDateButton"
