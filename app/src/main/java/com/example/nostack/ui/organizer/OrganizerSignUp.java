@@ -3,6 +3,7 @@ package com.example.nostack.ui.organizer;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,27 @@ public class OrganizerSignUp extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_sign_up, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_organizer_sign_up, container, false);
+
+        view.findViewById(R.id.SignUpConfirmButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                TODO: ADD CODE CONTAINING ADDING USER TO DATA BASE / DATA VALIDATION ETC...
+
+
+                NavHostFragment.findNavController(OrganizerSignUp.this)
+                        .navigate(R.id.action_organizerSignUp_to_organizerHome);
+            }
+        });
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerSignUp.this)
+                        .popBackStack();
+            }
+        });
+
+        return view;
+     }
 }

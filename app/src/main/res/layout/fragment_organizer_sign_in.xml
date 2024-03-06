@@ -27,6 +27,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#252525"
+                android:clickable="true"
+                android:focusable="true"
+                android:importantForAccessibility="no"
+                app:borderWidth="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.065"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/SignInTitle"
+                app:srcCompat="@drawable/outline_arrow_back_24"
+                app:tint="@color/yellow" />
+
             <TextView
                 android:id="@+id/SignInTitle"
                 android:layout_width="wrap_content"
@@ -38,7 +54,7 @@
                 android:textIsSelectable="false"
                 android:textSize="40sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText

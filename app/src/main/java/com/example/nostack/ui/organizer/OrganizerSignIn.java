@@ -69,6 +69,10 @@ public class OrganizerSignIn extends Fragment {
             @Override
             public void onClick(View v) {
 //                TODO: ADD SECTION THAT AUTHENTICATES USER LOGIN IF GOOD DO THE FOLLOWING:
+
+
+
+
                 NavHostFragment.findNavController(OrganizerSignIn.this)
                         .navigate(R.id.action_organizerSignIn_to_organizerHome);
             }
@@ -79,6 +83,14 @@ public class OrganizerSignIn extends Fragment {
             public void onClick(View v) {
                 NavHostFragment.findNavController(OrganizerSignIn.this)
                         .navigate(R.id.action_organizerSignIn_to_organizerSignUp);
+            }
+        });
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerSignIn.this)
+                        .popBackStack();
             }
         });
 
