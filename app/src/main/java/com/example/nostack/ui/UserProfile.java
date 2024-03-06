@@ -1,5 +1,7 @@
 package com.example.nostack.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,14 +10,19 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavHost;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.ImageUploader;
+
+import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,8 +40,58 @@ public class UserProfile extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private ImageUploader imageUploader;
+    private static final int IMAGE_PICK_CODE = 100;
+
     public UserProfile() {
         // Required empty public constructor
+    }
+
+    private void selectProfilePicture() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, IMAGE_PICK_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_PICK_CODE && resultCode == AppCompatActivity.RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            uploadProfileImage(imageUri);
+        }
+    }
+
+    private void uploadProfileImage(Uri imageUri) {
+        imageUploader.uploadImage("user/profile/", imageUri, new ImageUploader.UploadListener() {
+            @Override
+            public void onUploadSuccess(String imageUrl) {
+                // Update user profile with the downloaded image URL
+                updateUserWithImageUrl(imageUrl);
+
+                // Update the ImageButton with the new image
+                ImageButton profileImage = getView().findViewById(R.id.profileImage);
+                profileImage.setImageURI(Uri.parse(imageUrl));
+            }
+
+            @Override
+            public void onUploadFailure(Exception exception) {
+                Log.w("User edit", "Profile image upload failed:", exception);
+                // TODO: Show error to user
+            }
+        });
+    }
+
+    private void updateUserWithImageUrl(String imageUrl) {
+        // Update user profile with the downloaded image URL
+
+        UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            user.setProfileImageUrl(imageUrl);
+            // Update firestore user profile with the new image URL
+            userViewModel.updateUser(user);
+        });
+
+
     }
 
     /**
@@ -62,6 +119,8 @@ public class UserProfile extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        imageUploader = new ImageUploader();
     }
 
     @Override
@@ -104,6 +163,11 @@ public class UserProfile extends Fragment {
             }
         });
 
+        view.findViewById(R.id.profileImage).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                selectProfilePicture();
+            }
+        });
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {

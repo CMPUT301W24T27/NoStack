@@ -15,6 +15,7 @@ public class User {
     private String gender;
     private String role;
     private String uuid;
+    private String profileImageUrl;
 
     public String getRole() {
         return role;
@@ -79,6 +80,14 @@ public class User {
         this.uuid = uuid;
     }
 
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
     public User(String firstName, String lastName, String username, String emailAddress, String phoneNumber, String uuid) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -86,6 +95,10 @@ public class User {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
         this.uuid = uuid;
+
+        // Generate a profile picture from the profile name
+        // TODO: THIS IS A PLACEHOLDER, replace with actual code for it later
+        this.profileImageUrl = "https://ui-avatars.com/api/?name=" + firstName + "+" + lastName;
     }
     public User(){}
 }
