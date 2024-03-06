@@ -207,7 +207,7 @@ public class UserProfile extends Fragment {
     /**
      * Updates the profile picture in the view with the user's profile image URL
      */
-    private void updateProfilePicture() {
+    public void updateProfilePicture() {
         // Set profile image from URL
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
