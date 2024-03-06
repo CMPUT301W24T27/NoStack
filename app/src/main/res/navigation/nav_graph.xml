@@ -73,9 +73,6 @@
         <action
             android:id="@+id/action_organizerSignUp_to_organizerHome"
             app:destination="@id/organizerHome" />
-        <action
-            android:id="@+id/action_organizerSignUp_to_organizerSignIn"
-            app:destination="@id/organizerSignIn" />
     </fragment>
 
 

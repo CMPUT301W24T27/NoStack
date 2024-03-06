@@ -11,72 +11,131 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
-        <GridLayout
-            android:id="@+id/gridLayout1"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rowCount="1"
-            android:columnCount="2"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/black"
+            android:clickable="true"
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            app:borderWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.10"
+            app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05">
-
-            <TextView
-                android:id="@+id/text_welcome"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:text="Welcome, "
-                android:textSize="17sp"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/text_userWelcome"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:text="User"
-                android:textSize="17sp"
-                android:textColor="@color/yellow"
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </GridLayout>
-
-        <ImageButton
-            android:id="@+id/attendee_profileButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/baseline_account_circle_24"
-            android:backgroundTint="@color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.90"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05"
-            />
+            app:srcCompat="@drawable/outline_arrow_back_24"
+            app:tint="@color/yellow" />
 
         <Button
-            android:id="@+id/scanQRButton"
+            android:id="@+id/EventCreationSetPhotoButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="150dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="150dp"
+            android:background="@drawable/baseline_account_circle_24"
+            android:contentDescription="TODO: CHANGE PLACEHOLDER PHOTO"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/EventCreationNameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Name"
+            android:textColor="@color/SignInUpTextColor"
+            app:layout_constraintStart_toStartOf="@+id/EventCreationNameEditText"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationSetPhotoButton" />
+
+        <EditText
+            android:id="@+id/EventCreationNameEditText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="50dp"
+            android:ems="10"
+            android:inputType="text"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationNameTitle" />
+
+        <TextView
+            android:id="@+id/EventCreationStartDateTimeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Start Date & Time"
+            android:textColor="@color/SignInUpTextColor"
+            app:layout_constraintEnd_toStartOf="@+id/EventCreationSetTimeButton"
+            app:layout_constraintStart_toEndOf="@+id/EventCreationSetDateButton"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationNameEditText" />
+
+        <Button
+            android:id="@+id/EventCreationSetDateButton"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="2dp"
+            android:backgroundTint="@color/white"
+            android:text="Set Date"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationStartDateTimeTitle" />
+
+        <Button
+            android:id="@+id/EventCreationSetTimeButton"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="25dp"
+            android:backgroundTint="@color/white"
+            android:text="Set Time"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/EventCreationSetDateButton" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End Date"
+            android:textColor="@color/SignInUpTextColor"
+            tools:layout_editor_absoluteX="50dp"
+            tools:layout_editor_absoluteY="349dp" />
+
+        <CheckBox
+            android:id="@+id/EventCreationReuseQRCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="Reuse Check-In QR Code"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textColor="@color/SignInUpTextColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/EventCreationCreateEventButton"
+            app:layout_constraintStart_toStartOf="@+id/EventCreationCreateEventButton" />
+
+        <Button
+            android:id="@+id/EventCreationCreateEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightBlue"
+            android:paddingHorizontal="90dp"
+            android:paddingVertical="12dp"
             android:text="Create Event"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:paddingHorizontal="90dp"
-            android:paddingVertical="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.98" />
+            app:layout_constraintVertical_bias="0.92" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
