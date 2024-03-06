@@ -3,7 +3,6 @@ package com.example.nostack;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavHost;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -70,11 +69,11 @@ public class StartUp extends Fragment {
             }
         });
 
-        view.findViewById(R.id.OrganizerSignInUpButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.SignIn_SignUpButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_organizerHome);
+                        .navigate(R.id.action_startUp_to_organizerSignIn);
             }
         });
 

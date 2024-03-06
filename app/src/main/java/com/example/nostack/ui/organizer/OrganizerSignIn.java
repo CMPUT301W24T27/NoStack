@@ -3,6 +3,7 @@ package com.example.nostack.ui.organizer;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,28 @@ public class OrganizerSignIn extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_organizer_sign_in, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_sign_in, container, false);
+
+        view.findViewById(R.id.SignIn_SignInButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                TODO: ADD SECTION THAT AUTHENTICATES USER LOGIN IF GOOD DO THE FOLLOWING:
+                NavHostFragment.findNavController(OrganizerSignIn.this)
+                        .navigate(R.id.action_organizerSignIn_to_organizerHome);
+            }
+        });
+
+        view.findViewById(R.id.SignIn_SignUpButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerSignIn.this)
+                        .navigate(R.id.action_organizerSignIn_to_organizerSignUp);
+            }
+        });
+
+
+        return view;
     }
 }

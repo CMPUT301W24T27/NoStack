@@ -9,4 +9,6 @@
     <color name="darkBlue">#003566</color>
     <color name="red">#F24E1E</color>
     <color name="transparent">#00ffffff</color>
+    <color name="SignUpInMenuColor">#252525</color>
+    <color name="SignInUpTextColor">#86CDEA</color>
 </resources>
