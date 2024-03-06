@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -149,22 +150,41 @@ public class UserProfile extends Fragment {
                 View saveProfileButton = view.findViewById(R.id.saveChangesButton);
                 View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
 
+                EditText userName = view.findViewById(R.id.userName);
+                EditText userEmail = view.findViewById(R.id.userEmail);
+                EditText userPhoneNumber = view.findViewById(R.id.userPhoneNumber);
+
                 editProfileButton.setVisibility(View.GONE);
                 saveProfileButton.setVisibility(View.VISIBLE);
                 editProfilePictureButtons.setVisibility(View.VISIBLE);
-
+                userName.setEnabled(true);
+                userEmail.setEnabled(true);
+                userPhoneNumber.setEnabled(true);
             }
         });
 
         view.findViewById(R.id.saveChangesButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 View editProfileButton = view.findViewById(R.id.editProfileButton);
                 View saveProfileButton = view.findViewById(R.id.saveChangesButton);
                 View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
+                EditText userName = view.findViewById(R.id.userName);
+                EditText userEmail = view.findViewById(R.id.userEmail);
+                EditText userPhoneNumber = view.findViewById(R.id.userPhoneNumber);
+
                 editProfileButton.setVisibility(View.VISIBLE);
                 saveProfileButton.setVisibility(View.GONE);
                 editProfilePictureButtons.setVisibility(View.GONE);
+                userName.setEnabled(false);
+                userEmail.setEnabled(false);
+                userPhoneNumber.setEnabled(false);
+
+                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                    user.setFirstName(userName.getText().toString());
+                    user.setEmailAddress(userEmail.getText().toString());
+                    user.setPhoneNumber(userPhoneNumber.getText().toString());
+                    userViewModel.updateUser(user);
+                });
             }
         });
 
