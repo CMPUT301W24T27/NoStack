@@ -24,7 +24,7 @@ public class GenerateProfileImage {
 
         Canvas canvas = new Canvas(bitmap);
         canvas.drawRGB(rgb[0], rgb[1], rgb[2]);
-        canvas.drawText(initials, 40, 60, paint);
+        canvas.drawText(initials, 32, 60, paint);
 
         return bitmap;
     }

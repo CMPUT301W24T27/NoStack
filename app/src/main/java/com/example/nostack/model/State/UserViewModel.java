@@ -49,7 +49,5 @@ public class UserViewModel extends ViewModel
         db = FirebaseFirestore.getInstance();
         userRef = db.collection("users");
         userRef.document(user.getUuid()).set(user);
-
-
     }
 }

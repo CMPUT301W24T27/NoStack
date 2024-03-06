@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -149,22 +150,46 @@ public class UserProfile extends Fragment {
                 View saveProfileButton = view.findViewById(R.id.saveChangesButton);
                 View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
 
+                EditText userFirstName = view.findViewById(R.id.userFirstName);
+                EditText userLastName = view.findViewById(R.id.userLastName);
+                EditText userEmail = view.findViewById(R.id.userEmail);
+                EditText userPhoneNumber = view.findViewById(R.id.userPhoneNumber);
+
                 editProfileButton.setVisibility(View.GONE);
                 saveProfileButton.setVisibility(View.VISIBLE);
                 editProfilePictureButtons.setVisibility(View.VISIBLE);
-
+                userFirstName.setEnabled(true);
+                userLastName.setEnabled(true);
+                userEmail.setEnabled(true);
+                userPhoneNumber.setEnabled(true);
             }
         });
 
         view.findViewById(R.id.saveChangesButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 View editProfileButton = view.findViewById(R.id.editProfileButton);
                 View saveProfileButton = view.findViewById(R.id.saveChangesButton);
                 View editProfilePictureButtons = view.findViewById(R.id.editProfilePictureButtons);
+                EditText userFirstName = view.findViewById(R.id.userFirstName);
+                EditText userLastName = view.findViewById(R.id.userLastName);
+                EditText userEmail = view.findViewById(R.id.userEmail);
+                EditText userPhoneNumber = view.findViewById(R.id.userPhoneNumber);
+
                 editProfileButton.setVisibility(View.VISIBLE);
                 saveProfileButton.setVisibility(View.GONE);
                 editProfilePictureButtons.setVisibility(View.GONE);
+                userFirstName.setEnabled(false);
+                userLastName.setEnabled(false);
+                userEmail.setEnabled(false);
+                userPhoneNumber.setEnabled(false);
+
+                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                    user.setFirstName(userFirstName.getText().toString());
+                    user.setLastName(userLastName.getText().toString());
+                    user.setEmailAddress(userEmail.getText().toString());
+                    user.setPhoneNumber(userPhoneNumber.getText().toString());
+                    userViewModel.updateUser(user);
+                });
             }
         });
 
@@ -187,7 +212,8 @@ public class UserProfile extends Fragment {
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                ((TextView) view.findViewById(R.id.userName)).setText(user.getFirstName());
+                ((TextView) view.findViewById(R.id.userFirstName)).setText(user.getFirstName());
+                ((TextView) view.findViewById(R.id.userLastName)).setText(user.getLastName());
                 ((TextView) view.findViewById(R.id.userEmail)).setText(user.getEmailAddress());
                 ((TextView) view.findViewById(R.id.userPhoneNumber)).setText(user.getPhoneNumber());
 
@@ -207,7 +233,7 @@ public class UserProfile extends Fragment {
     /**
      * Updates the profile picture in the view with the user's profile image URL
      */
-    private void updateProfilePicture() {
+    public void updateProfilePicture() {
         // Set profile image from URL
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {

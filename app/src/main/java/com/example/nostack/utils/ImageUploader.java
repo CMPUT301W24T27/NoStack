@@ -1,10 +1,17 @@
 package com.example.nostack.utils;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -19,7 +26,6 @@ import java.util.UUID;
  * Upload an image to Firebase Cloud Storage then return the URL of the uploaded image
  */
 public class ImageUploader {
-
     private static final String TAG = "ImageUploader";
 
     public interface UploadListener {

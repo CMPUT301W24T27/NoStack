@@ -158,23 +158,28 @@
             app:layout_constraintTop_toBottomOf="@id/userStatus"
             app:layout_constraintVertical_bias="0.4">
 
-            <TextView
-                android:id="@+id/userName"
+            <EditText
+                android:id="@+id/userFirstName"
                 android:text="name"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
-                app:layout_row="0"/>
+                app:layout_row="0"
+                android:enabled="false"
+                android:hint="First Name"
+                android:textColorHint="@color/grey"
+                />
 
             <TextView
-                android:id="@+id/nameTitle"
-                android:text="Name"
+                android:id="@+id/firstNameTitle"
+                android:text="First Name"
                 android:textColor="@color/lightBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="0"
-                app:layout_row="1"/>
+                app:layout_row="1"
+                />
 
             <Space
                 android:layout_width="40dp"
@@ -182,14 +187,48 @@
                 app:layout_column="0"
                 app:layout_row="2" />
 
+            <EditText
+                android:id="@+id/userLastName"
+                android:text="last name"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_column="0"
+                app:layout_row="3"
+                android:enabled="false"
+                android:hint="Last Name"
+                android:textColorHint="@color/grey"
+                />
+
             <TextView
+                android:id="@+id/lastNameTitle"
+                android:text="Last Name"
+                android:textColor="@color/lightBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_column="0"
+                app:layout_row="1"
+                />
+
+            <Space
+                android:layout_width="40dp"
+                android:layout_height="20dp"
+                app:layout_column="0"
+                app:layout_row="2" />
+
+            <EditText
                 android:id="@+id/userEmail"
                 android:text="JohnDoe@hotmail.com"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="0"
-                app:layout_row="3"/>
+                app:layout_row="3"
+                android:enabled="false"
+                android:hint="Last Name"
+                android:textColorHint="@color/grey"
+                android:inputType="textEmailAddress"
+                />
 
             <TextView
                 android:id="@+id/emailTitle"
@@ -206,14 +245,19 @@
                 app:layout_column="0"
                 app:layout_row="6"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/userPhoneNumber"
                 android:text="+1 123-456-7890"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="0"
-                app:layout_row="7"/>
+                app:layout_row="7"
+                android:enabled="false"
+                android:inputType="phone"
+                android:hint="Phone Number"
+                android:textColorHint="@color/grey"
+                />
 
             <TextView
                 android:id="@+id/phoneNumberTitle"
