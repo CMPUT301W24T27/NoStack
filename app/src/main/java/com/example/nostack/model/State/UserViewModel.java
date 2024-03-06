@@ -23,7 +23,10 @@ public class UserViewModel extends ViewModel
      */
     public void setUser(User user) {
         this.user.setValue(user);
-        Log.d("UserViewModel", "User data set" + user.getFirstName());
+        Log.d("UserViewModel", "User data set " + user.getFirstName());
+        Log.d("UserViewModel", "User data set " + user.getLastName());
+        Log.d("UserViewModel", "User data set " + user.getEmailAddress());
+        Log.d("UserViewModel", "User data set " + user.getProfileImageUrl());
     }
 
     /**

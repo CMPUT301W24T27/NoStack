@@ -1,10 +1,16 @@
 package com.example.nostack.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavHost;
@@ -21,6 +27,8 @@ import android.widget.TextView;
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.ImageUploader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import javax.annotation.Nullable;
 
@@ -174,6 +182,28 @@ public class UserProfile extends Fragment {
                 ((TextView) view.findViewById(R.id.userName)).setText(user.getFirstName());
                 ((TextView) view.findViewById(R.id.userEmail)).setText(user.getEmailAddress());
                 ((TextView) view.findViewById(R.id.userPhoneNumber)).setText(user.getPhoneNumber());
+
+                // Set profile image from URL
+                ImageButton profileImage = view.findViewById(R.id.profileImage);
+
+                if (user.getProfileImageUrl() != null) {
+                    String uri = user.getProfileImageUrl();
+
+                    // Get image from firebase storage
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                    final long ONE_MEGABYTE = 1024 * 1024;
+
+                    storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                        d.setCornerRadius(100f);
+                        profileImage.setImageDrawable(d);
+                    }).addOnFailureListener(exception -> {
+                        Log.w("User Profile", "Error getting profile image", exception);
+                    });
+                }
+
             }
             else{
                 Log.d("AttendeeHome", "User is null");

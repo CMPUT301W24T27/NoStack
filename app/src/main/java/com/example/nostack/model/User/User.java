@@ -1,5 +1,7 @@
 package com.example.nostack.model.User;
 
+import android.util.Log;
+
 /**
  * User will
  *      Contain and can display a user’s personal info,
@@ -86,6 +88,7 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        Log.d("User", "Profile image URL: " + profileImageUrl);
     }
 
     public User(String firstName, String lastName, String username, String emailAddress, String phoneNumber, String uuid) {
@@ -96,9 +99,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.uuid = uuid;
 
-        // Generate a profile picture from the profile name
-        // TODO: THIS IS A PLACEHOLDER, replace with actual code for it later
-        this.profileImageUrl = "https://ui-avatars.com/api/?name=" + firstName + "+" + lastName;
+
     }
     public User(){}
 }

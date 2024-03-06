@@ -84,12 +84,20 @@ public class Profile extends User{
             "username_placeholder",
             getEmailAddress(),
             getPhoneNumber(),
-            getUuid()
+            uuid
         );
 
+        // Generate a profile picture from the profile name
+        // TODO: THIS IS A PLACEHOLDER, replace with actual code for it later
+        user.setProfileImageUrl("https://ui-avatars.com/api/?name=" + getFirstName() + "+" + getLastName());
+
         // Add a new document with the UUID as the document ID
-        userRef.document(uuid).set(new User())
-            .addOnSuccessListener(unused -> Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show())
+        userRef.document(uuid).set(user)
+            .addOnSuccessListener(unused -> {
+                UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
+                userViewModel.setUser(this);
+                Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
+            })
             .addOnFailureListener(e -> Log.w("Profile Class", "Error creating user profile", e));
     }
 
@@ -107,6 +115,8 @@ public class Profile extends User{
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     User user = document.toObject(User.class);
+
+                    Log.d("Profile class", "Image" + user.getProfileImageUrl());
                     if (user != null) {
                         updateUserFields(user);
                         UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
@@ -136,5 +146,7 @@ public class Profile extends User{
         setPhoneNumber(user.getPhoneNumber());
         setLastName(user.getLastName());
         setUuid(user.getUuid());
+        setUsername(user.getUsername());
+        setProfileImageUrl(user.getProfileImageUrl());
     }
 }
