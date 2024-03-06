@@ -174,6 +174,17 @@ public class UserProfile extends Fragment {
             }
         });
 
+        view.findViewById(R.id.deleteProfilePictureButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                    user.setProfileImageUrl(null);
+                    userViewModel.updateUser(user);
+                    updateProfilePicture();
+                });
+            }
+        });
+
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 ((TextView) view.findViewById(R.id.userName)).setText(user.getFirstName());
