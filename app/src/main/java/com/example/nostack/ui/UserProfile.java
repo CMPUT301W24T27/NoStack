@@ -2,15 +2,20 @@ package com.example.nostack.ui;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavHost;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.nostack.R;
+import com.example.nostack.model.State.UserViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +69,7 @@ public class UserProfile extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+        UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -95,6 +101,18 @@ public class UserProfile extends Fragment {
                 editProfileButton.setVisibility(View.VISIBLE);
                 saveProfileButton.setVisibility(View.GONE);
                 editProfilePictureButtons.setVisibility(View.GONE);
+            }
+        });
+
+
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                ((TextView) view.findViewById(R.id.userName)).setText(user.getFirstName());
+                ((TextView) view.findViewById(R.id.userEmail)).setText(user.getEmailAddress());
+                ((TextView) view.findViewById(R.id.userPhoneNumber)).setText(user.getPhoneNumber());
+            }
+            else{
+                Log.d("AttendeeHome", "User is null");
             }
         });
 
