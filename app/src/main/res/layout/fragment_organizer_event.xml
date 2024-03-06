@@ -64,6 +64,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:inputType="none"
+                android:textColor="@color/white"
                 android:textColorHint="@color/SignInUpTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -72,13 +73,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/EventCreationStartDateLayout"
+            android:id="@+id/EventCreationStartDateTimeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="225dp"
             android:layout_marginEnd="50dp"
-            android:hint="Start Date"
+            android:hint="Start Date/Time"
             app:endIconDrawable="@drawable/baseline_edit_calendar_24"
             app:endIconMode="custom"
             app:endIconTint="@color/yellow"
@@ -88,12 +89,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/EventCreationStartDateEditText"
+                android:id="@+id/EventCreationStartDateTimeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
                 android:inputType="none"
+                android:textColor="@color/white"
                 android:textColorHint="@color/SignInUpTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,43 +104,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/EventCreationStartTimeLayout"
+            android:id="@+id/EventCreationEndDateTimeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="300dp"
             android:layout_marginEnd="50dp"
-            android:hint="Start Time"
-            app:endIconDrawable="@drawable/baseline_access_time_filled_24"
-            app:endIconMode="custom"
-            app:endIconTint="@color/yellow"
-            app:hintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/EventCreationStartTimeEditText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                android:inputType="none"
-                android:textColorHint="@color/SignInUpTextColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/EventCreationEndDateLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="375dp"
-            android:layout_marginEnd="50dp"
-            android:hint="End Date"
+            android:hint="End Date/Time"
             app:endIconDrawable="@drawable/baseline_edit_calendar_24"
             app:endIconMode="custom"
             app:endIconTint="@color/yellow"
@@ -148,12 +120,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/EventCreationEndDateEditText"
+                android:id="@+id/EventCreationEndDateTimeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
                 android:inputType="none"
+                android:textColor="@color/white"
                 android:textColorHint="@color/SignInUpTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -162,14 +135,14 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/EventCreationEndTimeLayout"
+            android:id="@+id/EventCreationLocationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="450dp"
+            android:layout_marginTop="375dp"
             android:layout_marginEnd="50dp"
-            android:hint="End Time"
-            app:endIconDrawable="@drawable/baseline_access_time_filled_24"
+            android:hint="Location"
+            app:endIconDrawable="@drawable/baseline_add_location_24"
             app:endIconMode="custom"
             app:endIconTint="@color/yellow"
             app:hintEnabled="true"
@@ -178,18 +151,54 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/EventCreationEndTimeEditText"
+                android:id="@+id/EventCreationLocationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
                 android:inputType="none"
+                android:textColor="@color/white"
                 android:textColorHint="@color/SignInUpTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/EventCreationDescriptionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="450dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="15dp"
+            android:hint="Description"
+            app:endIconDrawable="@drawable/baseline_article_24"
+            app:endIconMode="custom"
+            app:endIconTint="@color/yellow"
+            app:hintEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/EventCreationReuseQRCheckBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EventCreationDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:inputType="none"
+                android:textColor="@color/white"
+                android:textColorHint="@color/SignInUpTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
 
         <CheckBox
             android:id="@+id/EventCreationReuseQRCheckBox"
