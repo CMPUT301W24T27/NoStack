@@ -60,11 +60,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         if (event != null) {
 
-            eventTitle.setText(event.getName());
-            eventStartDateTitle.setText("Jan 1, 2024");
-            eventTimeTitle.setText("18:00 - 23:00");
-
-
             DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
             DateFormat tf = new SimpleDateFormat("h:mm a");
 
@@ -82,7 +77,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             }
 
             eventTitle.setText(event.getName());
-
             eventLocationTitle.setText(event.getLocation());
 
             String uri = event.getEventBannerImgUrl();

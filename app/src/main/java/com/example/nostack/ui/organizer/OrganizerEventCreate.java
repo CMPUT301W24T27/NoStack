@@ -133,7 +133,6 @@ public class OrganizerEventCreate extends Fragment {
         eventDescEditText = view.findViewById(R.id.EventCreationDescriptionEditText);
         eventReuseQrCheckBox = view.findViewById(R.id.EventCreationReuseQRCheckBox);
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
-        backButton = view.findViewById(R.id.backButton);
         eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
         backButton = view.findViewById(R.id.backButton);
 
@@ -231,7 +230,6 @@ public class OrganizerEventCreate extends Fragment {
                 int limit = Integer.parseInt(eventLimitEditText.getText().toString());
                 newEvent.setCapacity(limit);
             }
-
 
 
 
