@@ -94,23 +94,12 @@ public class OrganizerHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
         activity = getActivity();
-        preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
-        userUUID = preferences.getString("uuid", null);
-
         dataList = new ArrayList<>();
-
-        eventsRef.whereEqualTo("organizerId",userUUID).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    dataList.add(document.toObject(Event.class));
-                    Log.d("EventAdd","" + task.getResult().size());
-                }
-            }
-
-        });
     }
 
     @Override
@@ -124,15 +113,23 @@ public class OrganizerHome extends Fragment {
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
         eventList.setAdapter(eventArrayAdapter);
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-
             if (user != null) {
-                Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
+                Log.d("OrganizerHome", "User logged in: " + user.getFirstName());
                 userWelcome.setText(user.getFirstName());
+
+                eventsRef.whereEqualTo("organizerId",user.getUuid()).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            dataList.add(document.toObject(Event.class));
+                            Log.d("EventAdd","" + task.getResult().size());
+                        }
+                    }
+
+                });
             }
             else{
-                Log.d("AttendeeHome", "User is null");
+                Log.d("OrganizerHome", "User is null");
             }
         });
 
