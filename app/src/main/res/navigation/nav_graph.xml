@@ -58,6 +58,9 @@
         <action
             android:id="@+id/action_organizerHome_to_userProfile"
             app:destination="@id/userProfile" />
+        <action
+            android:id="@+id/action_organizerHome_to_organizer_event"
+            app:destination="@id/organizer_event" />
     </fragment>
     <fragment
         android:id="@+id/organizerEventCreate"
@@ -68,6 +71,11 @@
             android:id="@+id/action_organizerEventCreate_to_organizerHome"
             app:destination="@id/organizerHome" />
     </fragment>
+    <fragment
+        android:id="@+id/organizer_event"
+        android:name="com.example.nostack.ui.organizer.organizer_event"
+        android:label="fragment_organizer_event"
+        tools:layout="@layout/fragment_organizer_event" />
 
 
 </navigation>

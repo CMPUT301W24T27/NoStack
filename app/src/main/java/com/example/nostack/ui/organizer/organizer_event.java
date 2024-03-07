@@ -1,11 +1,15 @@
-package com.example.nostack;
+package com.example.nostack.ui.organizer;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.nostack.R;
+import com.example.nostack.utils.Event;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,7 +24,7 @@ public class organizer_event extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Event event;
     private String mParam2;
 
     public organizer_event() {
@@ -36,11 +40,10 @@ public class organizer_event extends Fragment {
      * @return A new instance of fragment organizer_event.
      */
     // TODO: Rename and change types and number of parameters
-    public static organizer_event newInstance(String param1, String param2) {
+    public static organizer_event newInstance(Event param1) {
         organizer_event fragment = new organizer_event();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,8 +52,7 @@ public class organizer_event extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            event = (Event) getArguments().getSerializable("eventData");
         }
     }
 
@@ -58,6 +60,19 @@ public class organizer_event extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
+
+        TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
+        TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
+        TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
+        TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
+        TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+
+
+        eventTitle.setText(event.getName());
+        eventDescription.setText(event.getDescription());
+
+
+        return view;
     }
 }

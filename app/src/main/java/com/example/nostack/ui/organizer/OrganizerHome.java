@@ -1,11 +1,18 @@
 package com.example.nostack.ui.organizer;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -14,27 +21,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-
 import com.example.nostack.R;
+import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.Event;
 import com.example.nostack.utils.EventArrayAdapter;
+import com.example.nostack.utils.GenerateProfileImage;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.utils.GenerateProfileImage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -146,6 +144,19 @@ public class OrganizerHome extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = eventArrayAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(OrganizerHome.this)
+                        .navigate(R.id.action_organizerHome_to_organizer_event,bundle);
+            }
+        });
+
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

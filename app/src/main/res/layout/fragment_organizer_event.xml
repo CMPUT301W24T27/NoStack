@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".organizer_event">
+    tools:context=".ui.organizer.organizer_event">
 
     <ImageView
         android:id="@+id/OrganizerEventImage"
@@ -60,27 +60,27 @@
 
     <Button
         android:id="@+id/OrganizerEventAnnouncementsButton"
-        android:layout_width="165dp"
+        android:layout_width="150sp"
         android:layout_height="65dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/lightBlue"
         android:text="Manage\nAnnouncements"
         android:textAppearance="@style/TextAppearance.AppCompat.Display3"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/OrganizerEventQRCodeButton"
         app:layout_constraintStart_toStartOf="@+id/OrganizerEventQRCodeButton" />
 
     <Button
         android:id="@+id/OrganizerEventAttendeesButton"
-        android:layout_width="165dp"
+        android:layout_width="150sp"
         android:layout_height="65dp"
         android:backgroundTint="@color/lightBlue"
         android:text="See\nAttendees"
         android:textAppearance="@style/TextAppearance.AppCompat.Display3"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/OrganizerEventAnnouncementsButton"
         app:layout_constraintEnd_toEndOf="@+id/OrganizerEventQRCodeButton" />

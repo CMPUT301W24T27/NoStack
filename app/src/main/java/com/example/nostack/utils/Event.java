@@ -2,11 +2,12 @@ package com.example.nostack.utils;
 
 import com.example.nostack.model.User.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-public class Event {
+public class Event implements Serializable {
     private String name;
     private String location;
     private String description;
