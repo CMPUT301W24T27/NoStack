@@ -103,7 +103,7 @@ public class StartUp extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_organizerSignIn);
+                        .navigate(R.id.action_startUp_to_organizerHome);
             }
         });
 
