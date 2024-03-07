@@ -110,7 +110,7 @@ public class OrganizerHome extends Fragment {
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
-        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
+        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
         eventList.setAdapter(eventArrayAdapter);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {

@@ -9,21 +9,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/sign_in_up_background"
-        android:backgroundTint="#060606"
+        android:backgroundTint="@color/SignUpInMenuColor"
         android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/EventListContentPosterImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="-16dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="-16dp"
             app:layout_constraintBottom_toBottomOf="@+id/EventListContentLocationImage"
-            app:layout_constraintEnd_toStartOf="@+id/EventListContentLocationImage"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/EventListContentNameText"
             app:srcCompat="@drawable/baseline_account_circle_24" />
@@ -77,27 +78,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="Location"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/EventListContentLocationImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/EventListContentLocationImage"
-            app:layout_constraintTop_toBottomOf="@+id/EventListContentTimeText" />
+            app:layout_constraintTop_toTopOf="@+id/EventListContentLocationImage" />
 
         <ImageView
             android:id="@+id/EventListContentLocationImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp"
             android:tint="@color/yellow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/EventListContentLocationText"
+            app:layout_constraintStart_toEndOf="@+id/EventListContentPosterImage"
+            app:layout_constraintTop_toBottomOf="@+id/EventListContentTimeText"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_location_on_24"
-            tools:layout_editor_absoluteX="200dp" />
+            app:srcCompat="@drawable/baseline_location_on_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
