@@ -1,15 +1,29 @@
 package com.example.nostack.ui.organizer;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.nostack.R;
+import com.example.nostack.utils.Event;
+import com.example.nostack.utils.EventArrayAdapter;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +31,16 @@ import com.example.nostack.R;
  * create an instance of this fragment.
  */
 public class OrganizerHome extends Fragment {
+
+    private EventArrayAdapter eventArrayAdapter;
+    private ArrayList<Event> dataList;
+    private ListView eventList;
+    private FirebaseFirestore db;
+    private SharedPreferences preferences;
+    private CollectionReference eventsRef;
+    private Activity activity;
+    private String userUUID;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,6 +80,23 @@ public class OrganizerHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+        activity = getActivity();
+        preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
+        userUUID = preferences.getString("uuid", null);
+
+        dataList = new ArrayList<>();
+
+        eventsRef.whereEqualTo("organizerID",userUUID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    dataList.add(document.toObject(Event.class));
+                }
+            }
+
+            eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
+        });
     }
 
     @Override
@@ -63,6 +104,8 @@ public class OrganizerHome extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
+
+
 
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
