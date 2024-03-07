@@ -6,10 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.utils.Event;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +42,6 @@ public class organizer_event extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment organizer_event.
      */
     // TODO: Rename and change types and number of parameters
@@ -46,6 +51,34 @@ public class organizer_event extends Fragment {
         args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void updateScreenInformation(@NonNull View view) {
+        TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
+        TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
+        TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
+        TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
+        TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+
+        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
+        DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
+
+        String startDate = df.format(event.getStartDate());
+        String endDate = df.format(event.getEndDate());
+        String startTime = tf.format(event.getStartDate());
+        String endTime = tf.format(event.getEndDate());
+
+        if (!startDate.equals(endDate)) {
+            eventStartDate.setText(startDate + " to");
+            eventStartTime.setText(endDate);
+        } else {
+            eventStartDate.setText(startDate);
+            eventStartTime.setText(startTime + " - " + endTime);
+        }
+
+        eventTitle.setText(event.getName());
+        eventDescription.setText(event.getDescription());
+        eventLocation.setText(event.getLocation());
     }
 
     @Override
@@ -62,16 +95,15 @@ public class organizer_event extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
 
-        TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
-        TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
-        TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
-        TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
-        TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+        updateScreenInformation(view);
 
-
-        eventTitle.setText(event.getName());
-        eventDescription.setText(event.getDescription());
-
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(organizer_event.this)
+                        .popBackStack();
+            }
+        });
 
         return view;
     }

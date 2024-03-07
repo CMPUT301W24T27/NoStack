@@ -1,11 +1,8 @@
 package com.example.nostack.utils;
 
-import static com.google.api.ResourceProto.resource;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +28,20 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     private ConstraintLayout layout;
     private Fragment currFragment;
+    private ArrayList<Event> ourEvents;
 
     public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, Fragment currfragment) {
         super(context, 0,events);
         currFragment = currfragment;
+        ourEvents = events;
     }
-
+    public boolean containsEvent(Event event) {
+        boolean contained = false;
+        for (Event event1:ourEvents) {
+            if (event.getId().equals(event1.getId())) {return true;}
+        }
+        return contained;
+    }
     public void addEvent(Event event) {
         add(event);
     }

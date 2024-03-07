@@ -107,6 +107,7 @@ public class OrganizerHome extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
+
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
         eventList.setAdapter(eventArrayAdapter);
@@ -120,8 +121,10 @@ public class OrganizerHome extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                            if (!eventArrayAdapter.containsEvent(event)) {
+                                eventArrayAdapter.addEvent(event);
+                                Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                            }
                         }
                     }
                 });

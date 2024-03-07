@@ -60,7 +60,7 @@
 
     <Button
         android:id="@+id/OrganizerEventAnnouncementsButton"
-        android:layout_width="150sp"
+        android:layout_width="155sp"
         android:layout_height="65dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/lightBlue"
@@ -74,7 +74,7 @@
 
     <Button
         android:id="@+id/OrganizerEventAttendeesButton"
-        android:layout_width="150sp"
+        android:layout_width="155sp"
         android:layout_height="65dp"
         android:backgroundTint="@color/lightBlue"
         android:text="See\nAttendees"
