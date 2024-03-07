@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".ui.User.AddInfo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/sign_in_up_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TextView
+                android:id="@+id/AddInfoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Let's create your profile."
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/SignInUpTextColor"
+                android:textIsSelectable="false"
+                android:textSize="22sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/profileImage"/>
+
+            <ImageButton
+                android:id="@+id/profileImage"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintBottom_toTopOf="@id/infoContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/AddInfoTitle"
+                app:layout_constraintVertical_bias="0.25"
+                app:srcCompat="@drawable/sharp_add_photo_alternate_24"
+
+                app:maxWidth="32px"
+                app:maxHeight="32px"
+                android:background="@drawable/circle"
+                android:visibility="gone"
+                />
+
+            <GridLayout
+                android:id="@+id/infoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:columnCount="1"
+                android:rowCount="12"
+                android:alignmentMode="alignMargins"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                app:layout_constraintBottom_toTopOf="@id/saveInfoFormButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profileImage"
+                app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/addUsernameTitle"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Username"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/SignInUpTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/addUsernameField"
+                app:layout_constraintTop_toBottomOf="@+id/AddInfoTitle" />
+
+            <EditText
+                android:id="@+id/addUsernameField"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_width="match_parent"
+                android:layout_height="48sp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/text_input_shape"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addUsernameTitle"
+                tools:ignore="RtlSymmetry" />
+
+                <TextView
+                android:id="@+id/addFirstNameTitle"
+                android:layout_column="0"
+                android:layout_row="4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="First Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/SignInUpTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/addFirstNameField"
+                app:layout_constraintTop_toBottomOf="@+id/addPasswordField" />
+
+            <EditText
+                android:id="@+id/addFirstNameField"
+                android:layout_column="0"
+                android:layout_row="5"
+                android:layout_width="match_parent"
+                android:layout_height="48sp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/text_input_shape"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addFirstNameTitle" />
+
+            <TextView
+                android:id="@+id/addLastNameTitle"
+                android:layout_column="0"
+                android:layout_row="6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Last Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/SignInUpTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/addLastNameField"
+                app:layout_constraintTop_toBottomOf="@+id/addFirstNameField" />
+
+            <EditText
+                android:id="@+id/addLastNameField"
+                android:layout_column="0"
+                android:layout_row="7"
+                android:layout_width="match_parent"
+                android:layout_height="48sp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/text_input_shape"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addLastNameTitle" />
+
+                <TextView
+                    android:id="@+id/addEmailTitle"
+                    android:layout_column="0"
+                    android:layout_row="8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Email Address"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                    android:textColor="@color/SignInUpTextColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/addEmailField"
+                    app:layout_constraintTop_toBottomOf="@+id/addLastNameField" />
+
+
+                <EditText
+                android:id="@+id/addEmailField"
+                android:layout_column="0"
+                android:layout_row="9"
+                android:layout_width="match_parent"
+                android:layout_height="48sp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/text_input_shape"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addEmailTitle" />
+
+
+            <TextView
+                android:id="@+id/addPhoneTitle"
+                android:layout_column="0"
+                android:layout_row="10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Phone Number"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/SignInUpTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/addPhoneField"
+                app:layout_constraintTop_toBottomOf="@+id/addEmailField" />
+
+            <EditText
+                android:id="@+id/addPhoneField"
+                android:layout_column="0"
+                android:layout_row="11"
+                android:layout_width="match_parent"
+                android:layout_height="48sp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/text_input_shape"
+                android:ems="10"
+                android:inputType="phone"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addPhoneTitle" />
+
+            </GridLayout>
+
+            <Button
+                android:id="@+id/saveInfoFormButton"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="25dp"
+                android:backgroundTint="@color/yellow"
+                android:paddingHorizontal="90dp"
+                android:paddingVertical="15dp"
+                android:text="Save"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginVertical="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/infoContainer"
+                app:layout_constraintVertical_bias="1.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
