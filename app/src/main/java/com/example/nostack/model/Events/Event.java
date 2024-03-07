@@ -16,7 +16,7 @@ public class Event implements Serializable {
     private String organizerId;
     private String eventBannerImgUrl;
     private String id;
-    private ArrayList<User> attendees;
+    private ArrayList<String> attendees;
     private ArrayList<Announcement> announcements;
     private Date startDate;
     private Date endDate;
@@ -47,7 +47,7 @@ public class Event implements Serializable {
         this.name = name;
         this.location = location;
         this.description = description;
-        this.attendees = new ArrayList<User>();
+        this.attendees = new ArrayList<String>();
         this.announcements = new ArrayList<Announcement>();
         this.startDate = startDate;
         this.endDate = endDate;
@@ -67,7 +67,7 @@ public class Event implements Serializable {
         this.name = name;
         this.location = location;
         this.description = description;
-        this.attendees = new ArrayList<User>();
+        this.attendees = new ArrayList<String>();
         this.announcements = new ArrayList<Announcement>();
         this.startDate = startDate;
         this.endDate = endDate;
@@ -118,11 +118,11 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public ArrayList<User> getAttendees() {
+    public ArrayList<String> getAttendees() {
         return attendees;
     }
 
-    public boolean addAttendee(User attendee) {
+    public boolean addAttendee(String attendee) {
 
         if ((capacity > 0) && (currentCapacity >= capacity)) {
             return false;

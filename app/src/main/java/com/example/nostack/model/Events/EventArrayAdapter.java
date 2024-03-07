@@ -135,7 +135,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             Log.d("CachedPhotoSize",String.format("%d", cachedPhotoList.size()));
             eventImage.setImageDrawable(cachedPhotoList.get(position));
         }
-
         return view;
     }
 }
