@@ -32,6 +32,11 @@
             android:id="@+id/action_attendeeEvent_to_attendeeHome"
             app:destination="@id/attendeeHome" />
     </fragment>
+    <fragment
+        android:id="@+id/QRScanning"
+        android:name="com.example.nostack.QRScanning"
+        android:label="fragment_q_r_scanning"
+        tools:layout="@layout/fragment_q_r_scanning" />
 
 
 </navigation>
