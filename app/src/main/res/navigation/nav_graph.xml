@@ -11,7 +11,7 @@
         android:label="fragment_start_up"
         tools:layout="@layout/fragment_start_up" >
         <action
-            android:id="@+id/action_startUp_to_attendeeHome3"
+            android:id="@+id/action_startUp_to_attendeeHome"
             app:destination="@id/attendeeHome" />
         <action
             android:id="@+id/action_startUp_to_organizerSignIn"
@@ -25,14 +25,26 @@
         <action
             android:id="@+id/action_attendeeHome_to_attendeeEvent"
             app:destination="@id/attendeeEvent" />
+        <action
+            android:id="@+id/action_attendeeHome_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
     <fragment
         android:id="@+id/attendeeEvent"
-        android:name="com.example.nostack.ui.AttendeeEvent"
+        android:name="com.example.nostack.ui.attendee.AttendeeEvent"
         android:label="fragment_attendee_event"
         tools:layout="@layout/fragment_attendee_event" >
         <action
             android:id="@+id/action_attendeeEvent_to_attendeeHome"
+            app:destination="@id/attendeeHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="com.example.nostack.ui.UserProfile"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" >
+        <action
+            android:id="@+id/action_userProfile_to_attendeeHome"
             app:destination="@id/attendeeHome" />
     </fragment>
     <fragment

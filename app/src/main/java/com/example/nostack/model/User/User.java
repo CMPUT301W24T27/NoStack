@@ -1,5 +1,7 @@
 package com.example.nostack.model.User;
 
+import android.util.Log;
+
 /**
  * User will
  *      Contain and can display a user’s personal info,
@@ -15,6 +17,7 @@ public class User {
     private String gender;
     private String role;
     private String uuid;
+    private String profileImageUrl;
 
     public String getRole() {
         return role;
@@ -79,6 +82,15 @@ public class User {
         this.uuid = uuid;
     }
 
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+        Log.d("User", "Profile image URL: " + profileImageUrl);
+    }
+
     public User(String firstName, String lastName, String username, String emailAddress, String phoneNumber, String uuid) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -86,6 +98,8 @@ public class User {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
         this.uuid = uuid;
+
+
     }
     public User(){}
 }
