@@ -1,4 +1,4 @@
-package com.example.nostack.ui.organizer;
+package com.example.nostack.utils;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.nostack.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerEvent#newInstance} factory method to
+ * Use the {@link QRScanning#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OrganizerEvent extends Fragment {
+public class QRScanning extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class OrganizerEvent extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public OrganizerEvent() {
+    public QRScanning() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class OrganizerEvent extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment OrganizerEvent.
+     * @return A new instance of fragment QRScanning.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrganizerEvent newInstance(String param1, String param2) {
-        OrganizerEvent fragment = new OrganizerEvent();
+    public static QRScanning newInstance(String param1, String param2) {
+        QRScanning fragment = new QRScanning();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,10 +61,6 @@ public class OrganizerEvent extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-//        TODO: HAVE EDIT DATE/TIME BUTTONS DO THE FOLLOWING: https://www.youtube.com/watch?v=guTycx3L9I4&ab_channel=TechnicalCoding
-
-
-        return inflater.inflate(R.layout.fragment_organizer_event, container, false);
+        return inflater.inflate(R.layout.fragment_q_r_scanning, container, false);
     }
 }

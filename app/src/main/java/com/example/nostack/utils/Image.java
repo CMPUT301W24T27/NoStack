@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.utils;
 
 public class Image {
 

@@ -65,27 +65,6 @@ public class OrganizerSignIn extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_sign_in, container, false);
         // Inflate the layout for this fragment
 
-        view.findViewById(R.id.SignIn_SignInButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                TODO: ADD SECTION THAT AUTHENTICATES USER LOGIN IF GOOD DO THE FOLLOWING:
-
-
-
-
-                NavHostFragment.findNavController(OrganizerSignIn.this)
-                        .navigate(R.id.action_organizerSignIn_to_organizerHome);
-            }
-        });
-
-        view.findViewById(R.id.SignIn_SignUpButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerSignIn.this)
-                        .navigate(R.id.action_organizerSignIn_to_organizerSignUp);
-            }
-        });
-
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

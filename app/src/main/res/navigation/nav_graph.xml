@@ -11,11 +11,11 @@
         android:label="fragment_start_up"
         tools:layout="@layout/fragment_start_up" >
         <action
-            android:id="@+id/action_startUp_to_attendeeHome3"
+            android:id="@+id/action_startUp_to_attendeeHome"
             app:destination="@id/attendeeHome" />
         <action
-            android:id="@+id/action_startUp_to_organizerSignIn"
-            app:destination="@id/organizerSignIn" />
+            android:id="@+id/action_startUp_to_organizerHome"
+            app:destination="@id/organizerHome" />
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
@@ -25,14 +25,26 @@
         <action
             android:id="@+id/action_attendeeHome_to_attendeeEvent"
             app:destination="@id/attendeeEvent" />
+        <action
+            android:id="@+id/action_attendeeHome_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
     <fragment
         android:id="@+id/attendeeEvent"
-        android:name="com.example.nostack.ui.AttendeeEvent"
+        android:name="com.example.nostack.ui.attendee.AttendeeEvent"
         android:label="fragment_attendee_event"
         tools:layout="@layout/fragment_attendee_event" >
         <action
             android:id="@+id/action_attendeeEvent_to_attendeeHome"
+            app:destination="@id/attendeeHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="com.example.nostack.ui.UserProfile"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" >
+        <action
+            android:id="@+id/action_userProfile_to_attendeeHome"
             app:destination="@id/attendeeHome" />
     </fragment>
     <fragment
@@ -42,39 +54,18 @@
         tools:layout="@layout/fragment_organizer_home" >
         <action
             android:id="@+id/action_organizerHome_to_organizerEvent"
-            app:destination="@id/organizerEvent" />
+            app:destination="@id/organizerEventCreate" />
         <action
-            android:id="@+id/action_organizerHome_to_viewEvent2"
-            app:destination="@id/organizerViewEvent" />
+            android:id="@+id/action_organizerHome_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
     <fragment
-        android:id="@+id/organizerEvent"
-        android:name="com.example.nostack.ui.organizer.OrganizerEvent"
-        android:label="fragment_organizer_event"
-        tools:layout="@layout/fragment_organizer_event" >
+        android:id="@+id/organizerEventCreate"
+        android:name="com.example.nostack.ui.organizer.OrganizerEventCreate"
+        android:label="fragment_organizer_event_create"
+        tools:layout="@layout/fragment_organizer_event_create" >
         <action
-            android:id="@+id/action_organizerEvent_to_organizerHome"
-            app:destination="@id/organizerHome" />
-    </fragment>
-    <fragment
-        android:id="@+id/organizerSignIn"
-        android:name="com.example.nostack.ui.organizer.OrganizerSignIn"
-        android:label="fragment_organizer_sign_in"
-        tools:layout="@layout/fragment_organizer_sign_in" >
-        <action
-            android:id="@+id/action_organizerSignIn_to_organizerHome"
-            app:destination="@id/organizerHome" />
-        <action
-            android:id="@+id/action_organizerSignIn_to_organizerSignUp"
-            app:destination="@id/organizerSignUp" />
-    </fragment>
-    <fragment
-        android:id="@+id/organizerSignUp"
-        android:name="com.example.nostack.ui.organizer.OrganizerSignUp"
-        android:label="fragment_organizer_sign_up"
-        tools:layout="@layout/fragment_organizer_sign_up" >
-        <action
-            android:id="@+id/action_organizerSignUp_to_organizerHome"
+            android:id="@+id/action_organizerEventCreate_to_organizerHome"
             app:destination="@id/organizerHome" />
     </fragment>
     <fragment

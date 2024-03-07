@@ -33,3 +33,8 @@ replay_pid*
 #Local
 *.env
 local.properties
+/app/local.properties.properties
+
+.history*
+.history
+.history/*

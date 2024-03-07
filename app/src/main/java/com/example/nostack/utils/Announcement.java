@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +37,9 @@ public class Announcement {
         this.announcementMessage = announcementMessage;
         this.announcementDateTime = announcementDateTime;
         this.priority = priority;
+    }
+
+    public Announcement() {
     }
 }
 

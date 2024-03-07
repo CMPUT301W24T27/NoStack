@@ -1,13 +1,21 @@
 package com.example.nostack;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.example.nostack.model.Profile.Profile;
+import com.example.nostack.model.User.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +32,9 @@ public class StartUp extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Profile profile;
+    private AlertDialog dialog;
 
     public StartUp() {
         // Required empty public constructor
@@ -54,6 +65,9 @@ public class StartUp extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // check if user profile exists
+        profile = new Profile(getActivity());
     }
 
     @Override
@@ -61,11 +75,27 @@ public class StartUp extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_start_up, container, false);
+        String uuid = profile.getUuid();
+
+        if(!profile.exists()){
+            showCreateProfile(container, inflater);
+            Log.d("StartUp", profile.exists() + "");
+        }
+        else{
+            Log.d("StartUp",  uuid);
+            profile.retrieveProfile(uuid)
+                    .thenApply(success -> {
+                        if(!success){
+                            showCreateProfile(container, inflater);
+                        }
+                        return null;
+                    });
+        }
 
         view.findViewById(R.id.AttendeeSignInButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_attendeeHome3);
+               NavHostFragment.findNavController(StartUp.this)
+                        .navigate(R.id.action_startUp_to_attendeeHome);
             }
         });
 
@@ -73,7 +103,7 @@ public class StartUp extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_organizerSignIn);
+                        .navigate(R.id.action_startUp_to_organizerHome);
             }
         });
 
@@ -82,4 +112,69 @@ public class StartUp extends Fragment {
         // Inflate the layout for this fragment
         return view;
     }
+
+    private void showCreateProfile(ViewGroup container, LayoutInflater inflater) {
+        View dialogue = inflater.inflate(R.layout.user_info_pop_up, container, false);
+
+
+        EditText firstName = dialogue.findViewById(R.id.addFirstNameField);
+        EditText lastName = dialogue.findViewById(R.id.addLastNameField);
+        EditText emailAddress = dialogue.findViewById(R.id.addEmailField);
+        EditText phoneNumber = dialogue.findViewById(R.id.addPhoneField);
+        EditText username = dialogue.findViewById(R.id.addUsernameField);
+
+
+
+        Button saveButton = dialogue.findViewById(R.id.saveInfoFormButton);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("StartUp", "Save button clicked");
+
+                if(firstName.getText().toString().isEmpty() || lastName.getText().toString().isEmpty() || emailAddress.getText().toString().isEmpty() || phoneNumber.getText().toString().isEmpty() || username.getText().toString().isEmpty()){
+                    // Make all fields red
+                    if(firstName.getText().toString().isEmpty()){
+                        firstName.setError("First name is required");
+                    }
+                    if(lastName.getText().toString().isEmpty()){
+                        lastName.setError("Last name is required");
+                    }
+                    if(emailAddress.getText().toString().isEmpty()){
+                        emailAddress.setError("Email address is required");
+                    }
+                    if(phoneNumber.getText().toString().isEmpty()){
+                        phoneNumber.setError("Phone number is required");
+                    }
+                    if(username.getText().toString().isEmpty()){
+                        username.setError("Username is required");
+                    }
+                    return;
+                }
+
+                User user = new User(
+                        firstName.getText().toString(),
+                        lastName.getText().toString(),
+                        username.getText().toString(),
+                        emailAddress.getText().toString(),
+                        phoneNumber.getText().toString(),
+                        null
+                );
+
+
+
+                // Pass the User object to createProfile
+                profile.createProfile(user);
+
+                // Close the dialogue box
+                dialog.dismiss();
+
+            }
+        });
+        dialog = builder.setView(dialogue).create();
+        dialog.show();
+    }
 }
+
