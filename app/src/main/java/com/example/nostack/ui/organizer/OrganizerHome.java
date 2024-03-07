@@ -46,10 +46,8 @@ public class OrganizerHome extends Fragment {
     private ArrayList<Event> dataList;
     private ListView eventList;
     private FirebaseFirestore db;
-    private SharedPreferences preferences;
     private CollectionReference eventsRef;
     private Activity activity;
-    private String userUUID;
 
 
     // TODO: Rename parameter arguments, choose names that match
