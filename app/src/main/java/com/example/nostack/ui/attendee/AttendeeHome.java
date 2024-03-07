@@ -265,7 +265,32 @@ public class AttendeeHome extends Fragment {
     });
 
     public void handleEventDescQR(String qrCode) {
+        DocumentReference docRef = eventRef.document(qrCode);
 
+        // read action
+        docRef.get().addOnCompleteListener(task -> {
+
+            // if read action is successful
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+
+                if (document.exists()) {
+
+                    Event event = document.toObject(Event.class);
+                    Bundle eventInfo_bundle = new Bundle();
+
+                    //TODO: pass event data not using a bundle
+                    // Navigate to event description page, pass event data as bundle in eventInfo_bundle
+                    eventInfo_bundle.putString("eventName", event.getName());
+                    eventInfo_bundle.putString("eventLocation", event.getLocation());
+                    eventInfo_bundle.putString("eventDescription", event.getDescription());
+                    eventInfo_bundle.putString("eventBannerImgUrl", event.getEventBannerImgUrl());
+                    eventInfo_bundle.putString("eventID", qrCode);
+                    NavHostFragment.findNavController(AttendeeHome.this)
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent);
+                }
+            }
+        });
     }
 
     public void handleCheckInQR(String qrCode) {
