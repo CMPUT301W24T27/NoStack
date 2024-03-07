@@ -52,14 +52,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
+            android:contentDescription="Profile Button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.90"
+            app:layout_constraintHorizontal_bias="0.911"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05"
-            app:srcCompat="@drawable/baseline_account_circle_24"
-            android:contentDescription="Profile Button" />
+            app:layout_constraintVertical_bias="0.037"
+            app:srcCompat="@drawable/baseline_account_circle_24" />
 
         <GridLayout
             android:id="@+id/gridLayout2"

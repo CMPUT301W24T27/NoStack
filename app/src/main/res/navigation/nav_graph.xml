@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_organizerHome_to_organizerEvent"
             app:destination="@id/organizerEventCreate" />
+        <action
+            android:id="@+id/action_organizerHome_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
     <fragment
         android:id="@+id/organizerEventCreate"
