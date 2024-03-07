@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.ui.attendee;
 
 import android.os.Bundle;
 
@@ -9,12 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.nostack.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link StartUp#newInstance} factory method to
+ * Use the {@link AttendeeEvent#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StartUp extends Fragment {
+public class AttendeeEvent extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,7 +27,7 @@ public class StartUp extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public StartUp() {
+    public AttendeeEvent() {
         // Required empty public constructor
     }
 
@@ -35,11 +37,11 @@ public class StartUp extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment StartUp.
+     * @return A new instance of fragment AttendeeEvent.
      */
     // TODO: Rename and change types and number of parameters
-    public static StartUp newInstance(String param1, String param2) {
-        StartUp fragment = new StartUp();
+    public static AttendeeEvent newInstance(String param1, String param2) {
+        AttendeeEvent fragment = new AttendeeEvent();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,27 +61,20 @@ public class StartUp extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_start_up, container, false);
-
-        view.findViewById(R.id.AttendeeSignInButton).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_attendeeHome3);
-            }
-        });
-
-        view.findViewById(R.id.SignIn_SignUpButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_organizerSignIn);
-            }
-        });
-
-
+        View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
 
         // Inflate the layout for this fragment
-        return view;
+        return inflater.inflate(R.layout.fragment_attendee_event, container, false);
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                NavHostFragment.findNavController(AttendeeEvent.this)
+                        .navigate(R.id.action_attendeeEvent_to_attendeeHome);
+            }
+        });
     }
 }

@@ -1,7 +1,5 @@
-package com.example.nostack.ui;
+package com.example.nostack.ui.attendee;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,17 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nostack.R;
-import com.example.nostack.model.User.User;
 import com.example.nostack.model.State.UserViewModel;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
