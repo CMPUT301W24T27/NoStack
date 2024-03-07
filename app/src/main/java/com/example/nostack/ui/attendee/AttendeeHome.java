@@ -1,11 +1,14 @@
 package com.example.nostack.ui.attendee;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.ui.ScanActivity;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,6 +36,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import javax.annotation.Nullable;
 
@@ -146,5 +152,36 @@ public class AttendeeHome extends Fragment {
                 profileImage.setImageDrawable(d);
             }
         });
+
+        view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanCode();
+            }
+        });
     }
+
+    private void scanCode() {
+        ScanOptions scanOptions = new ScanOptions();
+        scanOptions.setPrompt("Scan the QR code");
+        scanOptions.setBeepEnabled(true);
+        scanOptions.setOrientationLocked(true);
+        scanOptions.setCaptureActivity(ScanActivity.class);
+        barLauncher.launch(scanOptions);
+
+    }
+
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if (result.getContents() != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Scan Result");
+            builder.setMessage(result.getContents());
+            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).show();
+        }
+    });
 }
