@@ -1,8 +1,11 @@
 package com.example.nostack.utils;
 
+import android.content.SharedPreferences;
+
 import com.example.nostack.utils.Announcement;
 import com.example.nostack.model.User.Attendee;
 import com.example.nostack.utils.Announcement;
+import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +54,27 @@ public class Event {
 
         // Create a QR Code to direct to the event page (WIP)
         this.eventQr = new QrCode(1, id, id);
+    }
+
+    public Event(String name, String location, String description, Date startDate, Date endDate, String organizerId) {
+        this.name = name;
+        this.location = location;
+        this.description = description;
+        this.attendees = new ArrayList<Attendee>();
+        this.announcements = new ArrayList<Announcement>();
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.checkInQr = checkInQr;
+        this.organizerId = organizerId;
+
+        // Generate a unique Id
+        id = UUID.randomUUID().toString();
+
+        // Create a QR Code to direct to the event page (WIP)
+        this.eventQr = new QrCode(1, id, id);
+
+        // Create a QR Code for checking in
+        this.checkInQr = new QrCode(0, id, id);
     }
 
     public String getName() {
