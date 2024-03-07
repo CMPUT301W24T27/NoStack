@@ -19,7 +19,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
-import com.example.nostack.model.Events.Event;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -32,12 +31,57 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ConstraintLayout layout;
     private Fragment currFragment;
     private ArrayList<Event> ourEvents;
+    private ArrayList<RoundedBitmapDrawable> cachedPhotoList;
 
     public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, Fragment currfragment) {
         super(context, 0,events);
         currFragment = currfragment;
         ourEvents = events;
+
+        cachedPhotoList = new ArrayList<>();
+        cachePhotos();
     }
+
+    void cachePhotos() {
+        if (cachedPhotoList.isEmpty()) {
+            Log.d("CachedPhotos","No Caches. Build cache of size - " + ourEvents.size());
+            for (Event event1:ourEvents) {
+                String uri = event1.getEventBannerImgUrl();
+                if (uri != null) {
+                    // Get image from firebase storage
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                    final long ONE_MEGABYTE = 1024 * 1024;
+                    storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
+                        d.setCornerRadius(50f);
+                        cachedPhotoList.add(d);
+                    }).addOnFailureListener(exception -> {
+                        Log.w("User Profile", "Error getting profile image", exception);
+                    });
+                } else {
+                    // Get image from firebase storage
+                    uri = "https://firebasestorage.googleapis.com/v0/b/nostack-508d9.appspot.com/event/banner/generic_event.png";
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                    final long ONE_MEGABYTE = 1024 * 1024;
+
+                    storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
+                        d.setCornerRadius(50f);
+                        cachedPhotoList.add(d);
+                    }).addOnFailureListener(exception -> {
+                        Log.w("User Profile", "Error getting default image", exception);
+                    });
+                }
+                Log.d("CachedPhotos", "URI: " + uri + " | " + event1.getName());
+            }
+        }
+    }
+
+
     public boolean containsEvent(Event event) {
         boolean contained = false;
         for (Event event1:ourEvents) {
@@ -87,23 +131,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             eventTitle.setText(event.getName());
             eventLocationTitle.setText(event.getLocation());
 
-            String uri = event.getEventBannerImgUrl();
-
-            if (uri != null) {
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(50f);
-                    eventImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            }
+            cachePhotos();
+            Log.d("CachedPhotoSize",String.format("%d", cachedPhotoList.size()));
+            eventImage.setImageDrawable(cachedPhotoList.get(position));
         }
 
         return view;
