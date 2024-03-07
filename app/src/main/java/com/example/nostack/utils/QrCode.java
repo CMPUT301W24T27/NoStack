@@ -11,6 +11,9 @@ public class QrCode {
     private String eventId;
     private boolean active;
 
+    public QrCode() {
+    }
+
     public QrCode(int type, String code, String eventId) {
         this.type = type;
         this.code = code;

@@ -88,14 +88,14 @@ public class OrganizerHome extends Fragment {
 
         dataList = new ArrayList<>();
 
-        eventsRef.whereEqualTo("organizerID",userUUID).get().addOnCompleteListener(task -> {
+        eventsRef.whereEqualTo("organizerId",userUUID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     dataList.add(document.toObject(Event.class));
+                    Log.d("EventAdd","" + task.getResult().size());
                 }
             }
 
-            eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
         });
     }
 
@@ -105,7 +105,9 @@ public class OrganizerHome extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
 
-
+        eventList = view.findViewById(R.id.organizerEventList);
+        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
+        eventList.setAdapter(eventArrayAdapter);
 
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
             @Override

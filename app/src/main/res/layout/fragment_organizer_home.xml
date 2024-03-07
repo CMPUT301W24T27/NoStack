@@ -96,13 +96,13 @@
         </GridLayout>
 
         <ListView
+            android:id="@+id/organizerEventList"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLayout2" >
-        </ListView>
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout2"></ListView>
 
         <Button
             android:id="@+id/AddEventButton"

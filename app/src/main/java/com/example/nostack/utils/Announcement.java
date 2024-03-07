@@ -38,5 +38,8 @@ public class Announcement {
         this.announcementDateTime = announcementDateTime;
         this.priority = priority;
     }
+
+    public Announcement() {
+    }
 }
 
