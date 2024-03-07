@@ -269,6 +269,12 @@ public class AttendeeHome extends Fragment {
     }
 
     public void handleCheckInQR(String qrCode) {
-
+        DocumentReference docRef = eventRef.document(qrCode);
+        //need to still get the UUID of the user and put it into the vale field
+        docRef.update("attendees", "UUID").addOnSuccessListener(aVoid -> {
+            Snackbar.make(activity.findViewById(android.R.id.content), "Checked in successfully", Snackbar.LENGTH_LONG).show();
+        }).addOnFailureListener(e -> {
+            Snackbar.make(activity.findViewById(android.R.id.content), "Error checking in", Snackbar.LENGTH_LONG).show();
+        });
     }
 }
