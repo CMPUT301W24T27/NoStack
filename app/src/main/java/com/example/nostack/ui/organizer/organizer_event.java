@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
-import com.example.nostack.utils.Event;
+import com.example.nostack.model.Events.Event;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
