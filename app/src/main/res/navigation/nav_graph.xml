@@ -14,8 +14,8 @@
             android:id="@+id/action_startUp_to_attendeeHome"
             app:destination="@id/attendeeHome" />
         <action
-            android:id="@+id/action_startUp_to_organizerSignIn"
-            app:destination="@id/organizerSignIn" />
+            android:id="@+id/action_startUp_to_organizerHome"
+            app:destination="@id/organizerHome" />
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
@@ -63,27 +63,6 @@
         tools:layout="@layout/fragment_organizer_event_create" >
         <action
             android:id="@+id/action_organizerEventCreate_to_organizerHome"
-            app:destination="@id/organizerHome" />
-    </fragment>
-    <fragment
-        android:id="@+id/organizerSignIn"
-        android:name="com.example.nostack.ui.organizer.OrganizerSignIn"
-        android:label="fragment_organizer_sign_in"
-        tools:layout="@layout/fragment_organizer_sign_in" >
-        <action
-            android:id="@+id/action_organizerSignIn_to_organizerHome"
-            app:destination="@id/organizerHome" />
-        <action
-            android:id="@+id/action_organizerSignIn_to_organizerSignUp"
-            app:destination="@id/organizerSignUp" />
-    </fragment>
-    <fragment
-        android:id="@+id/organizerSignUp"
-        android:name="com.example.nostack.ui.organizer.OrganizerSignUp"
-        android:label="fragment_organizer_sign_up"
-        tools:layout="@layout/fragment_organizer_sign_up" >
-        <action
-            android:id="@+id/action_organizerSignUp_to_organizerHome"
             app:destination="@id/organizerHome" />
     </fragment>
 

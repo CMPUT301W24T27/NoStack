@@ -64,16 +64,6 @@ public class OrganizerSignUp extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_sign_up, container, false);
 
-        view.findViewById(R.id.SignUpConfirmButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                TODO: ADD CODE CONTAINING ADDING USER TO DATA BASE / DATA VALIDATION ETC...
-
-
-                NavHostFragment.findNavController(OrganizerSignUp.this)
-                        .navigate(R.id.action_organizerSignUp_to_organizerHome);
-            }
-        });
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
