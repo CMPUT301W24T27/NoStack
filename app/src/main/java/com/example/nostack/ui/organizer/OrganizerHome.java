@@ -121,11 +121,11 @@ public class OrganizerHome extends Fragment {
                 eventsRef.whereEqualTo("organizerId",user.getUuid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            dataList.add(document.toObject(Event.class));
-                            Log.d("EventAdd","" + task.getResult().size());
+                            Event event = document.toObject(Event.class);
+                            eventArrayAdapter.addEvent(event);
+                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
                         }
                     }
-
                 });
             }
             else{

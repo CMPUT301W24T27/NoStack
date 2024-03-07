@@ -26,6 +26,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         super(context, 0,events);
     }
 
+    public void addEvent(Event event) {
+        add(event);
+    }
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
