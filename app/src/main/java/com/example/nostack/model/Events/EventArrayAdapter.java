@@ -1,4 +1,4 @@
-package com.example.nostack.utils;
+package com.example.nostack.model.Events;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,9 +19,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class EventArrayAdapter extends ArrayAdapter<Event> {
@@ -64,9 +67,24 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         ImageView eventImage = view.findViewById(R.id.EventListContentPosterImage);
 
         if (event != null) {
+
+            DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
+            DateFormat tf = new SimpleDateFormat("h:mm a");
+
+            String startDate = df.format(event.getStartDate());
+            String endDate = df.format(event.getEndDate());
+            String startTime = tf.format(event.getStartDate());
+            String endTime = tf.format(event.getEndDate());
+
+            if (!startDate.equals(endDate)) {
+                eventStartDateTitle.setText(startDate + " to");
+                eventTimeTitle.setText(endDate);
+            } else {
+                eventStartDateTitle.setText(startDate);
+                eventTimeTitle.setText(startTime + " - " + endTime);
+            }
+
             eventTitle.setText(event.getName());
-            eventStartDateTitle.setText("Jan 1, 2024");
-            eventTimeTitle.setText("18:00 - 23:00");
             eventLocationTitle.setText(event.getLocation());
 
             String uri = event.getEventBannerImgUrl();

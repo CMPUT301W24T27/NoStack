@@ -5,8 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -14,14 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
 import com.example.nostack.R;
-import com.example.nostack.utils.Event;
+import com.example.nostack.model.Events.Event;
 import com.example.nostack.utils.ImageUploader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,17 +33,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.type.DateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,16 +64,14 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventEndEditText;
     private TextInputLayout eventEndLayout;
     private TextInputEditText eventLocationEditText;
+    private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
-    private Button eventCreateButton;
-    private View view;
-    private CollectionReference userRef;
     private SharedPreferences preferences;
     private String userUUID;
-    private Date endDate;
-    private Date startDate;
+    private ActivityResultLauncher<String> imagePickerLauncher;
+
 
     public OrganizerEventCreate() {
         // Required empty public constructor
@@ -115,6 +109,13 @@ public class OrganizerEventCreate extends Fragment {
         imageUploader = new ImageUploader();
         preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
         userUUID = preferences.getString("uuid", null);
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri o) {
+                eventImageView.setTag(o);
+                eventImageView.setImageURI(o);
+            }
+        });
     }
 
     @Override
@@ -132,6 +133,9 @@ public class OrganizerEventCreate extends Fragment {
         eventDescEditText = view.findViewById(R.id.EventCreationDescriptionEditText);
         eventReuseQrCheckBox = view.findViewById(R.id.EventCreationReuseQRCheckBox);
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
+        eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
+        backButton = view.findViewById(R.id.backButton);
+
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,11 +150,31 @@ public class OrganizerEventCreate extends Fragment {
                     eventLocationEditText.setError("Event location is required");
                 } else if (eventDescEditText.getText().toString().isEmpty()) {
                     eventDescEditText.setError("Event description is required");
+                } else if (eventLimitEditText.getText() != null
+                        && (!eventLimitEditText.getText().toString().isEmpty())
+                        && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)){
+                    eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
-                    CreateOrganization();
+
+                    Event event = createEvent();
+
+                    Uri eventBannerUri = (Uri) eventImageView.getTag();
+                    if (eventBannerUri != null) {
+                        storeToDbEventWithBanner(eventBannerUri, event);
+                    } else {
+                        storeEventToDb(event);
+                    }
                     NavHostFragment.findNavController(OrganizerEventCreate.this)
                             .navigate(R.id.action_organizerEventCreate_to_organizerHome);
                 }
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerEventCreate.this)
+                        .navigate(R.id.action_organizerEventCreate_to_organizerHome);
             }
         });
 
@@ -168,19 +192,27 @@ public class OrganizerEventCreate extends Fragment {
             }
         });
 
+        eventImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImagePicker();
+            }
+        });
+
 
         // TODO: ADD THE FUNCTIONALITY TO REUSE QR CODES
-
-
-//        TODO: HAVE EDIT DATE/TIME BUTTONS DO THE FOLLOWING: https://www.youtube.com/watch?v=guTycx3L9I4&ab_channel=TechnicalCoding
-
 
         return view;
     }
 
-    private void CreateOrganization() {
+    private void openImagePicker() {
+        imagePickerLauncher.launch("image/*");
+    }
+
+    private Event createEvent() {
         String startDateString = eventStartEditText.getText().toString();
         String endDateString = eventEndEditText.getText().toString();
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d hh:mm");
 
         Event newEvent = null;
@@ -193,10 +225,22 @@ public class OrganizerEventCreate extends Fragment {
                     formatter.parse(endDateString),
                     userUUID
             );
+
+            if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
+                int limit = Integer.parseInt(eventLimitEditText.getText().toString());
+                newEvent.setCapacity(limit);
+            }
+
+
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
+        return newEvent;
+    }
+
+    private void storeEventToDb(Event newEvent) {
         eventsRef
                 .document(newEvent.getId())
                 .set(newEvent)
@@ -229,5 +273,22 @@ public class OrganizerEventCreate extends Fragment {
 
         timeDialog.show();
         dateDialog.show();
+    }
+
+    private void storeToDbEventWithBanner(Uri imageUri, Event event) {
+        imageUploader.uploadImage("event/banner/", imageUri, new ImageUploader.UploadListener() {
+            @Override
+            public void onUploadSuccess(String imageUrl) {
+                event.setEventBannerImgUrl(imageUrl);
+                storeEventToDb(event);
+                Log.d("User edit", "Image upload successful.:");
+            }
+
+            @Override
+            public void onUploadFailure(Exception exception) {
+                Log.w("Event creation", "Image upload failed:", exception);
+                // TODO: Show error to user
+            }
+        });
     }
 }

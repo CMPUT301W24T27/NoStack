@@ -22,9 +22,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.utils.Event;
-import com.example.nostack.utils.EventArrayAdapter;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,10 +45,8 @@ public class OrganizerHome extends Fragment {
     private ArrayList<Event> dataList;
     private ListView eventList;
     private FirebaseFirestore db;
-    private SharedPreferences preferences;
     private CollectionReference eventsRef;
     private Activity activity;
-    private String userUUID;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -106,7 +104,6 @@ public class OrganizerHome extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
-
 
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);

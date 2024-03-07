@@ -12,6 +12,16 @@
         android:background="@color/black"
         tools:context=".AttendeeHome">
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/event_tab_navigation"
+            android:layout_width="371dp"
+            android:layout_height="597dp"
+            app:layout_constraintBottom_toTopOf="@+id/scanQRButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.544" />
+
         <GridLayout
             android:id="@+id/gridLayout1"
             android:layout_width="wrap_content"
@@ -61,114 +71,40 @@
             app:layout_constraintVertical_bias="0.037"
             app:srcCompat="@drawable/baseline_account_circle_24" />
 
-        <GridLayout
-            android:id="@+id/gridLayout2"
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dots_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rowCount="1"
-            android:columnCount="2"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="21dp"
+            app:dotsColor="@color/white"
+            app:dotsCornerRadius="8dp"
+            app:dotsSize="10dp"
+            app:dotsSpacing="4dp"
+            app:dotsWidthFactor="2.5"
+            app:layout_constraintBottom_toTopOf="@+id/scanQRButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.08"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.15">
-
-            <TextView
-                android:id="@+id/text_your"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:text="Your"
-                android:textSize="17sp"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/text_events"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:text="Events"
-                android:textSize="17sp"
-                android:textColor="@color/lightBlue"
-                android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </GridLayout>
-
-        <ListView
-            android:id="@+id/listView_yourEvents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/gridLayout3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gridLayout2"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <GridLayout
-            android:id="@+id/gridLayout3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:rowCount="1"
-            android:columnCount="2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/listView_yourEvents">
-
-            <TextView
-                android:id="@+id/text_hereAre"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:text="Here are"
-                android:textSize="17sp"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/text_upcomingEvents"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:text="upcoming events"
-                android:textSize="17sp"
-                android:textColor="@color/lightBlue"
-                android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </GridLayout>
-
-        <ListView
-            android:id="@+id/listView_upcomingEvents"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gridLayout3"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/event_tab_navigation"
+            app:progressMode="true"
+            app:selectedDotColor="@color/lightBlue" />
 
         <Button
             android:id="@+id/scanQRButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightBlue"
+            android:paddingHorizontal="90dp"
+            android:paddingVertical="12dp"
             android:text="Scan QR Code"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:paddingHorizontal="90dp"
-            android:paddingVertical="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.98" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
