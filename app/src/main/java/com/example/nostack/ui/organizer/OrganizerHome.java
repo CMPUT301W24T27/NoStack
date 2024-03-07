@@ -3,9 +3,15 @@ package com.example.nostack.ui.organizer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -21,9 +27,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.GenerateProfileImage;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +61,9 @@ public class OrganizerHome extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView userWelcome;
+    private UserViewModel userViewModel;
+
 
     public OrganizerHome() {
         // Required empty public constructor
@@ -104,10 +118,23 @@ public class OrganizerHome extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
+        TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList);
         eventList.setAdapter(eventArrayAdapter);
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+
+            if (user != null) {
+                Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
+                userWelcome.setText(user.getFirstName());
+            }
+            else{
+                Log.d("AttendeeHome", "User is null");
+            }
+        });
 
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,5 +145,45 @@ public class OrganizerHome extends Fragment {
         });
 
         return view;
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerHome.this)
+                        .navigate(R.id.action_organizerHome_to_userProfile);
+            }
+        });
+
+        ImageButton profileImage = getView().findViewById(R.id.attendee_profileButton);
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user.getProfileImageUrl() != null) {
+                String uri = user.getProfileImageUrl();
+
+                // Get image from firebase storage
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                final long ONE_MEGABYTE = 1024 * 1024;
+
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 72, 72, false);
+                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                    d.setCornerRadius(100f);
+                    profileImage.setImageDrawable(d);
+                }).addOnFailureListener(exception -> {
+                    Log.w("User Profile", "Error getting profile image", exception);
+                });
+            }
+            else{
+                // generate profile image if user has no profile image
+                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                d.setCornerRadius(100f);
+                profileImage.setImageDrawable(d);
+            }
+        });
     }
 }

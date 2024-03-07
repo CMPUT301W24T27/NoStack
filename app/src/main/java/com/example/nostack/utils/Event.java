@@ -1,14 +1,7 @@
 package com.example.nostack.utils;
 
-import android.content.SharedPreferences;
+import com.example.nostack.model.User.User;
 
-import com.example.nostack.utils.Announcement;
-import com.example.nostack.model.User.Attendee;
-import com.example.nostack.utils.Announcement;
-import com.google.firebase.firestore.CollectionReference;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -20,7 +13,7 @@ public class Event {
     private String organizerId;
     private String eventBannerImgUrl;
     private String id;
-    private ArrayList<Attendee> attendees;
+    private ArrayList<User> attendees;
     private ArrayList<Announcement> announcements;
     private Date startDate;
     private Date endDate;
@@ -47,7 +40,7 @@ public class Event {
         this.name = name;
         this.location = location;
         this.description = description;
-        this.attendees = new ArrayList<Attendee>();
+        this.attendees = new ArrayList<User>();
         this.announcements = new ArrayList<Announcement>();
         this.startDate = startDate;
         this.endDate = endDate;
@@ -65,7 +58,7 @@ public class Event {
         this.name = name;
         this.location = location;
         this.description = description;
-        this.attendees = new ArrayList<Attendee>();
+        this.attendees = new ArrayList<User>();
         this.announcements = new ArrayList<Announcement>();
         this.startDate = startDate;
         this.endDate = endDate;
@@ -114,11 +107,11 @@ public class Event {
         this.id = id;
     }
 
-    public ArrayList<Attendee> getAttendees() {
+    public ArrayList<User> getAttendees() {
         return attendees;
     }
 
-    public void addAttendee(Attendee attendee) {
+    public void addAttendee(User attendee) {
         if (!attendees.contains(attendee)) {
             attendees.add(attendee);
         }
