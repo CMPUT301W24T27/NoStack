@@ -1,83 +1,153 @@
 package com.example.nostack.utils;
 
+import com.example.nostack.utils.Announcement;
 import com.example.nostack.model.User.Attendee;
-import com.example.nostack.qrCode;
+import com.example.nostack.utils.Announcement;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class Event {
-    private String eventName;
-    private String eventLocation;
-    private String eventId;
+    private String name;
+    private String location;
+    private String description;
+    private String organizerId;
+    private String eventBannerImgUrl;
+    private String id;
     private ArrayList<Attendee> attendees;
-    private Date eventDate;
-    private qrCode qrcode;
+    private ArrayList<Announcement> announcements;
+    private Date startDate;
+    private Date endDate;
+    private QrCode checkInQr;
+    private QrCode eventQr;
 
-    public qrCode getQrcode() {
-        return qrcode;
+    public Event(String eventName, String eventId) {
+        name = eventName;
+        id = eventId;
+        attendees = new ArrayList<>();
     }
 
-    public void setQrcode(qrCode qrcode) {
-        this.qrcode = qrcode;
+    public Event(String eventName, String eventId, String eventLocation) {
+        name = eventName;
+        id = eventId;
+        location = eventLocation;
+        attendees = new ArrayList<>();
     }
 
-    public Date getEventDate() {
-        return eventDate;
+    public Event(String name, String location, String description, Date startDate, Date endDate, QrCode checkInQr, String organizerId) {
+        this.name = name;
+        this.location = location;
+        this.description = description;
+        this.attendees = new ArrayList<Attendee>();
+        this.announcements = new ArrayList<Announcement>();
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.checkInQr = checkInQr;
+        this.organizerId = organizerId;
+
+        // Generate a unique Id
+        id = UUID.randomUUID().toString();
+
+        // Create a QR Code to direct to the event page (WIP)
+        this.eventQr = new QrCode(1, id, id);
     }
 
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
+    public String getName() {
+        return name;
     }
 
-    public String getEventName() {
-        return eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public String getLocation() {
+        return location;
     }
 
-    public String getEventLocation() {
-        return eventLocation;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
+    public String getDescription() {
+        return description;
     }
 
-    public String getEventId() {
-        return eventId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    public String getId() {
+        return id;
     }
 
-    public ArrayList<Attendee> getAttendeeList() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public ArrayList<Attendee> getAttendees() {
         return attendees;
     }
 
     public void addAttendee(Attendee attendee) {
-        if (! attendees.contains(attendee)) {
+        if (!attendees.contains(attendee)) {
             attendees.add(attendee);
         }
     }
 
-    public void removeAttendee(Attendee attendee) {
-        attendees.remove(attendee);
+    public ArrayList<Announcement> getAnnouncements() {
+        return announcements;
     }
 
-    public Event(String eventName, String eventId) {
-        this.eventName = eventName;
-        this.eventId = eventId;
-        this.attendees = new ArrayList<>();
+    public void addAnnouncement(Announcement announcement) {
+        announcements.add(announcement);
     }
 
-    public Event(String eventName, String eventId, String eventLocation) {
-        this.eventName = eventName;
-        this.eventId = eventId;
-        this.eventLocation = eventLocation;
-        this.attendees = new ArrayList<>();
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public QrCode getCheckInQr() {
+        return checkInQr;
+    }
+
+    public void setCheckInQr(QrCode checkInQr) {
+        this.checkInQr = checkInQr;
+    }
+
+    public QrCode getEventQr() {
+        return eventQr;
+    }
+
+    public void setEventQr(QrCode eventQr) {
+        this.eventQr = eventQr;
+    }
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
+
+    public String getEventBannerImgUrl() {
+        return eventBannerImgUrl;
+    }
+
+    public void setEventBannerImgUrl(String eventBannerImgUrl) {
+        this.eventBannerImgUrl = eventBannerImgUrl;
     }
 }

@@ -58,9 +58,9 @@
     </fragment>
     <fragment
         android:id="@+id/organizerEvent"
-        android:name="com.example.nostack.ui.organizer.OrganizerEvent"
+        android:name="com.example.nostack.ui.organizer.OrganizerEventCreate"
         android:label="fragment_organizer_event"
-        tools:layout="@layout/fragment_organizer_event" >
+        tools:layout="@layout/fragment_organizer_event_create" >
         <action
             android:id="@+id/action_organizerEvent_to_organizerHome"
             app:destination="@id/organizerHome" />
