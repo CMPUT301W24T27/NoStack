@@ -44,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 
@@ -75,6 +76,8 @@ public class AttendeeHome extends Fragment {
 
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
+    private DotsIndicator dotsIndicator;
+
 
 
     public AttendeeHome() {
@@ -123,6 +126,8 @@ public class AttendeeHome extends Fragment {
         TextView userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
         viewPager = rootView.findViewById(R.id.event_tab_navigation);
         viewPager.setAdapter(new MyFragmentAdapter(this));
+        dotsIndicator = rootView.findViewById(R.id.dots_indicator);
+        dotsIndicator.attachTo(viewPager);
 
 //        eventList = rootView.findViewById(R.id.listView_yourEvents);
 //        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
