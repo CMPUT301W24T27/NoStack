@@ -1,18 +1,21 @@
 package com.example.nostack.utils;
 
+import android.location.Location;
+
 public class Attendance {
     private String id;
     private String userId;
     private String eventId;
     private int numCheckIn;
-
+    private Location geoLocation;
     public Attendance() {}
     public Attendance(String userId, String eventId) {
-        id = userId + "-" + eventId;
+        id = buildAttendanceId(eventId, userId);
         this.userId = userId;
         this.eventId  = eventId;
         this.numCheckIn = 1;
     }
+
     public String getId() {
         return id;
     }
@@ -51,6 +54,14 @@ public class Attendance {
 
     public static String buildAttendanceId(String eventId, String userId) {
         return userId + "-" + eventId;
+    }
+
+    public Location getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(Location gl) {
+        this.geoLocation = gl;
     }
 }
 
