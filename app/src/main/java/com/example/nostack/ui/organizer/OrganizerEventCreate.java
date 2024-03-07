@@ -64,6 +64,7 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventEndEditText;
     private TextInputLayout eventEndLayout;
     private TextInputEditText eventLocationEditText;
+    private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
@@ -132,7 +133,9 @@ public class OrganizerEventCreate extends Fragment {
         eventDescEditText = view.findViewById(R.id.EventCreationDescriptionEditText);
         eventReuseQrCheckBox = view.findViewById(R.id.EventCreationReuseQRCheckBox);
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
+        eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
         backButton = view.findViewById(R.id.backButton);
+
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,6 +150,10 @@ public class OrganizerEventCreate extends Fragment {
                     eventLocationEditText.setError("Event location is required");
                 } else if (eventDescEditText.getText().toString().isEmpty()) {
                     eventDescEditText.setError("Event description is required");
+                } else if (eventLimitEditText.getText() != null
+                        && (!eventLimitEditText.getText().toString().isEmpty())
+                        && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)){
+                    eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
 
                     Event event = createEvent();
@@ -218,6 +225,13 @@ public class OrganizerEventCreate extends Fragment {
                     formatter.parse(endDateString),
                     userUUID
             );
+
+            if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
+                int limit = Integer.parseInt(eventLimitEditText.getText().toString());
+                newEvent.setCapacity(limit);
+            }
+
+
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
