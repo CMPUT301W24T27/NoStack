@@ -15,17 +15,17 @@
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:srcCompat="@drawable/outline_arrow_back_24"
             android:backgroundTint="@color/black"
-            app:tint="@color/yellow"
+            android:clickable="true"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.02" />
+            app:layout_constraintVertical_bias="0.02"
+            app:srcCompat="@drawable/outline_arrow_back_24"
+            app:tint="@color/yellow" />
 
 
         <TextView
@@ -46,38 +46,37 @@
             android:id="@+id/editProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:srcCompat="@drawable/outline_edit_24"
             android:backgroundTint="@color/black"
-            app:tint="@color/yellow"
+            android:clickable="true"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.97"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.02" />
+            app:layout_constraintVertical_bias="0.02"
+            app:srcCompat="@drawable/outline_edit_24"
+            app:tint="@color/yellow" />
 
         <ImageButton
             android:id="@+id/profileImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/yourProfileText"
-            app:layout_constraintVertical_bias="0.25"
-            app:maxWidth="32px"
+            app:layout_constraintVertical_bias="0.17000002"
             app:maxHeight="32px"
-            android:background="@drawable/circle"
-            />
+            app:maxWidth="32px" />
 
         <LinearLayout
             android:id="@+id/editProfilePictureButtons"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -89,97 +88,95 @@
                 android:id="@+id/deleteProfilePictureButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                app:srcCompat="@android:drawable/ic_menu_delete"
                 android:backgroundTint="@color/black"
-                app:tint="@color/red"
+                android:clickable="true"
                 app:borderWidth="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.97"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.02" />
+                app:layout_constraintVertical_bias="0.02"
+                app:srcCompat="@android:drawable/ic_menu_delete"
+                app:tint="@color/red" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/changeProfilePictureButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                app:srcCompat="@drawable/baseline_add_circle_outline_24"
                 android:backgroundTint="@color/black"
-                app:tint="@color/yellow"
+                android:clickable="true"
                 app:borderWidth="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.97"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.02" />
+                app:layout_constraintVertical_bias="0.02"
+                app:srcCompat="@drawable/baseline_add_circle_outline_24"
+                app:tint="@color/yellow" />
         </LinearLayout>
 
 
         <TextView
             android:id="@+id/profilename"
-            android:text="Profile Name"
-            android:textColor="@color/lightBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Profile Name"
+            android:textColor="@color/lightBlue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editProfilePictureButtons"
-            app:layout_constraintVertical_bias="0.02"/>
+            app:layout_constraintVertical_bias="0.02" />
 
         <TextView
             android:id="@+id/userStatus"
-            android:text="(userStatus)"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="(userStatus)"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profilename"
-            app:layout_constraintVertical_bias="0.02"/>
+            app:layout_constraintVertical_bias="0.02" />
 
         <GridLayout
             android:id="@+id/allUserInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="412dp"
+            android:layout_height="322dp"
             android:columnCount="1"
-            android:rowCount="9"
             android:paddingStart="30dp"
+            android:rowCount="9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userStatus"
-            app:layout_constraintVertical_bias="0.4">
+            app:layout_constraintVertical_bias="0.278">
 
             <EditText
                 android:id="@+id/userFirstName"
-                android:text="name"
-                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
-                app:layout_row="0"
                 android:enabled="false"
                 android:hint="First Name"
+                android:text="name"
+                android:textColor="@color/white"
                 android:textColorHint="@color/grey"
-                />
+                app:layout_row="0" />
 
             <TextView
                 android:id="@+id/firstNameTitle"
-                android:text="First Name"
-                android:textColor="@color/lightBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textColor="@color/lightBlue"
                 app:layout_column="0"
-                app:layout_row="1"
-                />
+                app:layout_row="1" />
 
             <Space
                 android:layout_width="40dp"
@@ -189,26 +186,24 @@
 
             <EditText
                 android:id="@+id/userLastName"
-                android:text="last name"
-                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_column="0"
-                app:layout_row="3"
                 android:enabled="false"
                 android:hint="Last Name"
+                android:text="last name"
+                android:textColor="@color/white"
                 android:textColorHint="@color/grey"
-                />
+                app:layout_column="0"
+                app:layout_row="3" />
 
             <TextView
                 android:id="@+id/lastNameTitle"
-                android:text="Last Name"
-                android:textColor="@color/lightBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:textColor="@color/lightBlue"
                 app:layout_column="0"
-                app:layout_row="1"
-                />
+                app:layout_row="1" />
 
             <Space
                 android:layout_width="40dp"
@@ -218,74 +213,74 @@
 
             <EditText
                 android:id="@+id/userEmail"
-                android:text="JohnDoe@hotmail.com"
-                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_column="0"
-                app:layout_row="3"
                 android:enabled="false"
                 android:hint="Last Name"
-                android:textColorHint="@color/grey"
                 android:inputType="textEmailAddress"
-                />
+                android:text="JohnDoe@hotmail.com"
+                android:textColor="@color/white"
+                android:textColorHint="@color/grey"
+                app:layout_column="0"
+                app:layout_row="3" />
 
             <TextView
                 android:id="@+id/emailTitle"
-                android:text="Email"
-                android:textColor="@color/lightBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="@color/lightBlue"
                 app:layout_column="0"
-                app:layout_row="4"/>
+                app:layout_row="4" />
 
             <Space
                 android:layout_width="40dp"
                 android:layout_height="20dp"
                 app:layout_column="0"
-                app:layout_row="6"/>
+                app:layout_row="6" />
 
             <EditText
                 android:id="@+id/userPhoneNumber"
-                android:text="+1 123-456-7890"
-                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_column="0"
-                app:layout_row="7"
                 android:enabled="false"
-                android:inputType="phone"
                 android:hint="Phone Number"
+                android:inputType="phone"
+                android:text="+1 123-456-7890"
+                android:textColor="@color/white"
                 android:textColorHint="@color/grey"
-                />
+                app:layout_column="0"
+                app:layout_row="7" />
 
             <TextView
                 android:id="@+id/phoneNumberTitle"
-                android:text="Phone Number"
-                android:textColor="@color/lightBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textColor="@color/lightBlue"
                 app:layout_column="0"
-                app:layout_row="8"/>
+                app:layout_row="8" />
 
         </GridLayout>
 
-        <Button
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/saveChangesButton"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Changes"
             android:backgroundTint="@color/lightBlue"
-            android:textColor="@color/black"
             android:paddingHorizontal="90dp"
             android:paddingVertical="15dp"
+            android:src="@drawable/outline_save_24"
+            android:textColor="@color/black"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/allUserInfo"
-            app:layout_constraintVertical_bias="0.7" />
+            app:layout_constraintVertical_bias="1"
+
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /*
  * User profile class
@@ -61,39 +63,43 @@ public class Profile extends User{
         uuid = preferences.getString(PREF_KEY_UUID, null);
 
 
-        if (uuid == null) {
-            // If UUID does not exist, create a new profile
-            createProfile();
-        }
-        else{
-            // Retrieve user data from firestore by checking if Document ID of the UUID exists
-            retrieveProfile(uuid);
-        }
+//        if (uuid == null) {
+//            // If UUID does not exist, create a new profile
+//            createProfile();
+//        }
+//        else{
+//            // Retrieve user data from firestore by checking if Document ID of the UUID exists
+//            retrieveProfile(uuid);
+//        }
     }
 
-//    public Profile(String name, String email, String uuid) {
-//        super.firstName = name;
-//        this.email = email;
-//        this.uuid = uuid;
-//    }
+    public String getUuid() {
+        return uuid;
+    }
+
+    public boolean exists(){
+        return uuid != null;
+    }
 
     /**
      * Create a new user profile
      */
-    public void createProfile(){
+    public void createProfile(User user){
         uuid = UUID.randomUUID().toString();
         preferences.edit().putString(PREF_KEY_UUID, uuid).apply();
 
         // Add new user to firestore
         // TODO: Profile set up page to remove the placeholder values
-        User user = new User(
-            "First Name",
-            "Last Name",
-            "username_placeholder",
-            getEmailAddress(),
-            getPhoneNumber(),
-            uuid
-        );
+//        User user = new User(
+//            "First Name",
+//            "Last Name",
+//            "username_placeholder",
+//            getEmailAddress(),
+//            getPhoneNumber(),
+//            uuid
+//        );
+
+        user.setUuid(uuid);
 
         // Add a new document with the UUID as the document ID
         userRef.document(uuid).set(user)
@@ -112,8 +118,9 @@ public class Profile extends User{
      *
      * @param uuid UUID of the user
      */
-    public void retrieveProfile(String uuid){
+    public CompletableFuture<Boolean> retrieveProfile(String uuid){
         DocumentReference docRef = userRef.document(uuid);
+        CompletableFuture<Boolean> res = new CompletableFuture<>();
 
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -127,17 +134,24 @@ public class Profile extends User{
                         UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
                         userViewModel.setUser(this);
                         Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getFirstName(), Snackbar.LENGTH_LONG).show();
-                    } else {
+                        res.complete(true);
+                    }
+                    else {
                         Log.w("Profile class", "Retrieved user data is null");
+                        res.complete(false);
                     }
                 } else {
                     Log.w("Profile class", "User does not exist: " + uuid);
-                    createProfile();
+//                    createProfile();
+                    res.complete(false);
                 }
             } else {
                 Log.w("Profile class", "Error retrieving user profile:", task.getException());
+                res.completeExceptionally(task.getException());
             }
         });
+
+        return res;
     }
 
     /**
