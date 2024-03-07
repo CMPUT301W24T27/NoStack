@@ -161,6 +161,7 @@ public class AttendeeHome extends Fragment {
         });
     }
 
+    // For scanning QR code
     private void scanCode() {
         ScanOptions scanOptions = new ScanOptions();
         scanOptions.setPrompt("Scan the QR code");
@@ -176,6 +177,14 @@ public class AttendeeHome extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Scan Result");
             builder.setMessage(result.getContents());
+
+            // Check if the QR code is for an event description or check-in
+            // "result" is a string of type 0.uuid or 1.uuid
+            if (result.getContents().charAt(0) == '0') {
+                handleEventDescQR(result.getContents().substring(2));
+            } else if (result.getContents().charAt(0) == '1') {
+                handleCheckInQR(result.getContents().substring(2));
+            }
             builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -184,4 +193,12 @@ public class AttendeeHome extends Fragment {
             }).show();
         }
     });
+
+    public void handleEventDescQR(String qrCode) {
+
+    }
+
+    public void handleCheckInQR(String qrCode) {
+
+    }
 }
