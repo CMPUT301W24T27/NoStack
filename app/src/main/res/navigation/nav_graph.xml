@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/QRScanning"
-        android:name="com.example.nostack.QRScanning"
+        android:name="com.example.nostack.utils.QRScanning"
         android:label="fragment_q_r_scanning"
         tools:layout="@layout/fragment_q_r_scanning" />
 
