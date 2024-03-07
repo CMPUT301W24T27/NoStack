@@ -31,12 +31,20 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     private ConstraintLayout layout;
     private Fragment currFragment;
+    private ArrayList<Event> ourEvents;
 
     public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, Fragment currfragment) {
         super(context, 0,events);
         currFragment = currfragment;
+        ourEvents = events;
     }
-
+    public boolean containsEvent(Event event) {
+        boolean contained = false;
+        for (Event event1:ourEvents) {
+            if (event.getId().equals(event1.getId())) {return true;}
+        }
+        return contained;
+    }
     public void addEvent(Event event) {
         add(event);
     }
@@ -90,7 +98,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                     Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
                     RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
+                    d.setCornerRadius(50f);
                     eventImage.setImageDrawable(d);
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);

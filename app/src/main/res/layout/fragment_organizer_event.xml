@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".ui.organizer.organizer_event">
+
+    <ImageView
+        android:id="@+id/OrganizerEventImage"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:src="@drawable/baseline_add_a_photo_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/OrganizerEventTitleText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/SignInUpTextColor"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/OrganizerEventShareButton"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventAnnouncementsButton"
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEventImage" />
+
+    <Button
+        android:id="@+id/OrganizerEventShareButton"
+        android:layout_width="32dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/share_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEventTitleText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/OrganizerEventTitleText" />
+
+    <Button
+        android:id="@+id/OrganizerEventQRCodeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:backgroundTint="@color/yellow"
+        android:text="QR Code"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/OrganizerEventAnnouncementsButton"
+        android:layout_width="155sp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/lightBlue"
+        android:text="Manage\nAnnouncements"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEventQRCodeButton"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventQRCodeButton" />
+
+    <Button
+        android:id="@+id/OrganizerEventAttendeesButton"
+        android:layout_width="155sp"
+        android:layout_height="65dp"
+        android:backgroundTint="@color/lightBlue"
+        android:text="See\nAttendees"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEventAnnouncementsButton"
+        app:layout_constraintEnd_toEndOf="@+id/OrganizerEventQRCodeButton" />
+
+    <TextView
+        android:id="@+id/OrganizerEventDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Event Start Date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/OrganizerEventUserImage"
+        app:layout_constraintTop_toTopOf="@+id/OrganizerEventUserImage" />
+
+    <TextView
+        android:id="@+id/OrganizerEventTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Start Time"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEventLocationText"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventDateText"
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEventDateText" />
+
+    <TextView
+        android:id="@+id/OrganizerEventLocationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Event Location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEventUserImage"
+        app:layout_constraintEnd_toEndOf="@+id/OrganizerEventAttendeesButton"
+        app:layout_constraintStart_toEndOf="@+id/OrganizerEventLocationIcon" />
+
+    <ImageView
+        android:id="@+id/OrganizerEventLocationIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/baseline_location_on_24"
+        app:tint="@color/yellow"
+        app:layout_constraintBottom_toBottomOf="@+id/OrganizerEventLocationText"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventTimeText"
+        app:layout_constraintTop_toTopOf="@+id/OrganizerEventLocationText" />
+
+    <ImageView
+        android:id="@+id/OrganizerEventUserImage"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_account_circle_24"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventTitleText"
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTitleText" />
+
+    <TextView
+        android:id="@+id/OrganizerEventDescriptionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Event Description"
+        android:textColor="@color/yellow"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventUserImage"
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEventLocationText" />
+
+    <TextView
+        android:id="@+id/OrganizerEventDescriptionText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        android:text="Full Event Description Goes Here..."
+        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/OrganizerEventAnnouncementsButton"
+        app:layout_constraintEnd_toEndOf="@+id/OrganizerEventAttendeesButton"
+        app:layout_constraintStart_toStartOf="@+id/OrganizerEventDescriptionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/OrganizerEventDescriptionTitle" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        app:borderWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/outline_arrow_back_24"
+        app:tint="@color/yellow" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        app:borderWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/outline_edit_24"
+        app:tint="@color/yellow" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
