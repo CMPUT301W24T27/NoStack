@@ -1,5 +1,6 @@
 package com.example.nostack.ui.attendee;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -21,9 +22,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.ScanActivity;
 import com.example.nostack.utils.GenerateProfileImage;
@@ -39,6 +43,8 @@ import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 /**
@@ -47,7 +53,6 @@ import javax.annotation.Nullable;
  * create an instance of this fragment.
  */
 public class AttendeeHome extends Fragment {
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,8 +61,15 @@ public class AttendeeHome extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     private TextView userWelcome;
     private UserViewModel userViewModel;
+    private EventArrayAdapter eventArrayAdapter;
+    private ArrayList<Event> dataList;
+    private ListView eventList;
+    private FirebaseFirestore db;
+    private CollectionReference eventsRef;
+    private Activity activity;
 
 
     public AttendeeHome() {
@@ -89,6 +101,12 @@ public class AttendeeHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+        activity = getActivity();
+        dataList = new ArrayList<>();
     }
 
     @Override
@@ -97,13 +115,27 @@ public class AttendeeHome extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_home, container, false);
         TextView userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        eventList = rootView.findViewById(R.id.listView_yourEvents);
+        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
+        eventList.setAdapter(eventArrayAdapter);
+
+        
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
             if (user != null) {
                 Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
                 userWelcome.setText(user.getFirstName());
+
+                eventsRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Event event = document.toObject(Event.class);
+                            eventArrayAdapter.addEvent(event);
+                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                        }
+                    }
+                });
             }
             else{
                 Log.d("AttendeeHome", "User is null");
