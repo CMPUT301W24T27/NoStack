@@ -47,9 +47,9 @@ public class AttendeeEvents extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment only once
-        View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
 
-        eventList = rootView.findViewById(R.id.listView_yourEvents);
+        eventList = rootView.findViewById(R.id.listView_upcomingEvents);
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
         eventList.setAdapter(eventArrayAdapter);
 
