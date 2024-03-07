@@ -26,6 +26,9 @@ public class Event {
         attendees = new ArrayList<>();
     }
 
+    public Event() {
+    }
+
     public Event(String eventName, String eventId, String eventLocation) {
         name = eventName;
         id = eventId;
