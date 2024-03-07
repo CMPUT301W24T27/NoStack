@@ -21,6 +21,8 @@ public class Event {
     private Date endDate;
     private QrCode checkInQr;
     private QrCode eventQr;
+    private int capacity;
+    private int currentCapacity;
 
     public Event(String eventName, String eventId) {
         name = eventName;
@@ -36,6 +38,8 @@ public class Event {
         id = eventId;
         location = eventLocation;
         attendees = new ArrayList<>();
+        currentCapacity = 0;
+        capacity = -1;
     }
 
     public Event(String name, String location, String description, Date startDate, Date endDate, QrCode checkInQr, String organizerId) {
@@ -48,6 +52,8 @@ public class Event {
         this.endDate = endDate;
         this.checkInQr = checkInQr;
         this.organizerId = organizerId;
+        currentCapacity = 0;
+        capacity = -1;
 
         // Generate a unique Id
         id = UUID.randomUUID().toString();
@@ -66,6 +72,8 @@ public class Event {
         this.endDate = endDate;
         this.checkInQr = checkInQr;
         this.organizerId = organizerId;
+        currentCapacity = 0;
+        capacity = -1;
 
         // Generate a unique Id
         id = UUID.randomUUID().toString();
@@ -113,11 +121,27 @@ public class Event {
         return attendees;
     }
 
-    public void addAttendee(User attendee) {
+    public boolean addAttendee(User attendee) {
+
+        if ((capacity > 0) && (currentCapacity >= capacity)) {
+            return false;
+        }
+
         if (!attendees.contains(attendee)) {
             attendees.add(attendee);
+            currentCapacity++;
+        }
+
+        return true;
+    }
+
+    public void removeAttendeee(User attendee) {
+        if (!attendees.contains(attendee)) {
+            attendees.remove(attendee);
+            currentCapacity--;
         }
     }
+
 
     public ArrayList<Announcement> getAnnouncements() {
         return announcements;
@@ -173,5 +197,21 @@ public class Event {
 
     public void setEventBannerImgUrl(String eventBannerImgUrl) {
         this.eventBannerImgUrl = eventBannerImgUrl;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public int getCurrentCapacity() {
+        return currentCapacity;
+    }
+
+    public void setCurrentCapacity(int currentCapacity) {
+        this.currentCapacity = currentCapacity;
     }
 }
