@@ -1,5 +1,7 @@
 package com.example.nostack.ui.organizer;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,12 +17,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.Events.EventArrayAdapter;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.ui.attendee.AttendeeHome;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -31,6 +41,16 @@ import com.google.firebase.storage.StorageReference;
  * create an instance of this fragment.
  */
 public class OrganizerHome extends Fragment {
+
+    private EventArrayAdapter eventArrayAdapter;
+    private ArrayList<Event> dataList;
+    private ListView eventList;
+    private FirebaseFirestore db;
+    private SharedPreferences preferences;
+    private CollectionReference eventsRef;
+    private Activity activity;
+    private String userUUID;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,6 +93,12 @@ public class OrganizerHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+        activity = getActivity();
+        dataList = new ArrayList<>();
     }
 
     @Override
@@ -82,18 +108,30 @@ public class OrganizerHome extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+        eventList = view.findViewById(R.id.organizerEventList);
+        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
+        eventList.setAdapter(eventArrayAdapter);
 
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
+                Log.d("OrganizerHome", "User logged in: " + user.getFirstName());
                 userWelcome.setText(user.getFirstName());
+
+                eventsRef.whereEqualTo("organizerId",user.getUuid()).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Event event = document.toObject(Event.class);
+                            eventArrayAdapter.addEvent(event);
+                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                        }
+                    }
+                });
             }
             else{
-                Log.d("AttendeeHome", "User is null");
+                Log.d("OrganizerHome", "User is null");
             }
         });
-        
+
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

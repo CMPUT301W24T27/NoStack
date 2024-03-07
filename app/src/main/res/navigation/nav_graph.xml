@@ -68,6 +68,11 @@
             android:id="@+id/action_organizerEventCreate_to_organizerHome"
             app:destination="@id/organizerHome" />
     </fragment>
+    <fragment
+        android:id="@+id/organizerViewEvent"
+        android:name="com.example.nostack.ui.organizer.OrganizerViewEvent"
+        android:label="fragment_organizer_view_event"
+        tools:layout="@layout/fragment_organizer_view_event" />
 
 
 </navigation>

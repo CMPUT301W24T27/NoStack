@@ -41,7 +41,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public class Profile extends User{
     private static final String PREF_KEY_UUID = "uuid";
-
     private final Activity activity;
     private final FirebaseFirestore db;
     private final CollectionReference userRef;
