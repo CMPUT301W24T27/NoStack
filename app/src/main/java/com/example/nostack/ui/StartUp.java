@@ -1,5 +1,6 @@
 package com.example.nostack;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -63,10 +64,15 @@ public class StartUp extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_start_up, container, false);
 
+        /// to inflate the dialogue box with the user registration form
+        ///View dialogue = inflater.inflate(R.layout.user_info_pop_up, container, false);
+        ///AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        ///builder.setView(dialogue).show();
+
         view.findViewById(R.id.AttendeeSignInButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NavHostFragment.findNavController(StartUp.this)
-                        .navigate(R.id.action_startUp_to_attendeeHome3);
+               NavHostFragment.findNavController(StartUp.this)
+                        .navigate(R.id.action_startUp_to_attendeeHome);
             }
         });
 
@@ -76,3 +82,4 @@ public class StartUp extends Fragment {
         return view;
     }
 }
+
