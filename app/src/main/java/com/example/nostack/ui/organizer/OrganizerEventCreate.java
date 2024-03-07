@@ -80,7 +80,6 @@ public class OrganizerEventCreate extends Fragment {
     private SharedPreferences preferences;
     private String userUUID;
     private ActivityResultLauncher<String> imagePickerLauncher;
-    private String eventBannerUrl;
 
 
     public OrganizerEventCreate() {
@@ -143,6 +142,7 @@ public class OrganizerEventCreate extends Fragment {
         eventDescEditText = view.findViewById(R.id.EventCreationDescriptionEditText);
         eventReuseQrCheckBox = view.findViewById(R.id.EventCreationReuseQRCheckBox);
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
+        backButton = view.findViewById(R.id.backButton);
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +170,14 @@ public class OrganizerEventCreate extends Fragment {
                     NavHostFragment.findNavController(OrganizerEventCreate.this)
                             .navigate(R.id.action_organizerEventCreate_to_organizerHome);
                 }
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerEventCreate.this)
+                        .navigate(R.id.action_organizerEventCreate_to_organizerHome);
             }
         });
 
