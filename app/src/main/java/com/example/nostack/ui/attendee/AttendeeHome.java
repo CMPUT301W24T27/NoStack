@@ -16,6 +16,8 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,6 +73,9 @@ public class AttendeeHome extends Fragment {
     private CollectionReference eventsRef;
     private Activity activity;
 
+    private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
+    private ViewPager2 viewPager;
+
 
     public AttendeeHome() {
         // Required empty public constructor
@@ -107,6 +112,8 @@ public class AttendeeHome extends Fragment {
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
+
+
     }
 
     @Override
@@ -114,10 +121,12 @@ public class AttendeeHome extends Fragment {
         // Inflate the layout for this fragment only once
         View rootView = inflater.inflate(R.layout.fragment_attendee_home, container, false);
         TextView userWelcome = (TextView) rootView.findViewById(R.id.text_userWelcome);
+        viewPager = rootView.findViewById(R.id.event_tab_navigation);
+        viewPager.setAdapter(new MyFragmentAdapter(this));
 
-        eventList = rootView.findViewById(R.id.listView_yourEvents);
-        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
-        eventList.setAdapter(eventArrayAdapter);
+//        eventList = rootView.findViewById(R.id.listView_yourEvents);
+//        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
+//        eventList.setAdapter(eventArrayAdapter);
 
         
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
@@ -127,15 +136,15 @@ public class AttendeeHome extends Fragment {
                 Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
                 userWelcome.setText(user.getFirstName());
 
-                eventsRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
-                        }
-                    }
-                });
+//                eventsRef.get().addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Event event = document.toObject(Event.class);
+//                            eventArrayAdapter.addEvent(event);
+//                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+//                        }
+//                    }
+//                });
             }
             else{
                 Log.d("AttendeeHome", "User is null");
@@ -191,6 +200,27 @@ public class AttendeeHome extends Fragment {
                 scanCode();
             }
         });
+    }
+
+    private static class MyFragmentAdapter extends FragmentStateAdapter {
+
+        public MyFragmentAdapter(Fragment fragment) {
+            super(fragment);
+        }
+
+        @Override
+        public Fragment createFragment(int position) {
+            try {
+                return (Fragment) fragments[position].newInstance();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return fragments.length;
+        }
     }
 
     private void scanCode() {
