@@ -105,6 +105,17 @@ public class organizer_event extends Fragment {
             }
         });
 
+        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(organizer_event.this)
+                        .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
+            }
+        });
+
         return view;
     }
 }
