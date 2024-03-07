@@ -75,7 +75,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                     Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
                     RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
+                    d.setCornerRadius(50f);
                     eventImage.setImageDrawable(d);
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);
