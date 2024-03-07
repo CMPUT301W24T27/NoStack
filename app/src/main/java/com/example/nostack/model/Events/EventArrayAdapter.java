@@ -1,11 +1,8 @@
-package com.example.nostack.utils;
-
-import static com.google.api.ResourceProto.resource;
+package com.example.nostack.model.Events;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +19,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 

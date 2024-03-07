@@ -1,6 +1,8 @@
-package com.example.nostack.utils;
+package com.example.nostack.model.Events;
 
 import com.example.nostack.model.User.User;
+import com.example.nostack.utils.Announcement;
+import com.example.nostack.utils.QrCode;
 
 import java.util.ArrayList;
 import java.util.Date;

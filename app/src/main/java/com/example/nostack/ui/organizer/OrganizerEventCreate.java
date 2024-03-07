@@ -11,7 +11,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -19,14 +18,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
 import com.example.nostack.R;
-import com.example.nostack.utils.Event;
+import com.example.nostack.model.Events.Event;
 import com.example.nostack.utils.ImageUploader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,18 +33,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.type.DateTime;
 
-import java.io.Console;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.

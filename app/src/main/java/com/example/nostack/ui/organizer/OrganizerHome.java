@@ -1,7 +1,6 @@
 package com.example.nostack.ui.organizer;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,8 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.nostack.R;
-import com.example.nostack.utils.Event;
-import com.example.nostack.utils.EventArrayAdapter;
+import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.Events.EventArrayAdapter;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
