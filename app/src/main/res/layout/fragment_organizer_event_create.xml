@@ -153,6 +153,36 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/EventCreationLimitLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="50dp"
+            android:hint="Limit (default to unlimited)"
+            app:endIconDrawable="@drawable/baseline_add_box_24"
+            app:endIconMode="custom"
+            app:endIconTint="@color/yellow"
+            app:hintEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationLocationLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EventCreationLimitEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:textColor="@color/white"
+                android:inputType="number"
+                android:textColorHint="@color/SignInUpTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/EventCreationDescriptionLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -168,7 +198,7 @@
             app:layout_constraintBottom_toTopOf="@+id/EventCreationReuseQRCheckBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/EventCreationLocationLayout">
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationLimitLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/EventCreationDescriptionEditText"
