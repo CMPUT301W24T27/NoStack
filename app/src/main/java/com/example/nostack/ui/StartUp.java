@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavHost;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -97,6 +96,14 @@ public class StartUp extends Fragment {
             public void onClick(View v) {
                NavHostFragment.findNavController(StartUp.this)
                         .navigate(R.id.action_startUp_to_attendeeHome);
+            }
+        });
+
+        view.findViewById(R.id.SignIn_SignUpButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(StartUp.this)
+                        .navigate(R.id.action_startUp_to_organizerSignIn);
             }
         });
 

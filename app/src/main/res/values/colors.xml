@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<color name="black">#FF000000</color>
-<color name="white">#FFFFFFFF</color>
-<color name="lightBlack">#2A2A2A</color>
-<color name="grey">#828282</color>
-<color name="text">#FFFEF8</color>
-<color name="yellow">#FFD60A</color>
-<color name="lightBlue">#87CEEB</color>
-<color name="darkBlue">#003566</color>
-<color name="red">#F24E1E</color>
-<color name="transparent">#00ffffff</color>
-<color name="SignUpInMenuColor">#252525</color>
-<color name="SignInUpTextColor">#86CDEA</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey">#828282</color>
+    <color name="text">#FFFEF8</color>
+    <color name="yellow">#FFD60A</color>
+    <color name="lightBlue">#87CEEB</color>
+    <color name="darkBlue">#003566</color>
+    <color name="red">#F24E1E</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="SignUpInMenuColor">#252525</color>
+    <color name="SignInUpTextColor">#86CDEA</color>
 </resources>

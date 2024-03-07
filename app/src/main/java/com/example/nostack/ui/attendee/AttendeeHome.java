@@ -1,4 +1,4 @@
-package com.example.nostack.ui;
+package com.example.nostack.ui.attendee;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,7 +21,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.nostack.R;
-import com.example.nostack.model.User.User;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.google.android.material.snackbar.Snackbar;
