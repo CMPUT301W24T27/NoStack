@@ -1,6 +1,8 @@
 package com.example.nostack.ui.organizer;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 
 import com.example.nostack.R;
 import com.example.nostack.utils.Event;
@@ -26,9 +30,17 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.DateTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +76,8 @@ public class OrganizerEventCreate extends Fragment {
     private CollectionReference userRef;
     private SharedPreferences preferences;
     private String userUUID;
+    private Date endDate;
+    private Date startDate;
 
     public OrganizerEventCreate() {
         // Required empty public constructor
@@ -121,9 +135,36 @@ public class OrganizerEventCreate extends Fragment {
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateOrganization();
-                NavHostFragment.findNavController(OrganizerEventCreate.this)
-                        .navigate(R.id.action_organizerEventCreate_to_organizerHome);
+
+                if (eventTitleEditText.getText().toString().isEmpty()) {
+                    eventTitleEditText.setError("Event name is required");
+                } else if (eventStartEditText.getText().toString().isEmpty()) {
+                    eventStartEditText.setError("Event start date/time is required");
+                } else if (eventEndEditText.getText().toString().isEmpty()) {
+                    eventEndEditText.setError("Event end date/time is required");
+                } else if (eventLocationEditText.getText().toString().isEmpty()) {
+                    eventLocationEditText.setError("Event location is required");
+                } else if (eventDescEditText.getText().toString().isEmpty()) {
+                    eventDescEditText.setError("Event description is required");
+                } else {
+                    CreateOrganization();
+                    NavHostFragment.findNavController(OrganizerEventCreate.this)
+                            .navigate(R.id.action_organizerEventCreate_to_organizerHome);
+                }
+            }
+        });
+
+        eventStartLayout.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDateTimePickerDialog(eventStartEditText);
+            }
+        });
+
+        eventEndLayout.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDateTimePickerDialog(eventEndEditText);
             }
         });
 
@@ -138,14 +179,23 @@ public class OrganizerEventCreate extends Fragment {
     }
 
     private void CreateOrganization() {
-        Event newEvent = new Event(
-                eventTitleEditText.getText().toString(),
-                eventLocationEditText.getText().toString(),
-                eventDescEditText.getText().toString(),
-                new Date(2012,1,3),
-                new Date(2012,2,3),
-                userUUID
-        );
+        String startDateString = eventStartEditText.getText().toString();
+        String endDateString = eventEndEditText.getText().toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d hh:mm");
+
+        Event newEvent = null;
+        try {
+            newEvent = new Event(
+                    eventTitleEditText.getText().toString(),
+                    eventLocationEditText.getText().toString(),
+                    eventDescEditText.getText().toString(),
+                    formatter.parse(startDateString),
+                    formatter.parse(endDateString),
+                    userUUID
+            );
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
 
         eventsRef
                 .document(newEvent.getId())
@@ -158,5 +208,26 @@ public class OrganizerEventCreate extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> Log.w("Firestore", "Error creating event", e));;
+    }
+
+    private void openDateTimePickerDialog(TextInputEditText t) {
+        Context context = this.getContext();
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dateDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                t.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(day));
+            }
+        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+
+        TimePickerDialog timeDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hour, int minute) {
+                t.append(" "+String.valueOf(hour)+":"+String.valueOf(minute));
+            }
+        }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
+
+        timeDialog.show();
+        dateDialog.show();
     }
 }
