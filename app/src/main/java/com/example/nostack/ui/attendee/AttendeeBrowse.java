@@ -38,7 +38,6 @@ public class AttendeeBrowse extends Fragment{
     private CollectionReference eventsRef;
     private Activity activity;
 
-
     public AttendeeBrowse(){}
 
     /**
@@ -100,16 +99,6 @@ public class AttendeeBrowse extends Fragment{
                         .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
             }
         });
-
-//        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-//
-//            if (user != null) {
-//
-//            }
-//            else{
-//                Log.d("AttendeeHome", "User is null");
-//            }
-//        });
 
         // Return the modified layout
         return rootView;
