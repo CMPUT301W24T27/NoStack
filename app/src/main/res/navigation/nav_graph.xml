@@ -108,6 +108,18 @@
         <action
             android:id="@+id/action_organizerEventAttendeeList_to_organizer_event"
             app:destination="@id/organizer_event" />
+        <action
+            android:id="@+id/action_organizerEventAttendeeList_to_organizerAttendeeMap"
+            app:destination="@id/organizerAttendeeMap" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerAttendeeMap"
+        android:name="com.example.nostack.ui.organizer.OrganizerAttendeeMap"
+        android:label="fragment_organizer_attendee_map"
+        tools:layout="@layout/fragment_organizer_attendee_map" >
+        <action
+            android:id="@+id/action_organizerAttendeeMap_to_organizerEventAttendeeList"
+            app:destination="@id/organizerEventAttendeeList" />
     </fragment>
 
 
