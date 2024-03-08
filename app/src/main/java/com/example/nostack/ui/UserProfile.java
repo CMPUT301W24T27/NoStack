@@ -1,18 +1,8 @@
 package com.example.nostack.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,20 +12,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.utils.GenerateProfileImage;
 import com.example.nostack.utils.Image;
 import com.example.nostack.utils.ImageUploader;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
  * Creates the UserProfile fragment which is used to display the user's profile and allow for editing of the profile
- *       and the profile picture
+ * and the profile picture
  */
 public class UserProfile extends Fragment {
 
@@ -68,13 +60,13 @@ public class UserProfile extends Fragment {
 
     /**
      * This method allows for the class to get the Image URI and upload the profile image
+     *
      * @param requestCode The integer request code originally supplied to startActivityForResult(),
      *                    allowing you to identify who this result came from
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     *
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     *                    (various data can be attached to Intent "extras").
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -87,6 +79,7 @@ public class UserProfile extends Fragment {
 
     /**
      * Allows the user to upload a profile picture using the imageUri
+     *
      * @param imageUri The Uri of the image to be uploaded
      */
     private void uploadProfileImage(Uri imageUri) {
@@ -107,6 +100,7 @@ public class UserProfile extends Fragment {
 
     /**
      * Updates the user's profile with the imageUrl
+     *
      * @param imageUrl The URL of the image to be uploaded
      */
     private void updateUserWithImageUrl(String imageUrl) {
@@ -125,6 +119,7 @@ public class UserProfile extends Fragment {
 
     /**
      * Creates the view for the UserProfile fragment
+     *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment UserProfile.
@@ -141,8 +136,9 @@ public class UserProfile extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,15 +154,15 @@ public class UserProfile extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     *      and sets up the buttons for the user to edit their profile
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     * and sets up the buttons for the user to edit their profile
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -174,7 +170,7 @@ public class UserProfile extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -260,8 +256,7 @@ public class UserProfile extends Fragment {
                 // Set profile image from URL
                 updateProfilePicture();
 
-            }
-            else{
+            } else {
                 Log.d("AttendeeHome", "User is null");
             }
         });
@@ -277,7 +272,7 @@ public class UserProfile extends Fragment {
         // Set profile image from URL
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if(user!=null){
+            if (user != null) {
                 image.setUserProfileImage(user, profileImage);
             }
         });

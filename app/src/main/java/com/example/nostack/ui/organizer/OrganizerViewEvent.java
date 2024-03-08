@@ -1,19 +1,18 @@
 package com.example.nostack.ui.organizer;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Creates the OrganizerViewEvent fragment which is used to display the event that the organizer is hosting
- *       and allow for management of the event
+ * and allow for management of the event
  */
 public class OrganizerViewEvent extends Fragment {
 
@@ -50,8 +49,9 @@ public class OrganizerViewEvent extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,14 +64,14 @@ public class OrganizerViewEvent extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override

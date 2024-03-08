@@ -1,11 +1,8 @@
 package com.example.nostack.ui.organizer;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -24,12 +19,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.utils.GenerateProfileImage;
 import com.example.nostack.utils.Image;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -210,7 +202,7 @@ public class OrganizerEvent extends Fragment {
 
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if(user != null){
+            if (user != null) {
                 image.setUserProfileImage(user, eventProfileImage);
             }
         });

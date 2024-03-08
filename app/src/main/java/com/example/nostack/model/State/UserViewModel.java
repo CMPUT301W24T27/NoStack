@@ -11,14 +11,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /*
-*  UserViewModel is a ViewModel class that is used to store and manage state for UI components that require user data
-* */
-public class UserViewModel extends ViewModel
-{
-    private MutableLiveData<User> user = new MutableLiveData<>();
+ *  UserViewModel is a ViewModel class that is used to store and manage state for UI components that require user data
+ * */
+public class UserViewModel extends ViewModel {
+    private final MutableLiveData<User> user = new MutableLiveData<>();
 
     /**
      * Set the user object to be stored in the ViewModel state
+     *
      * @param user the user object to be stored
      */
     public void setUser(User user) {
@@ -31,6 +31,7 @@ public class UserViewModel extends ViewModel
 
     /**
      * Get the user object stored in the ViewModel state
+     *
      * @return LiveData<User>
      */
     public LiveData<User> getUser() {
@@ -39,6 +40,7 @@ public class UserViewModel extends ViewModel
 
     /**
      * Updates the user object stored in Firestore
+     *
      * @param user new user object to be stored
      */
     public void updateUser(User user) {

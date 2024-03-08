@@ -1,15 +1,19 @@
 package com.example.nostack.ui.attendee;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -20,15 +24,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
@@ -36,16 +31,10 @@ import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.ScanActivity;
 import com.example.nostack.utils.EventCheckinHandler;
 import com.example.nostack.utils.GenerateProfileImage;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -53,8 +42,6 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,7 +71,6 @@ public class AttendeeHome extends Fragment {
     private DotsIndicator dotsIndicator;
 
 
-
     public AttendeeHome() {
         // Required empty public constructor
     }
@@ -111,7 +97,7 @@ public class AttendeeHome extends Fragment {
      * This method is called when the fragment is being created and then sets up the variables for the view
      *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,22 +107,23 @@ public class AttendeeHome extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
     }
+
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -153,7 +140,7 @@ public class AttendeeHome extends Fragment {
 //        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
 //        eventList.setAdapter(eventArrayAdapter);
 
-        
+
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
@@ -170,8 +157,7 @@ public class AttendeeHome extends Fragment {
 //                        }
 //                    }
 //                });
-            }
-            else{
+            } else {
                 Log.d("AttendeeHome", "User is null");
             }
         });
@@ -179,11 +165,13 @@ public class AttendeeHome extends Fragment {
         // Return the modified layout
         return rootView;
     }
+
     /**
      * This method is called when the fragment has been created and also sets up the buttons
-     * @param view The View returned by onCreateView
+     *
+     * @param view               The View returned by onCreateView
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -213,8 +201,7 @@ public class AttendeeHome extends Fragment {
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);
                 });
-            }
-            else{
+            } else {
                 // generate profile image if user has no profile image
                 Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
                 Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
@@ -237,8 +224,10 @@ public class AttendeeHome extends Fragment {
         public MyFragmentAdapter(Fragment fragment) {
             super(fragment);
         }
+
         /**
          * This method is called when the fragment is being created and then sets up the view for the fragment
+         *
          * @param position The position of the fragment
          * @return a null fragment if there is an exception
          */
@@ -256,9 +245,9 @@ public class AttendeeHome extends Fragment {
             return fragments.length;
         }
     }
+
     /**
      * This method allows the user to scan a QR code by launching the ScanActivity
-     *
      */
     private void scanCode() {
         ScanOptions scanOptions = new ScanOptions();
@@ -296,7 +285,7 @@ public class AttendeeHome extends Fragment {
     public void handleEventDescQR(String eventUID) {
         DocumentReference eventRef = eventsRef.document("36cdc8b1-3bb2-4625-8d34-14fed20f3d98");
 
-        eventRef.get().addOnCompleteListener(task ->  {
+        eventRef.get().addOnCompleteListener(task -> {
 
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -330,11 +319,11 @@ public class AttendeeHome extends Fragment {
         });
 
         builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            }).show();
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        }).show();
 
     }
 }

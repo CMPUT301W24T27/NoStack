@@ -1,13 +1,12 @@
 package com.example.nostack.ui.organizer;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.utils.AttendeeLocations;
@@ -101,7 +100,7 @@ public class OrganizerAttendeeMap extends Fragment {
         if (coords.size() > 0) {
             GeoPoint mapCenter = new GeoPoint(coords.get(0).getLatitude(), coords.get(0).getLongitude());
             mapController.setCenter(mapCenter);
-            for (GeoLocation c: coords) {
+            for (GeoLocation c : coords) {
                 Marker marker = new Marker(mapView);
                 marker.setPosition(new GeoPoint(c.getLatitude(), c.getLongitude()));
                 mapView.getOverlays().add(marker);
@@ -111,7 +110,6 @@ public class OrganizerAttendeeMap extends Fragment {
             GeoPoint mapCenter = new GeoPoint(53.523, -113.526);
             mapController.setCenter(mapCenter);
         }
-
 
 
     }

@@ -17,11 +17,11 @@ import com.google.firebase.storage.StorageReference;
 
 public class Image {
 
-    private int screenWidth;
-    private int screenHeight;
-    private Activity activity;
+    private final int screenWidth;
+    private final int screenHeight;
+    private final Activity activity;
 
-    public Image(Activity activity){
+    public Image(Activity activity) {
         this.activity = activity;
         DisplayMetrics metrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -32,13 +32,14 @@ public class Image {
 
     /**
      * Set the event image for the event
+     *
      * @param event
      * @param eventBanner
      */
-    public void setEventImage(Event event, ImageView eventBanner){
+    public void setEventImage(Event event, ImageView eventBanner) {
         String uri_eventBanner = event.getEventBannerImgUrl();
 
-        if(uri_eventBanner!= null) {
+        if (uri_eventBanner != null) {
             // Get image from firebase storage
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
             final long ONE_MEGABYTE = 1024 * 1024;
@@ -56,6 +57,7 @@ public class Image {
 
     /**
      * Set user profile image
+     *
      * @param user
      * @param imageView
      */
@@ -74,8 +76,7 @@ public class Image {
             }).addOnFailureListener(exception -> {
                 Log.w("User Profile", "Error getting profile image", exception);
             });
-        }
-        else {
+        } else {
             // generate profile image if user has no profile image
             Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
             Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);

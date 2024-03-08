@@ -2,11 +2,6 @@ package com.example.nostack;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +9,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.nostack.model.Profile.Profile;
 import com.example.nostack.model.User.User;
 
 /**
  * A simple {@link Fragment} subclass.
  * Creates the StartUp fragment which is used to display the start up page for the user to decide
- *      to be an attendee or organizer or login as an admin
+ * to be an attendee or organizer or login as an admin
  */
 public class StartUp extends Fragment {
 
@@ -60,9 +58,10 @@ public class StartUp extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
-     *      and checks if the user profile already exists
+     * and checks if the user profile already exists
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,15 +77,15 @@ public class StartUp extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     *        also sets up the buttons for the user to decide to be an attendee or organizer or login as an admin
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     * also sets up the buttons for the user to decide to be an attendee or organizer or login as an admin
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -96,15 +95,14 @@ public class StartUp extends Fragment {
         View view = inflater.inflate(R.layout.fragment_start_up, container, false);
         String uuid = profile.getUuid();
 
-        if(!profile.exists()){
+        if (!profile.exists()) {
             showCreateProfile(container, inflater);
             Log.d("StartUp", profile.exists() + "");
-        }
-        else{
-            Log.d("StartUp",  uuid);
+        } else {
+            Log.d("StartUp", uuid);
             profile.retrieveProfile(uuid)
                     .thenApply(success -> {
-                        if(!success){
+                        if (!success) {
                             showCreateProfile(container, inflater);
                         }
                         return null;
@@ -113,7 +111,7 @@ public class StartUp extends Fragment {
 
         view.findViewById(R.id.AttendeeSignInButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               NavHostFragment.findNavController(StartUp.this)
+                NavHostFragment.findNavController(StartUp.this)
                         .navigate(R.id.action_startUp_to_attendeeHome);
             }
         });
@@ -127,15 +125,15 @@ public class StartUp extends Fragment {
         });
 
 
-
         // Inflate the layout for this fragment
         return view;
     }
 
     /**
      * This method displays the necessary dialogue boxes to create a profile
+     *
      * @param container The parent view that the fragment's UI should be attached to.
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater  The LayoutInflater object that can be used to inflate
      */
     private void showCreateProfile(ViewGroup container, LayoutInflater inflater) {
         View dialogue = inflater.inflate(R.layout.user_info_pop_up, container, false);
@@ -148,7 +146,6 @@ public class StartUp extends Fragment {
         EditText username = dialogue.findViewById(R.id.addUsernameField);
 
 
-
         Button saveButton = dialogue.findViewById(R.id.saveInfoFormButton);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -158,21 +155,21 @@ public class StartUp extends Fragment {
             public void onClick(View v) {
                 Log.d("StartUp", "Save button clicked");
 
-                if(firstName.getText().toString().isEmpty() || lastName.getText().toString().isEmpty() || emailAddress.getText().toString().isEmpty() || phoneNumber.getText().toString().isEmpty() || username.getText().toString().isEmpty()){
+                if (firstName.getText().toString().isEmpty() || lastName.getText().toString().isEmpty() || emailAddress.getText().toString().isEmpty() || phoneNumber.getText().toString().isEmpty() || username.getText().toString().isEmpty()) {
                     // Make all fields red
-                    if(firstName.getText().toString().isEmpty()){
+                    if (firstName.getText().toString().isEmpty()) {
                         firstName.setError("First name is required");
                     }
-                    if(lastName.getText().toString().isEmpty()){
+                    if (lastName.getText().toString().isEmpty()) {
                         lastName.setError("Last name is required");
                     }
-                    if(emailAddress.getText().toString().isEmpty()){
+                    if (emailAddress.getText().toString().isEmpty()) {
                         emailAddress.setError("Email address is required");
                     }
-                    if(phoneNumber.getText().toString().isEmpty()){
+                    if (phoneNumber.getText().toString().isEmpty()) {
                         phoneNumber.setError("Phone number is required");
                     }
-                    if(username.getText().toString().isEmpty()){
+                    if (username.getText().toString().isEmpty()) {
                         username.setError("Username is required");
                     }
                     return;
@@ -186,7 +183,6 @@ public class StartUp extends Fragment {
                         phoneNumber.getText().toString(),
                         null
                 );
-
 
 
                 // Pass the User object to createProfile

@@ -1,13 +1,6 @@
 package com.example.nostack.ui.attendee;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.State.UserViewModel;
@@ -23,8 +22,6 @@ import com.example.nostack.utils.Image;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,8 +74,9 @@ public class AttendeeEvent extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +88,7 @@ public class AttendeeEvent extends Fragment {
             Log.d("AttendeeEvent", "Event: " + event.getName());
         }
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
         image = new Image(getActivity());
@@ -98,14 +96,14 @@ public class AttendeeEvent extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -124,16 +122,16 @@ public class AttendeeEvent extends Fragment {
         });
 
 
-
         // Inflate the layout for this fragment only once
         return view;
     }
 
     /**
      * This method is called when the fragment has been created and then allows for navigation
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     *
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -201,7 +199,7 @@ public class AttendeeEvent extends Fragment {
 
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if(user != null){
+            if (user != null) {
                 image.setUserProfileImage(user, eventProfileImage);
             }
         });
