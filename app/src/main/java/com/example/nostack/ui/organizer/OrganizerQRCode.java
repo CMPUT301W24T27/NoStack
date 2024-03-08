@@ -1,6 +1,9 @@
 package com.example.nostack.ui.organizer;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -18,6 +22,10 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +45,29 @@ public class OrganizerQRCode extends Fragment {
 
     public OrganizerQRCode() {
         // Required empty public constructor
+    }
+
+    public Uri getImageUri(Bitmap bitmap) {
+        File cachePath = new File(getContext().getCacheDir(), "images");
+        cachePath.mkdirs();
+        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File imagePath = new File(getContext().getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        return FileProvider.getUriForFile(getContext(),"com.example.nostack.provider", newFile);
+    }
+
+    public void shareImageUri(Uri imageUri, Context context) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/png");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
     }
 
     /**
@@ -106,6 +137,7 @@ public class OrganizerQRCode extends Fragment {
         }
 
         ImageView qrCodeImageView = view.findViewById(R.id.OrganizerQRImage);
+        Bitmap qrBmp = bmp;
         qrCodeImageView.setImageBitmap(bmp);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
@@ -115,6 +147,19 @@ public class OrganizerQRCode extends Fragment {
             }
         });
 
+        view.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri imageUri = getImageUri(qrBmp);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                shareIntent.setType("image/png");
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }
+        });
 
         return view;
     }

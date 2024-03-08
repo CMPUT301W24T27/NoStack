@@ -6,17 +6,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.ui.organizer.OrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -74,20 +77,34 @@ public class AttendeeBrowse extends Fragment{
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
         eventList.setAdapter(eventArrayAdapter);
 
-
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
+
+        eventsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    eventArrayAdapter.addEvent(event);
+                    Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                }
+            }
+        });
+
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = eventArrayAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);
+
+                NavHostFragment.findNavController(AttendeeBrowse.this)
+                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+            }
+        });
+
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
             if (user != null) {
-                eventsRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
-                        }
-                    }
-                });
+
             }
             else{
                 Log.d("AttendeeHome", "User is null");
