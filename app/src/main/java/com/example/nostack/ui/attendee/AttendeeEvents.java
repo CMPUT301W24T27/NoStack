@@ -19,6 +19,7 @@ import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.EventCheckinHandler;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -69,28 +70,29 @@ public class AttendeeEvents extends Fragment{
         eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
         eventList.setAdapter(eventArrayAdapter);
 
-
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-
             if (user != null) {
-                eventsRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                eventsRef.where(Filter.arrayContains("attendees", user.getUuid()))
+                    .get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Reset the list of events
+                            eventArrayAdapter.clear();
+
+                            // Add the events to the list
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Event event = document.toObject(Event.class);
+                                eventArrayAdapter.addEvent(event);
+                                Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                            }
+                            eventArrayAdapter.notifyDataSetChanged();
+                            Log.d("EventAdd", "Event Added");
                         }
-                    }
-                });
-//                eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Event event = eventArrayAdapter.getItem(position);
-//                        EventCheckinHandler ecHandler = new EventCheckinHandler();
-//                        ecHandler.checkInUser(event.getId(), user.getUuid());
-//                    }
-//                });
+                        else {
+                            Log.d("EventAdd", "Error getting documents: ", task.getException());
+                        }
+                    });
+
             }
             else{
                 Log.d("AttendeeHome", "User is null");

@@ -146,7 +146,6 @@ public class Profile extends User{
                     }
                 } else {
                     Log.w("Profile class", "User does not exist: " + uuid);
-//                    createProfile();
                     res.complete(false);
                 }
             } else {

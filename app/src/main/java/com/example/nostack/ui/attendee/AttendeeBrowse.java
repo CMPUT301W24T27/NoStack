@@ -101,15 +101,15 @@ public class AttendeeBrowse extends Fragment{
             }
         });
 
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-
-            if (user != null) {
-
-            }
-            else{
-                Log.d("AttendeeHome", "User is null");
-            }
-        });
+//        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+//
+//            if (user != null) {
+//
+//            }
+//            else{
+//                Log.d("AttendeeHome", "User is null");
+//            }
+//        });
 
         // Return the modified layout
         return rootView;
