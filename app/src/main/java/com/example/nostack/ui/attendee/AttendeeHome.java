@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -35,6 +36,7 @@ import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.ScanActivity;
 import com.example.nostack.utils.EventCheckinHandler;
 import com.example.nostack.utils.GenerateProfileImage;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -272,9 +274,10 @@ public class AttendeeHome extends Fragment {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Scan Result");
-            builder.setMessage(result.getContents());
+            // for testing
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//            builder.setTitle("Scan Result");
+//            builder.setMessage(result.getContents());
 
             // Check if the QR code is for an event description or check-in
             // "result" is a string of type 0.uuid or 1.uuid
@@ -283,41 +286,32 @@ public class AttendeeHome extends Fragment {
             } else if (result.getContents().charAt(0) == '1') {
                 handleEventDescQR(result.getContents().substring(2));
             }
-            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            }).show();
+//            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    dialogInterface.dismiss();
+//                }
+//            }).show();
         }
     });
 
     public void handleEventDescQR(String eventUID) {
-        DocumentReference docRef = eventsRef.document(eventUID);
+        DocumentReference eventRef = eventsRef.document("36cdc8b1-3bb2-4625-8d34-14fed20f3d98");
 
-        // read action
-        docRef.get().addOnCompleteListener(task -> {
+        eventRef.get().addOnCompleteListener(task ->  {
 
-            // if read action is successful
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
-
                 if (document.exists()) {
-
                     Event event = document.toObject(Event.class);
-                    Bundle eventInfo_bundle = new Bundle();
-
-                    //TODO: pass event data not using a bundle
-                    // Navigate to event description page, pass event data as bundle in eventInfo_bundle
-                    eventInfo_bundle.putString("eventName", event.getName());
-                    eventInfo_bundle.putString("eventLocation", event.getLocation());
-                    eventInfo_bundle.putString("eventDescription", event.getDescription());
-                    eventInfo_bundle.putString("eventBannerImgUrl", event.getEventBannerImgUrl());
-                    eventInfo_bundle.putString("eventID", eventUID);
+                    Log.d("AttendeeHome", "Event: " + event.getName());
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event", event);
                     NavHostFragment.findNavController(AttendeeHome.this)
-                            .navigate(R.id.action_attendeeHome_to_attendeeEvent);
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
                 }
             }
+
         });
     }
 
