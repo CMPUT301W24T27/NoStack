@@ -147,18 +147,21 @@ public class organizer_event extends Fragment {
 
         // Set Event Banner
         String uri_eventBanner = event.getEventBannerImgUrl();
-        // Get image from firebase storage
-        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
-        final long ONE_MEGABYTE = 1024 * 1024;
 
-        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-            eventBanner.setImageDrawable(d);
-        }).addOnFailureListener(exception -> {
-            Log.w("User Profile", "Error getting profile image", exception);
-        });
+        if(uri_eventBanner!= null) {
+            // Get image from firebase storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                eventBanner.setImageDrawable(d);
+            }).addOnFailureListener(exception -> {
+                Log.w("User Profile", "Error getting profile image", exception);
+            });
+        }
     }
 
     /**

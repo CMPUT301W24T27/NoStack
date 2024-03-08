@@ -120,8 +120,6 @@ public class AttendeeHome extends Fragment {
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
-
-
     }
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment

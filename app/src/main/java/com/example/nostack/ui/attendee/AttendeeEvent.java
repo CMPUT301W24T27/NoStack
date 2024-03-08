@@ -3,17 +3,26 @@ package com.example.nostack.ui.attendee;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.State.UserViewModel;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +42,11 @@ public class AttendeeEvent extends Fragment {
     private String mParam1;
     private String mParam2;
     private Event event;
+    private UserViewModel userViewModel;
+    private FirebaseFirestore db;
+    private CollectionReference eventsRef;
+    boolean registered;
+    Button register;
 
 
     public AttendeeEvent() {
@@ -51,7 +65,6 @@ public class AttendeeEvent extends Fragment {
     public static AttendeeEvent newInstance(String param1, String param2) {
         AttendeeEvent fragment = new AttendeeEvent();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         args.putSerializable(ARG_PARAM2, param1);
 
@@ -73,6 +86,10 @@ public class AttendeeEvent extends Fragment {
             event = (Event) getArguments().getSerializable("event");
             Log.d("AttendeeEvent", "Event: " + event.getName());
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
     }
 
     /**
@@ -92,6 +109,17 @@ public class AttendeeEvent extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
         updateScreenInformation(view);
+        register = view.findViewById(R.id.AttendeeEventRegisterButton);
+
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            registered = event.getAttendees().contains(user.getUuid());
+
+            if (registered) {
+                register.setText("Unregister");
+            }
+        });
+
+
 
         // Inflate the layout for this fragment only once
         return view;
@@ -106,12 +134,33 @@ public class AttendeeEvent extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        register.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                    registered = event.getAttendees().contains(user.getUuid());
+
+                    if (registered) {
+                        event.removeAttendee(user.getUuid());
+                        eventsRef.document(event.getId()).set(event);
+                        Snackbar.make(getView(), "Unregistered from event", Snackbar.LENGTH_LONG).show();
+                        register.setText("Register");
+                    } else {
+                        event.addAttendee(user.getUuid());
+                        eventsRef.document(event.getId()).set(event);
+                        Snackbar.make(getView(), "Registered for event", Snackbar.LENGTH_LONG).show();
+                        register.setText("Unregister");
+                    }
+                });
+            }
+        });
+
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 NavHostFragment.findNavController(AttendeeEvent.this)
                         .navigate(R.id.action_attendeeEvent_to_attendeeHome);
             }
         });
+
     }
 
     public void updateScreenInformation(@NonNull View view) {
@@ -120,6 +169,7 @@ public class AttendeeEvent extends Fragment {
         TextView eventLocation = view.findViewById(R.id.AttendeeEventLocationText);
         TextView eventStartDate = view.findViewById(R.id.AttendeeEventDateText);
         TextView eventStartTime = view.findViewById(R.id.AttendeeEventTimeText);
+        TextView eventAttendees = view.findViewById(R.id.UsersGoing);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
         DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
@@ -141,5 +191,6 @@ public class AttendeeEvent extends Fragment {
         Log.d("AttendeeEvent", "EventMSG" + event.getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
+        eventAttendees.setText("Attendees: " + event.getAttendees().size());
     }
 }

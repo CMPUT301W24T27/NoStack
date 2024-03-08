@@ -193,7 +193,6 @@ public class Event implements Serializable {
      * @param attendee The attendee to be added to the event
      */
     public boolean addAttendee(String attendee) {
-
         if ((capacity > 0) && (currentCapacity >= capacity)) {
             return false;
         }
@@ -209,8 +208,8 @@ public class Event implements Serializable {
      * This function removes the attendee at the event
      * @param attendee The attendee to be removed from the event
      */
-    public void removeAttendeee(User attendee) {
-        if (!attendees.contains(attendee)) {
+    public void removeAttendee(String attendee) {
+        if (attendees.contains(attendee)) {
             attendees.remove(attendee);
             currentCapacity--;
         }
