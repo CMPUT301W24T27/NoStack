@@ -50,8 +50,8 @@ public class OrganizerQRCode extends Fragment {
 
     public Uri getImageUri(Bitmap bitmap) {
         File cachePath = new File(getContext().getCacheDir(), "images");
-        cachePath.mkdirs(); // Create images directory if not exists
-        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) { // Overwrites this image every time
+        cachePath.mkdirs();
+        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,7 +70,6 @@ public class OrganizerQRCode extends Fragment {
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
     }
-
 
     /**
      * Use this factory method to create a new instance of
@@ -134,7 +133,7 @@ public class OrganizerQRCode extends Fragment {
         view.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri imageUri = getImageUri(qrBmp); // Replace "YourActivity.this" with your actual activity context
+                Uri imageUri = getImageUri(qrBmp);
 
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
