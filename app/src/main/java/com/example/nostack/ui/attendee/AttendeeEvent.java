@@ -13,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.Image;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -47,6 +49,7 @@ public class AttendeeEvent extends Fragment {
     private CollectionReference eventsRef;
     boolean registered;
     Button register;
+    private Image image;
 
 
     public AttendeeEvent() {
@@ -90,6 +93,7 @@ public class AttendeeEvent extends Fragment {
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
+        image = new Image(getActivity());
     }
 
     /**
@@ -170,6 +174,7 @@ public class AttendeeEvent extends Fragment {
         TextView eventStartDate = view.findViewById(R.id.AttendeeEventDateText);
         TextView eventStartTime = view.findViewById(R.id.AttendeeEventTimeText);
         TextView eventAttendees = view.findViewById(R.id.UsersGoing);
+        ImageView eventImage = view.findViewById(R.id.AttendeeEventImage);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
         DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
@@ -192,5 +197,8 @@ public class AttendeeEvent extends Fragment {
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
         eventAttendees.setText("Attendees: " + event.getAttendees().size());
+
+        // Set the event image
+        image.setEventImage(event, eventImage);
     }
 }
