@@ -3,7 +3,9 @@ package com.example.nostack.utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-
+/**
+ * This class is used to create the announcement object for an event
+ */
 public class Announcement {
     private String announcementMessage;
     private LocalDateTime announcementDateTime;

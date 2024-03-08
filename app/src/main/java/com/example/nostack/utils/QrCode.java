@@ -2,7 +2,9 @@ package com.example.nostack.utils;
 
 
 import java.util.UUID;
-
+/**
+ * This class is used to create the QR code object for an event
+ */
 public class QrCode {
 
     private int type; // 0 for check in, 1 for event details
@@ -13,7 +15,13 @@ public class QrCode {
 
     public QrCode() {
     }
-
+    /**
+     * This method is used to create a new instance of the QR code object using the provided parameters.
+     *
+     * @param type The type of the QR code
+     * @param code The code of the QR code
+     * @param eventId The event id of the QR code
+     */
     public QrCode(int type, String code, String eventId) {
         this.type = type;
         this.code = code;

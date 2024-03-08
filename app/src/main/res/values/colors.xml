@@ -11,4 +11,5 @@
     <color name="transparent">#00ffffff</color>
     <color name="SignUpInMenuColor">#252525</color>
     <color name="SignInUpTextColor">#86CDEA</color>
+    <color name="darkGrey">#131313</color>
 </resources>

@@ -22,7 +22,7 @@ tools:context=".ui.attendee.AttendeeEvent">
         app:layout_constraintTop_toBottomOf="@+id/OrganizerEventImage">
 
         <TextView
-            android:id="@+id/OrganizerEventTitleText"
+            android:id="@+id/AttendeeEventTitleText"
             android:layout_width="302dp"
             android:layout_height="32dp"
             android:layout_marginTop="8dp"
@@ -48,7 +48,7 @@ tools:context=".ui.attendee.AttendeeEvent">
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTitleText"
+            app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText"
             app:layout_constraintVertical_bias="0.666" />
 
         <Button
@@ -59,7 +59,7 @@ tools:context=".ui.attendee.AttendeeEvent">
             android:background="@drawable/share_icon"
             app:layout_constraintBottom_toTopOf="@+id/OrganizerEventDescriptionText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/OrganizerEventTitleText" />
+            app:layout_constraintStart_toEndOf="@+id/AttendeeEventTitleText" />
 
         <TextView
             android:id="@+id/OrganizerEventDateText"
@@ -79,7 +79,7 @@ tools:context=".ui.attendee.AttendeeEvent">
             app:layout_constraintVertical_bias="0.3" />
 
         <ImageView
-            android:id="@+id/OrganizerEventUserImage"
+            android:id="@+id/AttendeeEventUserImage"
             android:layout_width="58dp"
             android:layout_height="47dp"
             android:src="@drawable/baseline_account_circle_24"
@@ -96,7 +96,7 @@ tools:context=".ui.attendee.AttendeeEvent">
             android:layout_height="27dp"
             android:src="@drawable/baseline_location_on_24"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/OrganizerEventUserImage"
+            app:layout_constraintEnd_toStartOf="@+id/AttendeeEventUserImage"
             app:layout_constraintHorizontal_bias="0.062"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTimeText"
@@ -115,7 +115,7 @@ tools:context=".ui.attendee.AttendeeEvent">
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.757"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/OrganizerEventUserImage"
+            app:layout_constraintTop_toBottomOf="@+id/AttendeeEventUserImage"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
@@ -127,10 +127,10 @@ tools:context=".ui.attendee.AttendeeEvent">
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/OrganizerEventLocationText"
-            app:layout_constraintEnd_toStartOf="@+id/OrganizerEventUserImage"
+            app:layout_constraintEnd_toStartOf="@+id/AttendeeEventUserImage"
             app:layout_constraintHorizontal_bias="0.082"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/OrganizerEventUserImage"
+            app:layout_constraintTop_toTopOf="@+id/AttendeeEventUserImage"
             app:layout_constraintVertical_bias="0.774" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

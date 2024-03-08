@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,8 +37,7 @@ import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link organizer_event#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the organizer event fragment so an organizer can manage their event
  */
 public class organizer_event extends Fragment {
 
@@ -56,6 +56,9 @@ public class organizer_event extends Fragment {
     private UserViewModel userViewModel;
     private TextView msgTV;
 
+    private Button attendeeListButton;
+
+
     public organizer_event() {
         // Required empty public constructor
     }
@@ -63,7 +66,6 @@ public class organizer_event extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      * @param param1 Parameter 1.
      * @return A new instance of fragment organizer_event.
      */
@@ -76,14 +78,18 @@ public class organizer_event extends Fragment {
         return fragment;
     }
 
+    /**
+     * Updates the screen information with the event data
+     * @param view The view that the information will be updated on
+     */
     public void updateScreenInformation(@NonNull View view) {
-        TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
+        TextView eventTitle = view.findViewById(R.id.AttendeeEventTitleText);
         TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
         TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
         TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
         TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
 
-        ImageView eventProfileImage = view.findViewById(R.id.OrganizerEventUserImage);
+        ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
         ImageView eventBanner = view.findViewById(R.id.OrganizerEventImage);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
@@ -155,6 +161,14 @@ public class organizer_event extends Fragment {
         });
     }
 
+    /**
+     * This method is called when the fragment is being created and checks to see if there are any arguments
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
+    @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -168,6 +182,19 @@ public class organizer_event extends Fragment {
         dataList = new ArrayList<>();
     }
 
+    /**
+     * This method is called when the fragment needs to create its view and it will
+     *      control the navigation of the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -180,7 +207,7 @@ public class organizer_event extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(organizer_event.this)
-                        .popBackStack();
+                        .navigate(R.id.action_organizer_event_to_organizerHome);
             }
         });
 
@@ -195,12 +222,13 @@ public class organizer_event extends Fragment {
             }
         });
 
+
         view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
-
                 NavHostFragment.findNavController(organizer_event.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
             }
