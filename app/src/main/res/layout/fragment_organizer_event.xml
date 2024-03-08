@@ -212,31 +212,31 @@ tools:context=".ui.attendee.AttendeeEvent">
 
         <Button
             android:id="@+id/button_see_attendees"
-            android:layout_width="173dp"
-            android:layout_height="69dp"
+            android:layout_width="160dp"
+            android:layout_height="66dp"
             android:backgroundTint="@color/lightBlue"
             android:text="See Attendees"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_manage_announcements"
-            app:layout_constraintHorizontal_bias="0.592"
+            app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.916" />
+            app:layout_constraintVertical_bias="0.92" />
 
         <Button
             android:id="@+id/button_manage_announcements"
-            android:layout_width="173dp"
-            android:layout_height="69dp"
+            android:layout_width="160dp"
+            android:layout_height="66dp"
             android:backgroundTint="@color/lightBlue"
             android:text="Manage Announcements"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.925"
+            app:layout_constraintHorizontal_bias="0.883"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.934" />
+            app:layout_constraintVertical_bias="0.92" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
