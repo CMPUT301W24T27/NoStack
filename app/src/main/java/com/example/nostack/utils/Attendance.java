@@ -1,6 +1,7 @@
 package com.example.nostack.utils;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Represents the attendance of a user at an event
  */
@@ -9,7 +10,7 @@ public class Attendance {
     private String userId;
     private String eventId;
     private int numCheckIn;
-    private Location geoLocation;
+    private GeoLocation geoLocation;
     public Attendance() {}
     public Attendance(String userId, String eventId) {
         id = buildAttendanceId(eventId, userId);
@@ -58,11 +59,11 @@ public class Attendance {
         return userId + "-" + eventId;
     }
 
-    public Location getGeoLocation() {
+    public GeoLocation getGeoLocation() {
         return geoLocation;
     }
 
-    public void setGeoLocation(Location gl) {
+    public void setGeoLocation(GeoLocation gl) {
         this.geoLocation = gl;
     }
 }
