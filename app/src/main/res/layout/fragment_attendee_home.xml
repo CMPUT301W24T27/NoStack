@@ -14,13 +14,13 @@
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/event_tab_navigation"
-            android:layout_width="371dp"
-            android:layout_height="597dp"
-            app:layout_constraintBottom_toTopOf="@+id/scanQRButton"
+            android:layout_width="379dp"
+            android:layout_height="564dp"
+            app:layout_constraintBottom_toTopOf="@+id/dots_indicator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.544" />
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout1"
+            app:layout_constraintVertical_bias="0.443" />
 
         <GridLayout
             android:id="@+id/gridLayout1"
@@ -73,8 +73,8 @@
 
         <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
             android:id="@+id/dots_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="65dp"
+            android:layout_height="20dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="21dp"
             app:dotsColor="@color/white"
@@ -103,7 +103,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.50"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dots_indicator"
+            
             app:layout_constraintVertical_bias="0.98" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
