@@ -315,6 +315,9 @@ public class AttendeeHome extends Fragment {
 
     public void handleCheckInQR(String eventUID) {
         EventCheckinHandler ecHandler = new EventCheckinHandler(getActivity(), getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Check-in Successful!");
+        builder.setMessage("You have successfully checked in to the event!");
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -325,6 +328,13 @@ public class AttendeeHome extends Fragment {
                 }
             }
         });
+
+        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).show();
 
     }
 }
