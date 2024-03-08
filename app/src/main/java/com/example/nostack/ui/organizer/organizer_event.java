@@ -103,7 +103,7 @@ public class organizer_event extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(organizer_event.this)
-                        .popBackStack();
+                        .navigate(R.id.action_organizer_event_to_organizerHome);
             }
         });
 
