@@ -120,8 +120,7 @@ public class OrganizerEvent extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerHome);
+                NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
             }
         });
 

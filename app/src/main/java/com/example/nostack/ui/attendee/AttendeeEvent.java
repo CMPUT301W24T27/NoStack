@@ -158,8 +158,7 @@ public class AttendeeEvent extends Fragment {
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NavHostFragment.findNavController(AttendeeEvent.this)
-                        .navigate(R.id.action_attendeeEvent_to_attendeeHome);
+                NavHostFragment.findNavController(AttendeeEvent.this).popBackStack();
             }
         });
 
