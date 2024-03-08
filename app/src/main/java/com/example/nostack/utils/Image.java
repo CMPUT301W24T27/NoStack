@@ -28,6 +28,12 @@ public class Image {
         screenWidth = metrics.widthPixels;
         screenHeight = metrics.heightPixels;
     }
+
+    /**
+     * Set the event image for the event
+     * @param event
+     * @param eventBanner
+     */
     public void setEventImage(Event event, ImageView eventBanner){
         String uri_eventBanner = event.getEventBannerImgUrl();
 

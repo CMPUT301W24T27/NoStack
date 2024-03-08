@@ -39,7 +39,7 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  * Creates the organizer event fragment so an organizer can manage their event
  */
-public class organizer_event extends Fragment {
+public class OrganizerEvent extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,7 +59,7 @@ public class organizer_event extends Fragment {
     private Button attendeeListButton;
 
 
-    public organizer_event() {
+    public OrganizerEvent() {
         // Required empty public constructor
     }
 
@@ -70,8 +70,8 @@ public class organizer_event extends Fragment {
      * @return A new instance of fragment organizer_event.
      */
     // TODO: Rename and change types and number of parameters
-    public static organizer_event newInstance(Event param1) {
-        organizer_event fragment = new organizer_event();
+    public static OrganizerEvent newInstance(Event param1) {
+        OrganizerEvent fragment = new OrganizerEvent();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
@@ -209,7 +209,7 @@ public class organizer_event extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(organizer_event.this)
+                NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizer_event_to_organizerHome);
             }
         });
@@ -220,7 +220,7 @@ public class organizer_event extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
 
-                NavHostFragment.findNavController(organizer_event.this)
+                NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
             }
         });
@@ -231,7 +231,7 @@ public class organizer_event extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
 
-                NavHostFragment.findNavController(organizer_event.this)
+                NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
             }
         });
@@ -241,7 +241,7 @@ public class organizer_event extends Fragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
-                NavHostFragment.findNavController(organizer_event.this)
+                NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
             }
         });

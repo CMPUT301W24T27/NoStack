@@ -78,7 +78,7 @@
         tools:layout="@layout/fragment_organizer_view_event" />
     <fragment
         android:id="@+id/organizer_event"
-        android:name="com.example.nostack.ui.organizer.organizer_event"
+        android:name="com.example.nostack.ui.organizer.OrganizerEvent"
         android:label="fragment_organizer_event"
         tools:layout="@layout/fragment_organizer_event" >
         <action
