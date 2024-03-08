@@ -51,4 +51,5 @@ dependencies {
     implementation("com.tbuonomo:dotsindicator:5.0")
     implementation ("com.google.android.gms:play-services-maps:18.0.0")
     implementation ("org.osmdroid:osmdroid-android:6.1.7")
+    implementation(files("C:/Users/nilsd/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 }
