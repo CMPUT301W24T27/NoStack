@@ -12,6 +12,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
@@ -21,6 +22,7 @@ import com.example.nostack.utils.EventCheckinHandler;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -73,7 +75,8 @@ public class AttendeeEvents extends Fragment{
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                eventsRef.where(Filter.arrayContains("attendees", user.getUuid()))
+                eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
+                    .where(Filter.arrayContains("attendees", user.getUuid()))
                     .get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Reset the list of events
@@ -96,6 +99,19 @@ public class AttendeeEvents extends Fragment{
             }
             else{
                 Log.d("AttendeeHome", "User is null");
+            }
+        });
+
+        // Clickable event list
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = eventArrayAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);
+
+                NavHostFragment.findNavController(AttendeeEvents.this)
+                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
             }
         });
 
