@@ -1,21 +1,38 @@
 package com.example.nostack.ui.organizer;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.GenerateProfileImage;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -32,7 +49,15 @@ public class organizer_event extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private String mParam2;
+    private ArrayList<Event> dataList;
+    private FirebaseFirestore db;
+    private CollectionReference eventsRef;
+    private Activity activity;
+    private UserViewModel userViewModel;
+    private TextView msgTV;
+
     private Button attendeeListButton;
+
 
     public organizer_event() {
         // Required empty public constructor
@@ -58,11 +83,14 @@ public class organizer_event extends Fragment {
      * @param view The view that the information will be updated on
      */
     public void updateScreenInformation(@NonNull View view) {
-        TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
+        TextView eventTitle = view.findViewById(R.id.AttendeeEventTitleText);
         TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
         TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
         TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
         TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+
+        ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
+        ImageView eventBanner = view.findViewById(R.id.OrganizerEventImage);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
         DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
@@ -71,6 +99,11 @@ public class organizer_event extends Fragment {
         String endDate = df.format(event.getEndDate());
         String startTime = tf.format(event.getStartDate());
         String endTime = tf.format(event.getEndDate());
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
 
         if (!startDate.equals(endDate)) {
             eventStartDate.setText(startDate + " to");
@@ -83,6 +116,49 @@ public class organizer_event extends Fragment {
         eventTitle.setText(event.getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
+
+        //set profile image
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user.getProfileImageUrl() != null) {
+                String uri = user.getProfileImageUrl();
+
+                // Get image from firebase storage
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                final long ONE_MEGABYTE = 1024 * 1024;
+
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 300, 300, false);
+                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                    eventProfileImage.setImageDrawable(d);
+                }).addOnFailureListener(exception -> {
+                    Log.w("User Profile", "Error getting profile image", exception);
+                });
+            }
+            else{
+                // generate profile image if user has no profile image
+                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                d.setCornerRadius(100f);
+                eventProfileImage.setImageDrawable(d);
+            }
+        });
+
+        // Set Event Banner
+        String uri_eventBanner = event.getEventBannerImgUrl();
+        // Get image from firebase storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
+        final long ONE_MEGABYTE = 1024 * 1024;
+
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+            eventBanner.setImageDrawable(d);
+        }).addOnFailureListener(exception -> {
+            Log.w("User Profile", "Error getting profile image", exception);
+        });
     }
 
     /**
@@ -92,11 +168,18 @@ public class organizer_event extends Fragment {
      * a previous saved state, this is the state.
      */
     @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             event = (Event) getArguments().getSerializable("eventData");
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+        activity = getActivity();
+        dataList = new ArrayList<>();
     }
 
     /**
@@ -139,18 +222,17 @@ public class organizer_event extends Fragment {
             }
         });
 
-        view.findViewById(R.id.OrganizerEventAttendeesButton).setOnClickListener(new View.OnClickListener() {
+
+        view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
-
                 NavHostFragment.findNavController(organizer_event.this)
-                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
             }
         });
-
-
 
         return view;
     }
