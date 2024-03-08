@@ -1,7 +1,6 @@
 package com.example.nostack.ui.organizer;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -84,8 +83,9 @@ public class OrganizerHome extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class OrganizerHome extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
         activity = getActivity();
@@ -104,25 +104,25 @@ public class OrganizerHome extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_organizer_home,container,false);
+        View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
-        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
+        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -130,19 +130,18 @@ public class OrganizerHome extends Fragment {
                 Log.d("OrganizerHome", "User logged in: " + user.getFirstName());
                 userWelcome.setText(user.getFirstName());
 
-                eventsRef.whereEqualTo("organizerId",user.getUuid()).get().addOnCompleteListener(task -> {
+                eventsRef.whereEqualTo("organizerId", user.getUuid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Event event = document.toObject(Event.class);
                             if (!eventArrayAdapter.containsEvent(event)) {
                                 eventArrayAdapter.addEvent(event);
-                                Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                                Log.d("EventAdd", document.toObject(Event.class).getName());
                             }
                         }
                     }
                 });
-            }
-            else{
+            } else {
                 Log.d("OrganizerHome", "User is null");
             }
         });
@@ -169,7 +168,7 @@ public class OrganizerHome extends Fragment {
                 bundle.putSerializable("eventData", event);
 
                 NavHostFragment.findNavController(OrganizerHome.this)
-                        .navigate(R.id.action_organizerHome_to_organizer_event,bundle);
+                        .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
             }
         });
 
@@ -199,8 +198,7 @@ public class OrganizerHome extends Fragment {
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);
                 });
-            }
-            else{
+            } else {
                 // generate profile image if user has no profile image
                 Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
                 Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);

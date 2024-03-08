@@ -7,13 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +15,12 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TimePicker;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
@@ -121,7 +120,7 @@ public class OrganizerEventCreate extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_organizer_event_create,container,false);
+        View view = inflater.inflate(R.layout.fragment_organizer_event_create, container, false);
 
         eventTitleEditText = view.findViewById(R.id.EventCreationTitleEditText);
         eventStartEditText = view.findViewById(R.id.EventCreationStartDateTimeEditText);
@@ -150,7 +149,7 @@ public class OrganizerEventCreate extends Fragment {
                     eventDescEditText.setError("Event description is required");
                 } else if (eventLimitEditText.getText() != null
                         && (!eventLimitEditText.getText().toString().isEmpty())
-                        && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)){
+                        && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)) {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
 
@@ -230,7 +229,6 @@ public class OrganizerEventCreate extends Fragment {
             }
 
 
-
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -258,14 +256,14 @@ public class OrganizerEventCreate extends Fragment {
         DatePickerDialog dateDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
-                t.setText(String.valueOf(year)+"-"+String.valueOf(month+1)+"-"+String.valueOf(day));
+                t.setText(year + "-" + (month + 1) + "-" + day);
             }
         }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 
         TimePickerDialog timeDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hour, int minute) {
-                t.append(" "+String.valueOf(hour)+":"+String.valueOf(minute));
+                t.append(" " + hour + ":" + minute);
             }
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
 

@@ -141,14 +141,6 @@
             app:layout_constraintTop_toBottomOf="@+id/AttendeeEventDescriptionText"
             app:layout_constraintVertical_bias="0.277">
 
-            <ImageView
-                android:id="@+id/AttendeeEventUserImage"
-                android:layout_width="58dp"
-                android:layout_height="47dp"
-                android:src="@drawable/baseline_account_circle_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/AttendeeEventTimeText"
                 android:layout_width="wrap_content"
@@ -216,12 +208,9 @@
                 android:id="@+id/UsersGoing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:text="Attending"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventUserImage"
-                app:layout_constraintVertical_bias="0.111" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

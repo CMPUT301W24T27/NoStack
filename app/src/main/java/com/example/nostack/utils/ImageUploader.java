@@ -1,22 +1,14 @@
 package com.example.nostack.utils;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -30,12 +22,14 @@ public class ImageUploader {
 
     public interface UploadListener {
         void onUploadSuccess(String imageUrl);
+
         void onUploadFailure(Exception exception);
     }
 
     /**
      * Upload an image to Firebase Cloud Storage
-     * @param path The path to store the image in Firebase Cloud Storage ex. user profile, event image, etc.
+     *
+     * @param path     The path to store the image in Firebase Cloud Storage ex. user profile, event image, etc.
      * @param imageUri The URI of the image to upload
      * @param listener The listener to handle the upload success or failure
      */
@@ -68,9 +62,11 @@ public class ImageUploader {
                 .addOnFailureListener(listener::onUploadFailure);
     }
 
-    /** Save image to local storage
+    /**
+     * Save image to local storage
+     *
      * @param imageBitmap The bitmap of the image to save
-     * @param filename The filename to save the image as
+     * @param filename    The filename to save the image as
      */
     public static Uri saveImage(Bitmap imageBitmap, String filename) {
         // Save to app's own directory

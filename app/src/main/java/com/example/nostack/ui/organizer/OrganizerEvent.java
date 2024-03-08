@@ -1,7 +1,8 @@
-package com.example.nostack.ui.attendee;
+package com.example.nostack.ui.organizer;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +20,19 @@ import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.Image;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * Creates the AttendeeEvent fragment which is used to display the events that the user is potentially attending
+ * A simple {@link Fragment} subclass.
+ * Creates the organizer event fragment so an organizer can manage their event
  */
-public class AttendeeEvent extends Fragment {
+public class OrganizerEvent extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,18 +40,20 @@ public class AttendeeEvent extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private Event event;
-    private UserViewModel userViewModel;
+    private String mParam2;
+    private ArrayList<Event> dataList;
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
-    boolean registered;
-    Button register;
+    private Activity activity;
+    private UserViewModel userViewModel;
+    private TextView msgTV;
+
+    private Button attendeeListButton;
     private Image image;
 
 
-    public AttendeeEvent() {
+    public OrganizerEvent() {
         // Required empty public constructor
     }
 
@@ -58,44 +62,43 @@ public class AttendeeEvent extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AttendeeEvent.
+     * @return A new instance of fragment organizer_event.
      */
     // TODO: Rename and change types and number of parameters
-    public static AttendeeEvent newInstance(String param1, String param2) {
-        AttendeeEvent fragment = new AttendeeEvent();
+    public static OrganizerEvent newInstance(Event param1) {
+        OrganizerEvent fragment = new OrganizerEvent();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM2, param2);
-        args.putSerializable(ARG_PARAM2, param1);
-
+        args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
 
+
     /**
-     * This method is called when the fragment is being created and then sets up the variables for the view
+     * This method is called when the fragment is being created and checks to see if there are any arguments
      *
      * @param savedInstanceState If the fragment is being re-created from
      *                           a previous saved state, this is the state.
      */
     @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            event = (Event) getArguments().getSerializable("event");
-            Log.d("AttendeeEvent", "Event: " + event.getName());
+            event = (Event) getArguments().getSerializable("eventData");
         }
 
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
+        activity = getActivity();
+        dataList = new ArrayList<>();
         image = new Image(getActivity());
     }
 
     /**
-     * This method is called when the fragment is being created and then sets up the view for the fragment
+     * This method is called when the fragment needs to create its view and it will
+     * control the navigation of the fragment
      *
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
@@ -109,71 +112,68 @@ public class AttendeeEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
+
         updateScreenInformation(view);
-        register = view.findViewById(R.id.AttendeeEventRegisterButton);
 
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            registered = event.getAttendees().contains(user.getUuid());
-
-            if (registered) {
-                register.setText("Unregister");
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerHome);
             }
         });
 
+        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
 
-        // Inflate the layout for this fragment only once
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
+            }
+        });
+
+        view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+            }
+        });
+
+        view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
+            }
+        });
+
         return view;
     }
 
     /**
-     * This method is called when the fragment has been created and then allows for navigation
+     * Updates the screen information with the event data
      *
-     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
+     * @param view The view that the information will be updated on
      */
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        register.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-                    registered = event.getAttendees().contains(user.getUuid());
-
-                    if (registered) {
-                        event.removeAttendee(user.getUuid());
-                        eventsRef.document(event.getId()).set(event);
-                        Snackbar.make(getView(), "Unregistered from event", Snackbar.LENGTH_LONG).show();
-                        register.setText("Register");
-                    } else {
-                        event.addAttendee(user.getUuid());
-                        eventsRef.document(event.getId()).set(event);
-                        Snackbar.make(getView(), "Registered for event", Snackbar.LENGTH_LONG).show();
-                        register.setText("Unregister");
-                    }
-                });
-            }
-        });
-
-        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                NavHostFragment.findNavController(AttendeeEvent.this)
-                        .navigate(R.id.action_attendeeEvent_to_attendeeHome);
-            }
-        });
-
-    }
-
     public void updateScreenInformation(@NonNull View view) {
         TextView eventTitle = view.findViewById(R.id.AttendeeEventTitleText);
-        TextView eventDescription = view.findViewById(R.id.AttendeeEventDescriptionText);
-        TextView eventLocation = view.findViewById(R.id.AttendeeEventLocationText);
-        TextView eventStartDate = view.findViewById(R.id.AttendeeEventDateText);
-        TextView eventStartTime = view.findViewById(R.id.AttendeeEventTimeText);
-        TextView eventAttendees = view.findViewById(R.id.UsersGoing);
-        ImageView eventImage = view.findViewById(R.id.AttendeeEventImage);
+        TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
+        TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
+        TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
+        TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+
         ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
+        ImageView eventBanner = view.findViewById(R.id.OrganizerEventImage);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
         DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
@@ -182,6 +182,11 @@ public class AttendeeEvent extends Fragment {
         String endDate = df.format(event.getEndDate());
         String startTime = tf.format(event.getStartDate());
         String endTime = tf.format(event.getEndDate());
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
 
         if (!startDate.equals(endDate)) {
             eventStartDate.setText(startDate + " to");
@@ -192,10 +197,8 @@ public class AttendeeEvent extends Fragment {
         }
 
         eventTitle.setText(event.getName());
-        Log.d("AttendeeEvent", "EventMSG" + event.getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
-        eventAttendees.setText("Attendees: " + event.getAttendees().size());
 
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -204,7 +207,7 @@ public class AttendeeEvent extends Fragment {
             }
         });
 
-        // Set the event image
-        image.setEventImage(event, eventImage);
+        // Set Event Banner
+        image.setEventImage(event, eventBanner);
     }
 }

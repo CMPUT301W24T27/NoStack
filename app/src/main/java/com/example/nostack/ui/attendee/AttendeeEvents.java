@@ -18,7 +18,6 @@ import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.utils.EventCheckinHandler;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,11 +25,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Creates the AttendeeEvents fragment which is used to display the events that the attendee is attending
  */
-public class AttendeeEvents extends Fragment{
+public class AttendeeEvents extends Fragment {
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private ArrayList<Event> dataList;
@@ -40,26 +40,31 @@ public class AttendeeEvents extends Fragment{
     private Activity activity;
 
 
-    public AttendeeEvents(){}
+    public AttendeeEvents() {
+    }
+
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
     }
+
     /**
      * This method is called when the fragment is being created and displays the view for the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
-     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
-     *                  The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                           The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
      * @return The View for the fragment's UI, or null.
      */
@@ -69,35 +74,33 @@ public class AttendeeEvents extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
 
         eventList = rootView.findViewById(R.id.listView_upcomingEvents);
-        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
+        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
-                    .where(Filter.arrayContains("attendees", user.getUuid()))
-                    .get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Reset the list of events
-                            eventArrayAdapter.clear();
+                        .where(Filter.arrayContains("attendees", user.getUuid()))
+                        .get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Reset the list of events
+                                eventArrayAdapter.clear();
 
-                            // Add the events to the list
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Event event = document.toObject(Event.class);
-                                eventArrayAdapter.addEvent(event);
-                                Log.d("EventAdd", "" + document.toObject(Event.class).getName());
+                                // Add the events to the list
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Event event = document.toObject(Event.class);
+                                    eventArrayAdapter.addEvent(event);
+                                    Log.d("EventAdd", document.toObject(Event.class).getName());
+                                }
+                                eventArrayAdapter.notifyDataSetChanged();
+                                Log.d("EventAdd", "Event Added");
+                            } else {
+                                Log.d("EventAdd", "Error getting documents: ", task.getException());
                             }
-                            eventArrayAdapter.notifyDataSetChanged();
-                            Log.d("EventAdd", "Event Added");
-                        }
-                        else {
-                            Log.d("EventAdd", "Error getting documents: ", task.getException());
-                        }
-                    });
+                        });
 
-            }
-            else{
+            } else {
                 Log.d("AttendeeHome", "User is null");
             }
         });
