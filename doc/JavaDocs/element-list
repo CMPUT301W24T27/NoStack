@@ -1,0 +1,9 @@
+com.example.nostack
+com.example.nostack.model.Events
+com.example.nostack.model.Profile
+com.example.nostack.model.State
+com.example.nostack.model.User
+com.example.nostack.ui
+com.example.nostack.ui.attendee
+com.example.nostack.ui.organizer
+com.example.nostack.utils
