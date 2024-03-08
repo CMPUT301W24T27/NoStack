@@ -45,11 +45,11 @@ public class OrganizerEventCreate extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM1 = "eventData";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Event event;
     private String mParam2;
     private Activity activity;
     private ImageUploader imageUploader;
@@ -79,15 +79,15 @@ public class OrganizerEventCreate extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param event Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment OrganizerEvent.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrganizerEventCreate newInstance(String param1, String param2) {
+    public static OrganizerEventCreate newInstance(Event event, String param2) {
         OrganizerEventCreate fragment = new OrganizerEventCreate();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putSerializable(ARG_PARAM1, event);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -97,7 +97,7 @@ public class OrganizerEventCreate extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            event = (Event) getArguments().getSerializable(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
@@ -133,6 +133,9 @@ public class OrganizerEventCreate extends Fragment {
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
         eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
         backButton = view.findViewById(R.id.backButton);
+
+        // Check if the event is being edited
+        checkEditEvent();
 
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,14 +217,19 @@ public class OrganizerEventCreate extends Fragment {
 
         Event newEvent = null;
         try {
-            newEvent = new Event(
-                    eventTitleEditText.getText().toString(),
-                    eventLocationEditText.getText().toString(),
-                    eventDescEditText.getText().toString(),
-                    formatter.parse(startDateString),
-                    formatter.parse(endDateString),
-                    userUUID
-            );
+            if(event != null){
+                newEvent = event;
+            }
+            else {
+                newEvent = new Event(
+                        eventTitleEditText.getText().toString(),
+                        eventLocationEditText.getText().toString(),
+                        eventDescEditText.getText().toString(),
+                        formatter.parse(startDateString),
+                        formatter.parse(endDateString),
+                        userUUID
+                );
+            }
 
             if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
                 int limit = Integer.parseInt(eventLimitEditText.getText().toString());
@@ -267,7 +275,8 @@ public class OrganizerEventCreate extends Fragment {
             }
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
 
-        timeDialog.show();
+        // Show the date dialog first when it closes show the time dialog
+        dateDialog.setOnDismissListener(dialog -> timeDialog.show());
         dateDialog.show();
     }
 
@@ -286,5 +295,20 @@ public class OrganizerEventCreate extends Fragment {
                 // TODO: Show error to user
             }
         });
+    }
+
+    private void checkEditEvent() {
+        if (event != null) {
+            String startDate = new SimpleDateFormat("yyyy-M-d hh:mm").format(event.getStartDate());
+            String endDate = new SimpleDateFormat("yyyy-M-d hh:mm").format(event.getEndDate());
+
+            eventTitleEditText.setText(event.getName());
+            eventLocationEditText.setText(event.getLocation());
+            eventDescEditText.setText(event.getDescription());
+            eventStartEditText.setText(startDate);
+            eventEndEditText.setText(endDate);
+            eventLimitEditText.setText(String.valueOf(event.getCapacity()));
+            eventImageView.setTag(event.getEventBannerImgUrl());
+        }
     }
 }
