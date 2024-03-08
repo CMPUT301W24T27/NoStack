@@ -211,59 +211,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/OrganizerEventTimeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Event Start Time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.041"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventDateText" />
-
-            <TextView
-                android:id="@+id/OrganizerEventDateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="420dp"
-                android:text="Event Start Date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.043"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText" />
-
-            <ImageView
-                android:id="@+id/OrganizerEventLocationIcon"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/baseline_location_on_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTimeText"
-                app:tint="@color/yellow" />
-
-            <TextView
-                android:id="@+id/OrganizerEventLocationText"
-                android:layout_width="302dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:text="Event Location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/OrganizerEventLocationIcon"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTimeText" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
