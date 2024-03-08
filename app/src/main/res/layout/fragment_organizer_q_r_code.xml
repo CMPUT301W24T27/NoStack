@@ -26,6 +26,25 @@
         app:srcCompat="@drawable/outline_arrow_back_24"
         app:tint="@color/yellow" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        app:borderWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/share_icon"
+        app:tint="@color/yellow" />
+
     <LinearLayout
         android:id="@+id/OrganizerQRBackground"
         android:layout_width="0dp"
@@ -57,7 +76,7 @@
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="25dp"
         android:backgroundTint="@color/white"
-        android:text="Export QR"
+        android:text="Get Event Page QR Code"
         android:textAppearance="@style/TextAppearance.AppCompat.Display4"
         android:textColor="@color/black"
         android:textSize="16sp"
