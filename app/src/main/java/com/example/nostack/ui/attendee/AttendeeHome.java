@@ -314,7 +314,7 @@ public class AttendeeHome extends Fragment {
     }
 
     public void handleCheckInQR(String eventUID) {
-        EventCheckinHandler ecHandler = new EventCheckinHandler();
+        EventCheckinHandler ecHandler = new EventCheckinHandler(getActivity(), getContext());
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
