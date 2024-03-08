@@ -210,28 +210,8 @@ public class OrganizerEvent extends Fragment {
 
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user.getProfileImageUrl() != null) {
-                String uri = user.getProfileImageUrl();
-
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 300, 300, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                    eventProfileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            } else {
-                // generate profile image if user has no profile image
-                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                d.setCornerRadius(100f);
-                eventProfileImage.setImageDrawable(d);
+            if(user != null){
+                image.setUserProfileImage(user, eventProfileImage);
             }
         });
 

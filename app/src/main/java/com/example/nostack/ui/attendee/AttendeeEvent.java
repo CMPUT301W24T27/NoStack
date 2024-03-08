@@ -175,6 +175,7 @@ public class AttendeeEvent extends Fragment {
         TextView eventStartTime = view.findViewById(R.id.AttendeeEventTimeText);
         TextView eventAttendees = view.findViewById(R.id.UsersGoing);
         ImageView eventImage = view.findViewById(R.id.AttendeeEventImage);
+        ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
         DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
@@ -197,6 +198,13 @@ public class AttendeeEvent extends Fragment {
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
         eventAttendees.setText("Attendees: " + event.getAttendees().size());
+
+        //set profile image
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if(user != null){
+                image.setUserProfileImage(user, eventProfileImage);
+            }
+        });
 
         // Set the event image
         image.setEventImage(event, eventImage);
