@@ -3,6 +3,12 @@ package com.example.nostack.ui.organizer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +16,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventAttendeesArrayAdapter;
+import com.example.nostack.model.Events.EventRegisteredArrayAdapter;
 import com.example.nostack.utils.Attendance;
 import com.example.nostack.utils.AttendeeLocations;
 import com.example.nostack.utils.GeoLocation;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Creates the fragment for the organizer to be able to see the event attendee list
  */
-public class OrganizerEventAttendeeList extends Fragment {
+public class usersSignups extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,13 +44,11 @@ public class OrganizerEventAttendeeList extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Event event;
-    private FirebaseFirestore db;
-    private CollectionReference attendanceRef;
-    private EventAttendeesArrayAdapter attendeesArrayAdapter;
-    private ArrayList<Attendance> dataList;
-    private ListView attendeeList;
+    private EventRegisteredArrayAdapter arrayAdapter;
+    private ArrayList<String> dataList;
+    private ListView signupList;
 
-    public OrganizerEventAttendeeList() {
+    public usersSignups() {
         // Required empty public constructor
     }
 
@@ -70,9 +70,8 @@ public class OrganizerEventAttendeeList extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
-     *
      * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
+     * a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,44 +79,35 @@ public class OrganizerEventAttendeeList extends Fragment {
         if (getArguments() != null) {
             event = (Event) getArguments().getSerializable("eventData");
         }
-
-        db = FirebaseFirestore.getInstance();
-        attendanceRef = db.collection("attendance");
         dataList = new ArrayList<>();
     }
 
     /**
      * This method is called when the fragment is being created and then sets up the view for the fragment
-     *
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
-     *                           but this can be used to generate the LayoutParams of the view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
+     * from a previous saved state as given here.
+     *
      * @return
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_organizer_event_attendee_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_users_signups, container, false);
 
-        attendeeList = view.findViewById(R.id.event_signup_list_listview);
-        attendeesArrayAdapter = new EventAttendeesArrayAdapter(getContext(), dataList, this);
-        attendeeList.setAdapter(attendeesArrayAdapter);
+        signupList = view.findViewById(R.id.event_signup_list_listview);
+        arrayAdapter = new EventRegisteredArrayAdapter(getContext(), dataList, this);
+        signupList.setAdapter(arrayAdapter);
 
-        attendanceRef.whereEqualTo("eventId", event.getId()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot doc : task.getResult()) {
-                    Attendance attendance = doc.toObject(Attendance.class);
-                    if (!attendeesArrayAdapter.containsAttendance(attendance)) {
-                        attendeesArrayAdapter.addAttendance(attendance);
-                    }
-                }
-            }
-        });
+        ArrayList<String> userIds = event.getAttendees();
+        for (String u: userIds) {
+            arrayAdapter.add(u);
+        }
 
         updateScreenInformation(view);
         return view;
@@ -146,30 +136,7 @@ public class OrganizerEventAttendeeList extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
 
-                NavHostFragment.findNavController(OrganizerEventAttendeeList.this)
-                        .navigate(R.id.action_organizerEventAttendeeList_to_organizer_event, bundle);
-            }
-        });
-
-        view.findViewById(R.id.event_attendee_list_show_map).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AttendeeLocations locations = new AttendeeLocations();
-
-                for (int i = 0; i < attendeesArrayAdapter.getCount(); i++) {
-                    Attendance att = attendeesArrayAdapter.getItem(i);
-                    GeoLocation l = att.getGeoLocation();
-                    if (l != null) {
-                        locations.addLocations(att.getGeoLocation());
-                    }
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("locations", locations);
-
-                NavHostFragment.findNavController(OrganizerEventAttendeeList.this)
-                        .navigate(R.id.action_organizerEventAttendeeList_to_organizerAttendeeMap, bundle);
+                NavHostFragment.findNavController(usersSignups.this).popBackStack();
             }
         });
     }

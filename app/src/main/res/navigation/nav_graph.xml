@@ -93,6 +93,9 @@
         <action
             android:id="@+id/action_organizer_event_to_organizerHome"
             app:destination="@id/organizerHome" />
+        <action
+            android:id="@+id/action_organizer_event_to_usersSignups"
+            app:destination="@id/usersSignups" />
 
     </fragment>
     <fragment
@@ -120,6 +123,15 @@
         <action
             android:id="@+id/action_organizerAttendeeMap_to_organizerEventAttendeeList"
             app:destination="@id/organizerEventAttendeeList" />
+    </fragment>
+    <fragment
+        android:id="@+id/usersSignups"
+        android:name="com.example.nostack.ui.organizer.usersSignups"
+        android:label="fragment_users_signups"
+        tools:layout="@layout/fragment_users_signups" >
+        <action
+            android:id="@+id/action_usersSignups_to_organizer_event"
+            app:destination="@id/organizer_event" />
     </fragment>
 
 
