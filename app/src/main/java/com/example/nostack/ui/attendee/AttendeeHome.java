@@ -32,6 +32,7 @@ import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.ScanActivity;
+import com.example.nostack.utils.EventCheckinHandler;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -291,13 +292,18 @@ public class AttendeeHome extends Fragment {
         });
     }
 
-    public void handleCheckInQR(String qrCode) {
-        DocumentReference docRef = eventsRef.document(qrCode);
-        //need to still get the UUID of the user and put it into the vale field
-        docRef.update("attendees", "UUID").addOnSuccessListener(aVoid -> {
-            Snackbar.make(activity.findViewById(android.R.id.content), "Checked in successfully", Snackbar.LENGTH_LONG).show();
-        }).addOnFailureListener(e -> {
-            Snackbar.make(activity.findViewById(android.R.id.content), "Error checking in", Snackbar.LENGTH_LONG).show();
+    public void handleCheckInQR(String eventUID) {
+        EventCheckinHandler ecHandler = new EventCheckinHandler();
+
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                try {
+                    ecHandler.checkInUser(eventUID, user.getUuid());
+                } catch (Exception e) {
+                    Log.e("AttendeeHome", "Error checking in user: " + e);
+                }
+            }
         });
+
     }
 }
