@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -64,6 +65,7 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventLocationEditText;
     private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
+    private Button createButton;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
     private SharedPreferences preferences;
@@ -133,11 +135,12 @@ public class OrganizerEventCreate extends Fragment {
         eventImageView = view.findViewById(R.id.EventCreationEventImageView);
         eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
         backButton = view.findViewById(R.id.backButton);
+        createButton = view.findViewById(R.id.EventCreationCreateEventButton);
 
         // Check if the event is being edited
         checkEditEvent();
 
-        view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventTitleEditText.getText().toString().isEmpty()) {
@@ -219,6 +222,11 @@ public class OrganizerEventCreate extends Fragment {
         try {
             if(event != null){
                 newEvent = event;
+                newEvent.setName(eventTitleEditText.getText().toString());
+                newEvent.setLocation(eventLocationEditText.getText().toString());
+                newEvent.setDescription(eventDescEditText.getText().toString());
+                newEvent.setStartDate(formatter.parse(startDateString));
+                newEvent.setEndDate(formatter.parse(endDateString));
             }
             else {
                 newEvent = new Event(
@@ -251,8 +259,14 @@ public class OrganizerEventCreate extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.w("Firestore", "New event successfully added!");
-                        Snackbar.make(activity.findViewById(android.R.id.content), "New event created.", Snackbar.LENGTH_LONG).show();
+                        if(event != null){
+                            Log.w("Firestore", "Event updated.");
+                            Snackbar.make(activity.findViewById(android.R.id.content), "Event updated.", Snackbar.LENGTH_LONG).show();
+                        }
+                        else {
+                            Log.w("Firestore", "Event created.");
+                            Snackbar.make(activity.findViewById(android.R.id.content), "New event created.", Snackbar.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Log.w("Firestore", "Error creating event", e));
@@ -309,6 +323,8 @@ public class OrganizerEventCreate extends Fragment {
             eventEndEditText.setText(endDate);
             eventLimitEditText.setText(String.valueOf(event.getCapacity()));
             eventImageView.setTag(event.getEventBannerImgUrl());
+
+            createButton.setText("Update Event");
         }
     }
 }

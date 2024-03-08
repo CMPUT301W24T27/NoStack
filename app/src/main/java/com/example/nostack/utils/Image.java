@@ -46,8 +46,8 @@ public class Image {
 
             storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), scaledBmp);
+//                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), bmp);
                 eventBanner.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
                 Log.w("User Profile", "Error getting profile image", exception);
