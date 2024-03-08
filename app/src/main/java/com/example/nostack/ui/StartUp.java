@@ -19,8 +19,8 @@ import com.example.nostack.model.User.User;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link StartUp#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the StartUp fragment which is used to display the start up page for the user to decide
+ *      to be an attendee or organizer or login as an admin
  */
 public class StartUp extends Fragment {
 
@@ -58,6 +58,12 @@ public class StartUp extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the variables for the view
+     *      and checks if the user profile already exists
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,19 @@ public class StartUp extends Fragment {
         profile = new Profile(getActivity());
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the view for the fragment
+     *        also sets up the buttons for the user to decide to be an attendee or organizer or login as an admin
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,6 +132,11 @@ public class StartUp extends Fragment {
         return view;
     }
 
+    /**
+     * This method displays the necessary dialogue boxes to create a profile
+     * @param container The parent view that the fragment's UI should be attached to.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     */
     private void showCreateProfile(ViewGroup container, LayoutInflater inflater) {
         View dialogue = inflater.inflate(R.layout.user_info_pop_up, container, false);
 

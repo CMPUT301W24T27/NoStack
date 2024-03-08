@@ -23,6 +23,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
+ */
 public class AttendeeBrowse extends Fragment{
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
@@ -35,6 +38,11 @@ public class AttendeeBrowse extends Fragment{
 
     public AttendeeBrowse(){}
 
+    /**
+     * This method is called when the fragment is being created and then sets up the variables for the view
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -45,6 +53,18 @@ public class AttendeeBrowse extends Fragment{
         dataList = new ArrayList<>();
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the view for the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Returns the modified view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment only once

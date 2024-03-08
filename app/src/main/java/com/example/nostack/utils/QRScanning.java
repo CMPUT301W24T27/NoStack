@@ -12,8 +12,7 @@ import com.example.nostack.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QRScanning#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the QRScanning fragment which is used to display the QR scanning page for the user to scan the QR code
  */
 public class QRScanning extends Fragment {
 
@@ -31,8 +30,7 @@ public class QRScanning extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Creates a new instance of the QRScanning fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
@@ -48,6 +46,12 @@ public class QRScanning extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the variables for the view
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,18 @@ public class QRScanning extends Fragment {
         }
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the view for the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

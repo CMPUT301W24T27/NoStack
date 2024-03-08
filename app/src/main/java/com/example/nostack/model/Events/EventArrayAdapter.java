@@ -26,17 +26,30 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+
 public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     private ConstraintLayout layout;
     private Fragment currFragment;
     private ArrayList<Event> ourEvents;
 
+    /**
+     * Constructor for the EventArrayAdapter
+     * @param context The context of the current activity
+     * @param events The list of events to display
+     * @param currfragment The current fragment
+     */
     public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, Fragment currfragment) {
         super(context, 0,events);
         currFragment = currfragment;
         ourEvents = events;
     }
+
+    /**
+     * Check if the event is already in the list
+     * @param event The event to check
+     * @return Returns true if the event is in the list, false otherwise
+     */
     public boolean containsEvent(Event event) {
         boolean contained = false;
         for (Event event1:ourEvents) {
@@ -44,9 +57,23 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         }
         return contained;
     }
+
+    /**
+     * Add an event to the list
+     * @param event The event to add
+     */
     public void addEvent(Event event) {
         add(event);
     }
+
+    /**
+     * Get the view of the event
+     * @param position The position of the item within the adapter's data set of the item whose view
+     *        we want.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent The parent that this view will eventually be attached to
+     * @return Returns the view of the event
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

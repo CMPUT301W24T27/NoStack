@@ -38,7 +38,7 @@ public class UserViewModel extends ViewModel
     }
 
     /**
-     * Update the user object stored in firestore
+     * Updates the user object stored in Firestore
      * @param user new user object to be stored
      */
     public void updateUser(User user) {

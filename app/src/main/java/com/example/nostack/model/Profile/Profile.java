@@ -72,6 +72,10 @@ public class Profile extends User{
 //        }
     }
 
+    /**
+     * Get the UUID of the user
+     * @return Returns the UUID of the user
+     */
     public String getUuid() {
         return uuid;
     }
@@ -82,6 +86,7 @@ public class Profile extends User{
 
     /**
      * Create a new user profile
+     * @param user The user data to create a new profile
      */
     public void createProfile(User user){
         uuid = UUID.randomUUID().toString();

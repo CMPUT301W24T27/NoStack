@@ -52,8 +52,7 @@ import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AttendeeHome#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the AttendeeHome fragment which is used to display the home page for the attendee
  */
 public class AttendeeHome extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -102,6 +101,12 @@ public class AttendeeHome extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the variables for the view
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +123,18 @@ public class AttendeeHome extends Fragment {
 
 
     }
-
+    /**
+     * This method is called when the fragment is being created and then sets up the view for the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment only once
@@ -159,7 +175,12 @@ public class AttendeeHome extends Fragment {
         // Return the modified layout
         return rootView;
     }
-
+    /**
+     * This method is called when the fragment has been created and also sets up the buttons
+     * @param view The View returned by onCreateView
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
@@ -212,7 +233,11 @@ public class AttendeeHome extends Fragment {
         public MyFragmentAdapter(Fragment fragment) {
             super(fragment);
         }
-
+        /**
+         * This method is called when the fragment is being created and then sets up the view for the fragment
+         * @param position The position of the fragment
+         * @return a null fragment if there is an exception
+         */
         @Override
         public Fragment createFragment(int position) {
             try {
@@ -227,7 +252,10 @@ public class AttendeeHome extends Fragment {
             return fragments.length;
         }
     }
-
+    /**
+     * This method allows the user to scan a QR code by launching the ScanActivity
+     *
+     */
     private void scanCode() {
         ScanOptions scanOptions = new ScanOptions();
         scanOptions.setPrompt("Scan the QR code");

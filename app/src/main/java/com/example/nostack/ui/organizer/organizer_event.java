@@ -19,8 +19,6 @@ import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link organizer_event#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class organizer_event extends Fragment {
 
@@ -40,7 +38,6 @@ public class organizer_event extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      * @param param1 Parameter 1.
      * @return A new instance of fragment organizer_event.
      */
@@ -53,6 +50,10 @@ public class organizer_event extends Fragment {
         return fragment;
     }
 
+    /**
+     * Updates the screen information with the event data
+     * @param view The view that the information will be updated on
+     */
     public void updateScreenInformation(@NonNull View view) {
         TextView eventTitle = view.findViewById(R.id.OrganizerEventTitleText);
         TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
@@ -81,6 +82,12 @@ public class organizer_event extends Fragment {
         eventLocation.setText(event.getLocation());
     }
 
+    /**
+     * This method is called when the fragment is being created and checks to see if there are any arguments
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +96,19 @@ public class organizer_event extends Fragment {
         }
     }
 
+    /**
+     * This method is called when the fragment needs to create its view and it will
+     *      control the navigation of the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -21,8 +21,7 @@ import com.google.zxing.common.BitMatrix;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerQRCode#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the fragment to display the QR code for the event and allow for exporting of the QR code
  */
 public class OrganizerQRCode extends Fragment {
 
@@ -55,6 +54,11 @@ public class OrganizerQRCode extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is being created and checks
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,19 @@ public class OrganizerQRCode extends Fragment {
         }
     }
 
+    /**
+     *  This method is called when the fragment needs to create its view and it will
+     *       generate a QR code for the event
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Returns the view created
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
