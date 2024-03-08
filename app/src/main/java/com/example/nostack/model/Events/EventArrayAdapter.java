@@ -26,7 +26,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-
+/**
+ * EventArrayAdapter is an ArrayAdapter for the Event class
+ */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     private ConstraintLayout layout;

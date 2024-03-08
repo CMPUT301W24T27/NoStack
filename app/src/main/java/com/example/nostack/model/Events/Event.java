@@ -10,8 +10,12 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * This class is to create the object of an Event
+ * Event will
+ *      Contain an event’s info,
+ *      Manage event attendance, and announcements,
+ *      Generate a QR code for event check-in and event page.
  */
+
 public class Event implements Serializable {
     private String name;
     private String location;
@@ -123,8 +127,7 @@ public class Event implements Serializable {
 
     /**
      * This function gets the name of the event
-     * @return
-     *      Returns the name of the event
+     * @return Returns the name of the event
      */
     public String getName() {
         return name;
@@ -132,15 +135,14 @@ public class Event implements Serializable {
 
     /**
      * This function sets the name of the event
-     * @param name
+     * @param name The name of the event
      */
     public void setName(String name) {
         this.name = name;
     }
     /**
      * This function gets the location of the event
-     * @return
-     *      Returns the location of the event
+     * @return Returns the location of the event
      */
     public String getLocation() {
         return location;
@@ -151,15 +153,14 @@ public class Event implements Serializable {
     }
     /**
      * This function gets the description of the event
-     * @return
-     *      Returns the description of the event
+     * @return Returns the description of the event
      */
     public String getDescription() {
         return description;
     }
     /**
      * This function sets the description of the event
-     * @param description
+     * @param description The description of the event
      */
     public void setDescription(String description) {
         this.description = description;
@@ -238,7 +239,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the start date of the event
-     * @param startDate
+     * @param startDate The start date of the event
      */
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
@@ -252,7 +253,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the end date of the event
-     * @param endDate
+     * @param endDate The end date of the event
      */
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
@@ -266,7 +267,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the Qr code to check into the event
-     * @param checkInQr
+     * @param checkInQr The Qr code to check into the event
      */
     public void setCheckInQr(QrCode checkInQr) {
         this.checkInQr = checkInQr;
@@ -280,7 +281,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the Qr code for the event
-     * @param eventQr
+     * @param eventQr The Qr code for the event
      */
     public void setEventQr(QrCode eventQr) {
         this.eventQr = eventQr;
@@ -294,7 +295,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the Id of the organizer of the event
-     * @param organizerId
+     * @param organizerId The Id of the organizer of the event
      */
     public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
@@ -308,7 +309,7 @@ public class Event implements Serializable {
     }
     /**
      * This function sets the URL of the banner image for the event
-     * @param eventBannerImgUrl
+     * @param eventBannerImgUrl The URL of the banner image for the event
      */
     public void setEventBannerImgUrl(String eventBannerImgUrl) {
         this.eventBannerImgUrl = eventBannerImgUrl;

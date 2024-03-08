@@ -18,19 +18,31 @@ public class User {
     private String role;
     private String uuid;
     private String profileImageUrl;
-
+     /**
+     * Get the role of the user
+     * @return The role of the user
+     */
     public String getRole() {
         return role;
     }
-
+    /**
+     * Set the role of the user
+     * @param role The role of the user
+     */
     public void setRole(String role) {
         this.role = role;
     }
-
+    /**
+     * Get the username of the user
+     * @return The username of the user
+     */
     public String getUsername() {
         return username;
     }
-
+    /**
+     * Set the username of the User
+     * @param username The username of the user
+     */
     public void setUsername(String username) {
         this.username = username;
     }
@@ -41,7 +53,7 @@ public class User {
 
     /**
      * Sets the gender of the User
-     * @param gender
+     * @param gender The gender of the user
      */
     public void setGender(String gender) {
         this.gender = gender;

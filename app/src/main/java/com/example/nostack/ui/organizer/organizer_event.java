@@ -19,6 +19,7 @@ import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Creates the organizer event fragment so an organizer can manage their event
  */
 public class organizer_event extends Fragment {
 
