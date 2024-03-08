@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
@@ -250,9 +251,9 @@ public class AttendeeHome extends Fragment {
             // Check if the QR code is for an event description or check-in
             // "result" is a string of type 0.uuid or 1.uuid
             if (result.getContents().charAt(0) == '0') {
-                handleEventDescQR(result.getContents().substring(2));
-            } else if (result.getContents().charAt(0) == '1') {
                 handleCheckInQR(result.getContents().substring(2));
+            } else if (result.getContents().charAt(0) == '1') {
+                handleEventDescQR(result.getContents().substring(2));
             }
             builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                 @Override
