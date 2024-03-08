@@ -77,4 +77,5 @@ public class AttendeeEvent extends Fragment {
             }
         });
     }
+
 }
