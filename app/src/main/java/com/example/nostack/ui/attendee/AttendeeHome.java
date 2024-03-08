@@ -263,8 +263,8 @@ public class AttendeeHome extends Fragment {
         }
     });
 
-    public void handleEventDescQR(String qrCode) {
-        DocumentReference docRef = eventsRef.document(qrCode);
+    public void handleEventDescQR(String eventUID) {
+        DocumentReference docRef = eventsRef.document(eventUID);
 
         // read action
         docRef.get().addOnCompleteListener(task -> {
@@ -284,7 +284,7 @@ public class AttendeeHome extends Fragment {
                     eventInfo_bundle.putString("eventLocation", event.getLocation());
                     eventInfo_bundle.putString("eventDescription", event.getDescription());
                     eventInfo_bundle.putString("eventBannerImgUrl", event.getEventBannerImgUrl());
-                    eventInfo_bundle.putString("eventID", qrCode);
+                    eventInfo_bundle.putString("eventID", eventUID);
                     NavHostFragment.findNavController(AttendeeHome.this)
                             .navigate(R.id.action_attendeeHome_to_attendeeEvent);
                 }
