@@ -20,7 +20,6 @@ public class Attendance implements Serializable {
         this.eventId  = eventId;
         this.numCheckIn = 1;
     }
-
     public String getId() {
         return id;
     }

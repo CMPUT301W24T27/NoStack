@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -26,15 +27,20 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.ScanActivity;
+import com.example.nostack.utils.EventCheckinHandler;
 import com.example.nostack.utils.GenerateProfileImage;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -266,15 +272,69 @@ public class AttendeeHome extends Fragment {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Scan Result");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            // for testing
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//            builder.setTitle("Scan Result");
+//            builder.setMessage(result.getContents());
+
+            // Check if the QR code is for an event description or check-in
+            // "result" is a string of type 0.uuid or 1.uuid
+            if (result.getContents().charAt(0) == '0') {
+                handleCheckInQR(result.getContents().substring(2));
+            } else if (result.getContents().charAt(0) == '1') {
+                handleEventDescQR(result.getContents().substring(2));
+            }
+//            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    dialogInterface.dismiss();
+//                }
+//            }).show();
+        }
+    });
+
+    public void handleEventDescQR(String eventUID) {
+        DocumentReference eventRef = eventsRef.document("36cdc8b1-3bb2-4625-8d34-14fed20f3d98");
+
+        eventRef.get().addOnCompleteListener(task ->  {
+
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Event event = document.toObject(Event.class);
+                    Log.d("AttendeeHome", "Event: " + event.getName());
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event", event);
+                    NavHostFragment.findNavController(AttendeeHome.this)
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                }
+            }
+
+        });
+    }
+
+    public void handleCheckInQR(String eventUID) {
+        EventCheckinHandler ecHandler = new EventCheckinHandler(getActivity(), getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Check-in Successful!");
+        builder.setMessage("You have successfully checked in to the event!");
+
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                try {
+                    ecHandler.checkInUser(eventUID, user.getUuid());
+                } catch (Exception e) {
+                    Log.e("AttendeeHome", "Error checking in user: " + e);
+                }
+            }
+        });
+
+        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                 }
             }).show();
-        }
-    });
+
+    }
 }
