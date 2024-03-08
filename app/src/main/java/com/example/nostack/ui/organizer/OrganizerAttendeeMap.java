@@ -106,6 +106,10 @@ public class OrganizerAttendeeMap extends Fragment {
                 marker.setPosition(new GeoPoint(c.getLatitude(), c.getLongitude()));
                 mapView.getOverlays().add(marker);
             }
+        } else {
+            // Default to U of A if nobody has checked in (or enabled locations)
+            GeoPoint mapCenter = new GeoPoint(53.523, -113.526);
+            mapController.setCenter(mapCenter);
         }
 
 
