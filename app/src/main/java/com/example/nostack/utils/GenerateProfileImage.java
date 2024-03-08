@@ -9,6 +9,12 @@ public class GenerateProfileImage {
     public GenerateProfileImage() {
     }
 
+    /**
+     * Generate a profile image from the user's first and last name
+     * @param firstName The user's first name
+     * @param lastName The user's last name
+     * @return Returns the generated profile image
+     */
     public static Bitmap generateProfileImage(String firstName, String lastName) {
         // Generate a profile image from the user's first and last name
         String initials = firstName.substring(0, 1) + lastName.substring(0, 1);
@@ -29,6 +35,10 @@ public class GenerateProfileImage {
         return bitmap;
     }
 
+    /**
+     * Generate a random RGB color
+     * @return Returns the generated RGB color
+     */
     private static int[] generateRGB(){
         int[] rgb = new int[3];
         rgb[0] = (int) (Math.random() * 256);

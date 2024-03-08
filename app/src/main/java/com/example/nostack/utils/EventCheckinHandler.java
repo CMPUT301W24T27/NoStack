@@ -13,7 +13,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/**
+ * Handles the check-in process for an event
+ */
 public class EventCheckinHandler {
     private FirebaseFirestore db;
     private CollectionReference attendanceRef;
@@ -23,7 +25,11 @@ public class EventCheckinHandler {
         attendanceRef = db.collection("attendance");
         eventsRef = db.collection("events");
     }
-
+    /**
+     * Checks in a user to an event
+     * @param eventId The ID of the event
+     * @param userId The ID of the user
+     */
     public void checkInUser(String eventId, String userId) {
 
         DocumentReference eventDocRef = eventsRef.document(eventId);

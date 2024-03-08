@@ -1,7 +1,9 @@
 package com.example.nostack.utils;
 
 import android.location.Location;
-
+/**
+ * Represents the attendance of a user at an event
+ */
 public class Attendance {
     private String id;
     private String userId;

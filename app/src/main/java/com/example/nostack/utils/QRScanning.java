@@ -1,4 +1,4 @@
-package com.example.nostack.ui.organizer;
+package com.example.nostack.utils;
 
 import android.os.Bundle;
 
@@ -12,10 +12,9 @@ import com.example.nostack.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Creates the OrganizerViewEvent fragment which is used to display the event that the organizer is hosting
- *       and allow for management of the event
+ * Creates the QRScanning fragment which is used to display the QR scanning page for the user to scan the QR code
  */
-public class OrganizerViewEvent extends Fragment {
+public class QRScanning extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,21 +25,20 @@ public class OrganizerViewEvent extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public OrganizerViewEvent() {
+    public QRScanning() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Creates a new instance of the QRScanning fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment OrganizerViewEvent.
+     * @return A new instance of fragment QRScanning.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrganizerViewEvent newInstance(String param1, String param2) {
-        OrganizerViewEvent fragment = new OrganizerViewEvent();
+    public static QRScanning newInstance(String param1, String param2) {
+        QRScanning fragment = new QRScanning();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -50,6 +48,7 @@ public class OrganizerViewEvent extends Fragment {
 
     /**
      * This method is called when the fragment is being created and then sets up the variables for the view
+     *
      * @param savedInstanceState If the fragment is being re-created from
      * a previous saved state, this is the state.
      */
@@ -78,6 +77,6 @@ public class OrganizerViewEvent extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_organizer_view_event, container, false);
+        return inflater.inflate(R.layout.fragment_q_r_scanning, container, false);
     }
 }

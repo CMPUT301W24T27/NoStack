@@ -33,8 +33,8 @@ import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserProfile#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the UserProfile fragment which is used to display the user's profile and allow for editing of the profile
+ *       and the profile picture
  */
 public class UserProfile extends Fragment {
 
@@ -56,11 +56,24 @@ public class UserProfile extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * Allows the user to select a profile picture
+     */
     private void selectProfilePicture() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, IMAGE_PICK_CODE);
     }
 
+    /**
+     * This method allows for the class to get the Image URI and upload the profile image
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -70,6 +83,10 @@ public class UserProfile extends Fragment {
         }
     }
 
+    /**
+     * Allows the user to upload a profile picture using the imageUri
+     * @param imageUri The Uri of the image to be uploaded
+     */
     private void uploadProfileImage(Uri imageUri) {
         imageUploader.uploadImage("user/profile/", imageUri, new ImageUploader.UploadListener() {
             @Override
@@ -86,6 +103,10 @@ public class UserProfile extends Fragment {
         });
     }
 
+    /**
+     * Updates the user's profile with the imageUrl
+     * @param imageUrl The URL of the image to be uploaded
+     */
     private void updateUserWithImageUrl(String imageUrl) {
         // Update user profile with the downloaded image URL
 
@@ -101,9 +122,7 @@ public class UserProfile extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
+     * Creates the view for the UserProfile fragment
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment UserProfile.
@@ -118,6 +137,11 @@ public class UserProfile extends Fragment {
         return fragment;
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the variables for the view
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +153,19 @@ public class UserProfile extends Fragment {
         imageUploader = new ImageUploader();
     }
 
+    /**
+     * This method is called when the fragment is being created and then sets up the view for the fragment
+     *      and sets up the buttons for the user to edit their profile
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
