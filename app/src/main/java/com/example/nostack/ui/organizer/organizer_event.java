@@ -225,9 +225,18 @@ public class organizer_event extends Fragment {
             }
         });
 
+        view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(organizer_event.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+            }
+        });
 
         view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();

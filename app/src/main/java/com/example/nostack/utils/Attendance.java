@@ -2,10 +2,12 @@ package com.example.nostack.utils;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+
 /**
  * Represents the attendance of a user at an event
  */
-public class Attendance {
+public class Attendance implements Serializable {
     private String id;
     private String userId;
     private String eventId;
