@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +25,7 @@ import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.GenerateProfileImage;
+import com.example.nostack.utils.Image;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -57,6 +58,7 @@ public class OrganizerEvent extends Fragment {
     private TextView msgTV;
 
     private Button attendeeListButton;
+    private Image image;
 
 
     public OrganizerEvent() {
@@ -66,6 +68,7 @@ public class OrganizerEvent extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @param param1 Parameter 1.
      * @return A new instance of fragment organizer_event.
      */
@@ -78,8 +81,96 @@ public class OrganizerEvent extends Fragment {
         return fragment;
     }
 
+
+    /**
+     * This method is called when the fragment is being created and checks to see if there are any arguments
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            event = (Event) getArguments().getSerializable("eventData");
+        }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+        activity = getActivity();
+        dataList = new ArrayList<>();
+        image = new Image(getActivity());
+    }
+
+    /**
+     * This method is called when the fragment needs to create its view and it will
+     * control the navigation of the fragment
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
+
+        updateScreenInformation(view);
+
+        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerHome);
+            }
+        });
+
+        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
+            }
+        });
+
+        view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+            }
+        });
+
+        view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
+            }
+        });
+
+        return view;
+    }
+
     /**
      * Updates the screen information with the event data
+     *
      * @param view The view that the information will be updated on
      */
     public void updateScreenInformation(@NonNull View view) {
@@ -134,8 +225,7 @@ public class OrganizerEvent extends Fragment {
                 }).addOnFailureListener(exception -> {
                     Log.w("User Profile", "Error getting profile image", exception);
                 });
-            }
-            else{
+            } else {
                 // generate profile image if user has no profile image
                 Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
                 Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);
@@ -146,106 +236,6 @@ public class OrganizerEvent extends Fragment {
         });
 
         // Set Event Banner
-        String uri_eventBanner = event.getEventBannerImgUrl();
-
-        if(uri_eventBanner!= null) {
-            // Get image from firebase storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
-            final long ONE_MEGABYTE = 1024 * 1024;
-
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                eventBanner.setImageDrawable(d);
-            }).addOnFailureListener(exception -> {
-                Log.w("User Profile", "Error getting profile image", exception);
-            });
-        }
-    }
-
-    /**
-     * This method is called when the fragment is being created and checks to see if there are any arguments
-     *
-     * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
-     */
-    @Override
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("eventData");
-        }
-
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
-        dataList = new ArrayList<>();
-    }
-
-    /**
-     * This method is called when the fragment needs to create its view and it will
-     *      control the navigation of the fragment
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return
-     */
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
-
-        updateScreenInformation(view);
-
-        view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerHome);
-            }
-        });
-
-        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
-            }
-        });
-
-        view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
-            }
-        });
-
-        view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
-            }
-        });
-
-        return view;
+        image.setEventImage(event, eventBanner);
     }
 }
