@@ -58,6 +58,9 @@
         <action
             android:id="@+id/action_organizerHome_to_userProfile"
             app:destination="@id/userProfile" />
+        <action
+            android:id="@+id/action_organizerHome_to_organizer_event"
+            app:destination="@id/organizer_event" />
     </fragment>
     <fragment
         android:id="@+id/organizerEventCreate"
@@ -73,6 +76,28 @@
         android:name="com.example.nostack.ui.organizer.OrganizerViewEvent"
         android:label="fragment_organizer_view_event"
         tools:layout="@layout/fragment_organizer_view_event" />
+    <fragment
+        android:id="@+id/organizer_event"
+        android:name="com.example.nostack.ui.organizer.organizer_event"
+        android:label="fragment_organizer_event"
+        tools:layout="@layout/fragment_organizer_event" >
+        <action
+            android:id="@+id/action_organizer_event_to_organizerQRCode"
+            app:destination="@id/organizerQRCode" />
+        <action
+            android:id="@+id/action_organizer_event_to_organizerEventAttendeeList"
+            app:destination="@id/organizerEventAttendeeList" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizerQRCode"
+        android:name="com.example.nostack.ui.organizer.OrganizerQRCode"
+        android:label="fragment_organizer_q_r_code"
+        tools:layout="@layout/fragment_organizer_q_r_code" />
+    <fragment
+        android:id="@+id/organizerEventAttendeeList"
+        android:name="com.example.nostack.ui.organizer.OrganizerEventAttendeeList"
+        android:label="fragment_organizer_event_attendee_list"
+        tools:layout="@layout/fragment_organizer_event_attendee_list" />
 
 
 </navigation>

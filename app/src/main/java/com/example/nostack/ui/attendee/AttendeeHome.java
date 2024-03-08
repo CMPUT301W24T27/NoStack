@@ -80,8 +80,6 @@ public class AttendeeHome extends Fragment {
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
 
-    private final CollectionReference eventRef = FirebaseFirestore.getInstance().collection("events");
-
 
 
     public AttendeeHome() {
@@ -265,7 +263,7 @@ public class AttendeeHome extends Fragment {
     });
 
     public void handleEventDescQR(String qrCode) {
-        DocumentReference docRef = eventRef.document(qrCode);
+        DocumentReference docRef = eventsRef.document(qrCode);
 
         // read action
         docRef.get().addOnCompleteListener(task -> {
@@ -294,7 +292,7 @@ public class AttendeeHome extends Fragment {
     }
 
     public void handleCheckInQR(String qrCode) {
-        DocumentReference docRef = eventRef.document(qrCode);
+        DocumentReference docRef = eventsRef.document(qrCode);
         //need to still get the UUID of the user and put it into the vale field
         docRef.update("attendees", "UUID").addOnSuccessListener(aVoid -> {
             Snackbar.make(activity.findViewById(android.R.id.content), "Checked in successfully", Snackbar.LENGTH_LONG).show();

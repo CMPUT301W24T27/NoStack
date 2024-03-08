@@ -251,7 +251,7 @@ public class OrganizerEventCreate extends Fragment {
                         Snackbar.make(activity.findViewById(android.R.id.content), "New event created.", Snackbar.LENGTH_LONG).show();
                     }
                 })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error creating event", e));;
+                .addOnFailureListener(e -> Log.w("Firestore", "Error creating event", e));
     }
 
     private void openDateTimePickerDialog(TextInputEditText t) {

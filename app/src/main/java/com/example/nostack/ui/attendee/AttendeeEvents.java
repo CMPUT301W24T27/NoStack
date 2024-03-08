@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventArrayAdapter;
 import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.EventCheckinHandler;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -67,6 +69,14 @@ public class AttendeeEvents extends Fragment{
                         }
                     }
                 });
+//                eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        Event event = eventArrayAdapter.getItem(position);
+//                        EventCheckinHandler ecHandler = new EventCheckinHandler();
+//                        ecHandler.checkInUser(event.getId(), user.getUuid());
+//                    }
+//                });
             }
             else{
                 Log.d("AttendeeHome", "User is null");
