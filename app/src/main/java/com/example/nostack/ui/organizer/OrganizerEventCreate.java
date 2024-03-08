@@ -40,8 +40,7 @@ import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OrganizerEventCreate#newInstance} factory method to
- * create an instance of this fragment.
+ * Creates the fragment for the organizer to create an event
  */
 public class OrganizerEventCreate extends Fragment {
 
