@@ -69,14 +69,14 @@ public class AttendeeEvents extends Fragment{
                         }
                     }
                 });
-                eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Event event = eventArrayAdapter.getItem(position);
-                        EventCheckinHandler ecHandler = new EventCheckinHandler();
-                        ecHandler.checkInUser(event.getId(), user.getUuid());
-                    }
-                });
+//                eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        Event event = eventArrayAdapter.getItem(position);
+//                        EventCheckinHandler ecHandler = new EventCheckinHandler();
+//                        ecHandler.checkInUser(event.getId(), user.getUuid());
+//                    }
+//                });
             }
             else{
                 Log.d("AttendeeHome", "User is null");
