@@ -58,7 +58,6 @@ public class Image {
      * Set user profile image
      * @param user
      * @param imageView
-     *
      */
     public void setUserProfileImage(User user, ImageView imageView) {
         if (user.getProfileImageUrl() != null) {
@@ -70,11 +69,13 @@ public class Image {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 300, 300, false);
                 RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), scaledBmp);
+                d.setCornerRadius(100f);
                 imageView.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
                 Log.w("User Profile", "Error getting profile image", exception);
             });
-        } else {
+        }
+        else {
             // generate profile image if user has no profile image
             Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
             Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);

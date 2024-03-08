@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.example.nostack.R;
 import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.utils.GenerateProfileImage;
+import com.example.nostack.utils.Image;
 import com.example.nostack.utils.ImageUploader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -51,6 +52,7 @@ public class UserProfile extends Fragment {
     private static final int IMAGE_PICK_CODE = 100;
 
     private UserViewModel userViewModel;
+    private Image image;
 
     public UserProfile() {
         // Required empty public constructor
@@ -151,6 +153,7 @@ public class UserProfile extends Fragment {
         }
 
         imageUploader = new ImageUploader();
+        image = new Image(getActivity());
     }
 
     /**
@@ -274,30 +277,8 @@ public class UserProfile extends Fragment {
         // Set profile image from URL
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user.getProfileImageUrl() != null) {
-                String uri = user.getProfileImageUrl();
-
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
-                    profileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            }
-            else{
-                // generate profile image if user has no profile image
-                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 250, 250, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                d.setCornerRadius(100f);
-                profileImage.setImageDrawable(d);
+            if(user!=null){
+                image.setUserProfileImage(user, profileImage);
             }
         });
     }
