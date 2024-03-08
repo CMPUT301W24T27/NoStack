@@ -2,14 +2,20 @@ package com.example.nostack.ui.attendee;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.nostack.R;
+import com.example.nostack.model.Events.Event;
+import com.example.nostack.model.State.UserViewModel;
+import com.example.nostack.utils.EventCheckinHandler;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,8 +30,11 @@ public class AttendeeEvent extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
+
+    private Event event;
     private String mParam1;
     private String mParam2;
+    UserViewModel userViewModel;
 
     public AttendeeEvent() {
         // Required empty public constructor
@@ -53,9 +62,10 @@ public class AttendeeEvent extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            event = (Event) getArguments().getSerializable("eventData");
         }
+
+        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity() ).get(UserViewModel.class);
     }
 
     @Override
@@ -76,5 +86,22 @@ public class AttendeeEvent extends Fragment {
                         .navigate(R.id.action_attendeeEvent_to_attendeeHome);
             }
         });
+
+        view.findViewById(R.id.checkInButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                EventCheckinHandler ecHandler = new EventCheckinHandler();
+                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+
+                    try {
+                        ecHandler.checkInUser(event.getId(), user.getUuid());
+                    } catch (Exception e) {
+                        // Handle the exception here
+                        e.printStackTrace();
+                    }
+                });
+
+            }
+        });
+
     }
 }

@@ -122,6 +122,10 @@ public class Event implements Serializable {
         return attendees;
     }
 
+    public void setAttendees(ArrayList<String> attendees) {
+        this.attendees = attendees;
+    }
+
     public boolean addAttendee(String attendee) {
 
         if ((capacity > 0) && (currentCapacity >= capacity)) {
