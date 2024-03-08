@@ -167,8 +167,7 @@ public class OrganizerEventCreate extends Fragment {
                     } else {
                         storeEventToDb(event);
                     }
-                    NavHostFragment.findNavController(OrganizerEventCreate.this)
-                            .navigate(R.id.action_organizerEventCreate_to_organizerHome);
+                    NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                 }
             }
         });
@@ -176,8 +175,7 @@ public class OrganizerEventCreate extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerEventCreate.this)
-                        .navigate(R.id.action_organizerEventCreate_to_organizerHome);
+                NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
             }
         });
 

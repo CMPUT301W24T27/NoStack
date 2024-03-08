@@ -146,8 +146,7 @@ public class OrganizerEventAttendeeList extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
 
-                NavHostFragment.findNavController(OrganizerEventAttendeeList.this)
-                        .navigate(R.id.action_organizerEventAttendeeList_to_organizer_event, bundle);
+                NavHostFragment.findNavController(OrganizerEventAttendeeList.this).popBackStack();
             }
         });
 
