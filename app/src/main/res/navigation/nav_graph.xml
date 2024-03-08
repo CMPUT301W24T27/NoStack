@@ -87,6 +87,9 @@
         <action
             android:id="@+id/action_organizer_event_to_organizerEventAttendeeList"
             app:destination="@id/organizerEventAttendeeList" />
+        <action
+            android:id="@+id/action_organizerEvent_to_organizerEventCreate2"
+            app:destination="@id/organizerEventCreate" />
     </fragment>
     <fragment
         android:id="@+id/organizerQRCode"
