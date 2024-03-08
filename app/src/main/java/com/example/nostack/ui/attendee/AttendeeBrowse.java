@@ -22,6 +22,7 @@ import com.example.nostack.model.State.UserViewModel;
 import com.example.nostack.ui.organizer.OrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class AttendeeBrowse extends Fragment{
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
     private Activity activity;
-
 
     public AttendeeBrowse(){}
 
@@ -79,7 +79,9 @@ public class AttendeeBrowse extends Fragment{
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
 
-        eventsRef.get().addOnCompleteListener(task -> {
+        eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
@@ -98,16 +100,6 @@ public class AttendeeBrowse extends Fragment{
 
                 NavHostFragment.findNavController(AttendeeBrowse.this)
                         .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-            }
-        });
-
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-
-            if (user != null) {
-
-            }
-            else{
-                Log.d("AttendeeHome", "User is null");
             }
         });
 

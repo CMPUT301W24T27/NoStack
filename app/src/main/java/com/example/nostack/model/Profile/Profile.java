@@ -60,16 +60,6 @@ public class Profile extends User{
         // Check if UUID exists in local storage in shared preferences for UUID
         preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
         uuid = preferences.getString(PREF_KEY_UUID, null);
-
-
-//        if (uuid == null) {
-//            // If UUID does not exist, create a new profile
-//            createProfile();
-//        }
-//        else{
-//            // Retrieve user data from firestore by checking if Document ID of the UUID exists
-//            retrieveProfile(uuid);
-//        }
     }
 
     /**
@@ -91,18 +81,6 @@ public class Profile extends User{
     public void createProfile(User user){
         uuid = UUID.randomUUID().toString();
         preferences.edit().putString(PREF_KEY_UUID, uuid).apply();
-
-        // Add new user to firestore
-        // TODO: Profile set up page to remove the placeholder values
-//        User user = new User(
-//            "First Name",
-//            "Last Name",
-//            "username_placeholder",
-//            getEmailAddress(),
-//            getPhoneNumber(),
-//            uuid
-//        );
-
         user.setUuid(uuid);
 
         // Add a new document with the UUID as the document ID
@@ -146,7 +124,6 @@ public class Profile extends User{
                     }
                 } else {
                     Log.w("Profile class", "User does not exist: " + uuid);
-//                    createProfile();
                     res.complete(false);
                 }
             } else {

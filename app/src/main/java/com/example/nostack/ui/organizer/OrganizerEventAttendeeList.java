@@ -20,6 +20,8 @@ import com.example.nostack.R;
 import com.example.nostack.model.Events.Event;
 import com.example.nostack.model.Events.EventAttendeesArrayAdapter;
 import com.example.nostack.utils.Attendance;
+import com.example.nostack.utils.AttendeeLocations;
+import com.example.nostack.utils.GeoLocation;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -146,6 +148,28 @@ public class OrganizerEventAttendeeList extends Fragment {
 
                 NavHostFragment.findNavController(OrganizerEventAttendeeList.this)
                         .navigate(R.id.action_organizerEventAttendeeList_to_organizer_event, bundle);
+            }
+        });
+
+        view.findViewById(R.id.event_attendee_list_show_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AttendeeLocations locations = new AttendeeLocations();
+
+                for (int i = 0; i < attendeesArrayAdapter.getCount(); i++) {
+                    Attendance att = attendeesArrayAdapter.getItem(i);
+                    GeoLocation l = att.getGeoLocation();
+                    if (l != null) {
+                        locations.addLocations(att.getGeoLocation());
+                    }
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("locations", locations);
+
+                NavHostFragment.findNavController(OrganizerEventAttendeeList.this)
+                        .navigate(R.id.action_organizerEventAttendeeList_to_organizerAttendeeMap, bundle);
             }
         });
     }

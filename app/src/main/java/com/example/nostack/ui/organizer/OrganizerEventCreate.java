@@ -138,7 +138,6 @@ public class OrganizerEventCreate extends Fragment {
         view.findViewById(R.id.EventCreationCreateEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (eventTitleEditText.getText().toString().isEmpty()) {
                     eventTitleEditText.setError("Event name is required");
                 } else if (eventStartEditText.getText().toString().isEmpty()) {

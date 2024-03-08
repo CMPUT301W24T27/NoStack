@@ -18,6 +18,7 @@ public class User {
     private String role;
     private String uuid;
     private String profileImageUrl;
+
      /**
      * Get the role of the user
      * @return The role of the user
@@ -161,8 +162,6 @@ public class User {
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
         this.uuid = uuid;
-
-
     }
-    public User(){}
+   public User(){}
 }

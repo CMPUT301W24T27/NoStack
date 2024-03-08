@@ -77,7 +77,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/AttendeeEventSignUpButton"
+            android:id="@+id/AttendeeEventRegisterButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -134,12 +134,12 @@
             android:id="@+id/eventDateTime"
             android:layout_width="376dp"
             android:layout_height="96dp"
-            app:layout_constraintBottom_toTopOf="@+id/AttendeeEventSignUpButton"
+            app:layout_constraintBottom_toTopOf="@+id/AttendeeEventRegisterButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.567"
+            app:layout_constraintHorizontal_bias="0.529"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AttendeeEventDescriptionText"
-            app:layout_constraintVertical_bias="0.476">
+            app:layout_constraintVertical_bias="0.277">
 
             <ImageView
                 android:id="@+id/AttendeeEventUserImage"
@@ -191,14 +191,15 @@
 
             <TextView
                 android:id="@+id/AttendeeEventLocationText"
-                android:layout_width="302dp"
-                android:layout_height="wrap_content"
+                android:layout_width="244dp"
+                android:layout_height="16dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="16dp"
                 android:text="Event Location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/UsersGoing"
                 app:layout_constraintStart_toEndOf="@+id/AttendeeEventLocationIcon"
                 app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTimeText" />
 
@@ -212,57 +213,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/OrganizerEventTimeText"
+                android:id="@+id/UsersGoing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Event Start Time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
+                android:text="Attending"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.041"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventDateText" />
-
-            <TextView
-                android:id="@+id/OrganizerEventDateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="420dp"
-                android:text="Event Start Date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.043"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText" />
-
-            <ImageView
-                android:id="@+id/OrganizerEventLocationIcon"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/baseline_location_on_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTimeText"
-                app:tint="@color/yellow" />
-
-            <TextView
-                android:id="@+id/OrganizerEventLocationText"
-                android:layout_width="302dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:text="Event Location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/OrganizerEventLocationIcon"
-                app:layout_constraintTop_toBottomOf="@+id/OrganizerEventTimeText" />
+                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventUserImage"
+                app:layout_constraintVertical_bias="0.111" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

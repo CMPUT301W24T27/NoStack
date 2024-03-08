@@ -147,18 +147,21 @@ public class organizer_event extends Fragment {
 
         // Set Event Banner
         String uri_eventBanner = event.getEventBannerImgUrl();
-        // Get image from firebase storage
-        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
-        final long ONE_MEGABYTE = 1024 * 1024;
 
-        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-            eventBanner.setImageDrawable(d);
-        }).addOnFailureListener(exception -> {
-            Log.w("User Profile", "Error getting profile image", exception);
-        });
+        if(uri_eventBanner!= null) {
+            // Get image from firebase storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
+                eventBanner.setImageDrawable(d);
+            }).addOnFailureListener(exception -> {
+                Log.w("User Profile", "Error getting profile image", exception);
+            });
+        }
     }
 
     /**
@@ -222,9 +225,18 @@ public class organizer_event extends Fragment {
             }
         });
 
+        view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(organizer_event.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+            }
+        });
 
         view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
