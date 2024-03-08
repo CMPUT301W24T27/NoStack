@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class organizer_event extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private String mParam2;
+    private Button attendeeListButton;
 
     public organizer_event() {
         // Required empty public constructor
@@ -101,7 +103,7 @@ public class organizer_event extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(organizer_event.this)
-                        .popBackStack();
+                        .navigate(R.id.action_organizer_event_to_organizerHome);
             }
         });
 
@@ -115,6 +117,19 @@ public class organizer_event extends Fragment {
                         .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
             }
         });
+
+        view.findViewById(R.id.OrganizerEventAttendeesButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+                NavHostFragment.findNavController(organizer_event.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+            }
+        });
+
+
 
         return view;
     }

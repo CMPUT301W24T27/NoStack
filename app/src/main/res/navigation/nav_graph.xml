@@ -87,6 +87,9 @@
         <action
             android:id="@+id/action_organizer_event_to_organizerEventAttendeeList"
             app:destination="@id/organizerEventAttendeeList" />
+        <action
+            android:id="@+id/action_organizer_event_to_organizerHome"
+            app:destination="@id/organizerHome" />
     </fragment>
     <fragment
         android:id="@+id/organizerQRCode"
@@ -97,7 +100,11 @@
         android:id="@+id/organizerEventAttendeeList"
         android:name="com.example.nostack.ui.organizer.OrganizerEventAttendeeList"
         android:label="fragment_organizer_event_attendee_list"
-        tools:layout="@layout/fragment_organizer_event_attendee_list" />
+        tools:layout="@layout/fragment_organizer_event_attendee_list" >
+        <action
+            android:id="@+id/action_organizerEventAttendeeList_to_organizer_event"
+            app:destination="@id/organizer_event" />
+    </fragment>
 
 
 </navigation>
