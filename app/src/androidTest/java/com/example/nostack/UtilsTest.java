@@ -74,7 +74,7 @@ public class UtilsTest {
         attendance.setNumCheckIn(5);
         assertEquals(5, attendance.getNumCheckIn());
 
-        // Check if GeoLocation is correctly set
+        // Check if GeoLocation is correctly set for the attendance
         attendance.setGeoLocation(new GeoLocation(1.0, 1.0));
         assertEquals(1.0, attendance.getGeoLocation().getLatitude(), 0.0);
         assertEquals(1.0, attendance.getGeoLocation().getLongitude(), 0.0);
@@ -94,6 +94,24 @@ public class UtilsTest {
         assertEquals(1, attendeeLocations.getLocations().size());
         assertEquals(1.0, attendeeLocations.getLocations().get(0).getLatitude(), 0.0);
         assertEquals(1.0, attendeeLocations.getLocations().get(0).getLongitude(), 0.0);
+    }
+
+    @Test
+    public void testGeoLocation() {
+        // Input data
+        double latitude = 1.0;
+        double longitude = 1.0;
+
+        // Create instance of GeoLocation class
+        GeoLocation geoLocation = new GeoLocation();
+
+        // Call the method to test
+        geoLocation.setLatitude(latitude);
+        geoLocation.setLongitude(longitude);
+
+        // Assert that the method returns the proper value for latitude and longitude
+        assertEquals(1.0, geoLocation.getLatitude(), 0.0);
+        assertEquals(1.0, geoLocation.getLongitude(), 0.0);
     }
 
 }
