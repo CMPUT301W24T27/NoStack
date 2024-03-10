@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.modeltests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,6 +29,7 @@ public class UserTest {
     public void testUserProfileImage() {
         User user = mockUser();
         user.setProfileImageUrl("https://www.example.com/profile.jpg");
+        // Remove log.d in the setProfileImageUrl method in User.java or else assertEquals will fail
         assertEquals("https://www.example.com/profile.jpg", user.getProfileImageUrl());
     }
 

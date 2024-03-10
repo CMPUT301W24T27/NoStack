@@ -1,4 +1,4 @@
-package com.example.nostack;
+package com.example.nostack.utilstest;
 
 import static com.example.nostack.utils.GenerateProfileImage.generateProfileImage;
 import static com.google.common.base.CharMatcher.any;
