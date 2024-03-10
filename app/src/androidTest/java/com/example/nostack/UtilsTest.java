@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.example.nostack.utils.Attendance;
+import com.example.nostack.utils.AttendeeLocations;
 import com.example.nostack.utils.GenerateProfileImage;
 import com.example.nostack.utils.GeoLocation;
 
@@ -78,6 +79,21 @@ public class UtilsTest {
         assertEquals(1.0, attendance.getGeoLocation().getLatitude(), 0.0);
         assertEquals(1.0, attendance.getGeoLocation().getLongitude(), 0.0);
 
+    }
+
+    @Test
+    public void testAttendeeLocations () {
+        // Input data
+        GeoLocation location = new GeoLocation(1.0, 1.0);
+
+        // Create instance of AttendeeLocations class
+        AttendeeLocations attendeeLocations = new AttendeeLocations();
+        attendeeLocations.addLocations(location);
+
+        // Assert that the method returns the proper value for locations
+        assertEquals(1, attendeeLocations.getLocations().size());
+        assertEquals(1.0, attendeeLocations.getLocations().get(0).getLatitude(), 0.0);
+        assertEquals(1.0, attendeeLocations.getLocations().get(0).getLongitude(), 0.0);
     }
 
 }
