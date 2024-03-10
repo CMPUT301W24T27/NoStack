@@ -76,4 +76,23 @@ public class EventTest {
         assertFalse(event.getAttendees().contains("Test Attendee ID"));
     }
 
+    @Test
+    public void testCapacity (){
+        Event event = mockEvent();
+
+        // set the capacity and current capacity of the event
+        event.setCapacity(1);
+        event.setCurrentCapacity(2);
+
+        // check if the event is full
+        // the event is full if the current capacity is greater than or equal to the capacity
+        assertFalse(event.addAttendee("Attendee ID 1"));
+
+        // check that adding an attendee increments the current capacity of the event
+        // setting the capacity to 4 will pass the first condition in the addAttendee method, so we can check the second condition
+        event.setCapacity(4);
+        event.addAttendee("Attendee ID 3");
+        assertEquals(3, event.getCurrentCapacity());
+    }
+
 }
