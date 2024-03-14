@@ -1,28 +1,30 @@
 package com.example.nostack.controllers;
 
+import android.util.Log;
+
 import com.example.nostack.handlers.CurrentUserHandler;
-import com.example.nostack.model.Events.Event;
+import com.example.nostack.models.Event;
+import com.example.nostack.models.Attendance;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.zxing.qrcode.encoder.QRCode;
+import com.google.firebase.firestore.Transaction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class EventController {
     private static EventController singleInstance = null;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference eventCollectionReference = FirebaseFirestore.getInstance().collection("events");
+    private final CollectionReference attendanceCollectionReference = FirebaseFirestore.getInstance().collection("attendance");
+    private final AttendanceController attendanceController = AttendanceController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
-    /**
-     * Singleton constructor
-     * @return returns the singular object
-     */
     public static EventController getInstance() {
         if (singleInstance == null) {
             singleInstance = new EventController();
@@ -30,7 +32,8 @@ public class EventController {
         return singleInstance;
     }
 
-    public EventController() {}
+    public EventController() {
+    }
 
     public Task<QuerySnapshot> getAllEvents() {
         return eventCollectionReference.get();
@@ -40,7 +43,7 @@ public class EventController {
         return eventCollectionReference.whereEqualTo("organizerId", organizerId).get();
     }
 
-    public Task<QuerySnapshot> getAtte3ndeeEvents(String attendeeId) {
+    public Task<QuerySnapshot> getAttendeeEvents(String attendeeId) {
         return eventCollectionReference.whereArrayContains("attendees", attendeeId).get();
     }
 
@@ -52,227 +55,75 @@ public class EventController {
         return eventCollectionReference.document(newEvent.getId()).set(newEvent);
     }
 
-    public Task<Void> checkAttendeeIn(Event event) {
+    public Task<Void> registerToEvent(String eventId) {
         String userId = currentUserHandler.getCurrentUserId();
-        return checkAttendeeIn(event, userId);
-        return;
+        return registerToEvent(eventId, userId);
     }
 
-    public Task<Void> checkAttendeeIn(Event event, String userId) {
-        return;
-    }
+    public Task<Void> registerToEvent(String eventId, String userId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
 
+        return db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            long maxCap = eventSnapshot.getLong("capacity");
+            long currCap = eventSnapshot.getLong("currentCapacity");
+            List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
-
-
-    public Task<Void> addUser(User newUserToAdd) {
-        return userCollectionReference
-                .document(newUserToAdd.getUsername())
-                .set(newUserToAdd);
-    }
-    public
-    public class EventContro {
-        private static En
-        private static F3ireStoreController singleInstance = null;
-
-        /**
-         * Singleton constructor
-         * @return returns the singular object
-         */
-        public static FireStoreController getInstance() {
-            System.out.println("FirestoreID = " + CurrentUserHelper.getInstance().getFirebaseId());
-            if (singleInstance == null) {
-                singleInstance = new FireStoreController();
+            if ((maxCap > 0) && (currCap >= maxCap)) {
+                throw new RuntimeException("The event is at full capacity.");
             }
-            return singleInstance;
-        }
 
-        public FireStoreController() {
+            if (attendees != null && attendees.contains(userId)) {
+                throw new RuntimeException("The user has already registered for the event.");
+            }
 
-        }
-        // Helper Var
-        CurrentUserHelper currentUserHelper = CurrentUserHelper.getInstance();
+            transaction.update(eventRef, "currentCapacity", FieldValue.increment(1));
+            transaction.update(eventRef, "attendees", FieldValue.arrayUnion(userId));
+            return null;
+        }).continueWithTask(task -> {
+            if (task.isSuccessful()) {
+                return attendanceController.createAttendance(userId, eventId);
+            } else {
+                throw new RuntimeException("Failed to create attendance.");
+            }
+        }).addOnSuccessListener(aVOid -> {
+            Log.d("Event Controller", "Successfully registered user.");
+        }).addOnFailureListener(aVoid -> {
+            Log.d("Event Controller", "Failed to register user.");
+        });
+    }
 
-        // Firestore Variables
-        private final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("Users");
-        private final CollectionReference qrCollectionReference = FirebaseFirestore.getInstance().collection("Codes");
-        private final CollectionReference commentsCollectionReference = FirebaseFirestore.getInstance().collection("Comments");
+    public Task<Void> eventCheckIn(String eventId) {
+        return eventCheckIn(currentUserHandler.getCurrentUserId(), eventId);
+    }
 
-        /**
-         * Get all QR codes which have a location
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getAllCodesWithLocation() {
-            return qrCollectionReference.whereNotEqualTo("coordinates", new ArrayList<>()).get();
-        }
+    public Task<Void> eventCheckIn(String userId, String eventId) {
+        return getEvent(eventId).continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) {
+                throw new RuntimeException("Failed to get event details.");
+            }
 
-        /**
-         * Get all QR codes ( no filters )
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getAllCodes(){
-            return qrCollectionReference.get();
-        }
+            DocumentSnapshot eventSnapshot = task.getResult();
+            List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
-        /**
-         * Gets all players, no owners included
-         * @returna Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getAllPlayers() {
-            return userCollectionReference.whereNotEqualTo("isOwner", true).get();
-        }
+            if (attendees != null && attendees.contains(userId)) {
+                return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId));
+            } else {
+                throw new RuntimeException("User has not registered for this event.");
+            }
+        }).addOnSuccessListener(aVOid -> {
+            Log.d("Event Controller", "Successfully checked-in user.");
+        }).addOnFailureListener(aVoid -> {
+            Log.d("Event Controller", "Failed to check-in user.");
+        });
+    }
 
-        /**
-         * Gets all QR codes, ordered by worth
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getAllQRCodes() {
-            return qrCollectionReference.orderBy("worth").get();
-        }
+    public Task<Void> updateEvent(Event event) {
+        return eventCollectionReference.document(event.getId()).set(event);
+    }
 
-        /**
-         * Gets all users, ( No filters, owners included )
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getAllUsers() {
-            return userCollectionReference.get();
-        }
-
-        /**
-         * gets a specific users QR codes
-         * @param username user
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> getSpecifiedUsersCodes(String username) {
-            return qrCollectionReference.whereArrayContains("players", username).get();
-        }
-
-        /**
-         * Gets the full info of a single QR code
-         * @param qrCodeId the code ID
-         * @return a Task object with the DocumentSnapshot inside
-         */
-        public Task<DocumentSnapshot> getSingleQRCode(String qrCodeId) {
-            return qrCollectionReference.document(qrCodeId).get();
-        }
-
-        /**
-         * Transfer current users profile to the provided username's profile
-         * @param newUserNameToSwitchTo new user to transfer to
-         * @return a Task object with a Void inside. So no return values.
-         */
-        public Task<Void> switchProfile(String newUserNameToSwitchTo){
-            Task<Void> removeFromCurrentUserProfile = userCollectionReference.document(currentUserHelper.getFirebaseId()).update("devices", FieldValue.arrayRemove(currentUserHelper.getUniqueID()));
-            Task<Void> addToNewUserProfile = userCollectionReference.document(newUserNameToSwitchTo).update("devices", FieldValue.arrayUnion(currentUserHelper.getUniqueID()));
-            return Tasks.whenAll(removeFromCurrentUserProfile, addToNewUserProfile);
-        }
-
-        /**
-         * Add user to db
-         * @param newUserToAdd User object to add to db
-         * @return a Task object with a Void inside. So no return values.
-         */
-        public Task<Void> addUser(User newUserToAdd) {
-            return userCollectionReference
-                    .document(newUserToAdd.getUsername())
-                    .set(newUserToAdd);
-        }
-
-        /**
-         * Find user based on unique android id stored in currentUserHelper
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> findUserBasedOnDeviceId(){
-            return userCollectionReference.whereArrayContains("devices", currentUserHelper.getUniqueID()).get();
-        }
-
-        /**
-         * check if QR code exists
-         * @param id id of QR code
-         * @return a Task object with the QuerySnapshot inside
-         */
-        public Task<QuerySnapshot> checkQRExists(String id) {
-            return qrCollectionReference.whereEqualTo("id",id).get();
-        }
-
-        /**
-         * Saves a new code to the DB by doing the following:
-         * 1. Stores the QR code
-         * 2. Updates the player's profile whoever found it
-         * @param codeToSave the QR code to save
-         * @return A Task which is completed once both of these subtasks are done.
-         */
-        public Task<Void> saveNewQrCode(QRCode codeToSave){
-
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put("collectedCodes", FieldValue.arrayUnion(codeToSave.getId()));
-            updates.put("totalScore", FieldValue.increment(codeToSave.getWorth()));
-
-            return Tasks.whenAll(
-                    qrCollectionReference.document(codeToSave.getId()).set(codeToSave),
-                    FirebaseFirestore.getInstance().collection("Users").document(currentUserHelper.getFirebaseId()).update(updates)
-            );
-        }
-
-        /**
-         * Updates a code in the DB by doing the following:
-         * 1. Adding player name to QR code
-         * 2. Updates the player's profile whoever found it
-         * @param codeToSave QRCode to update
-         * @return A Task which is completed once both of these subtasks are done.
-         */
-        public Task<Void> updateExistingQrCode(QRCode codeToSave){
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put("collectedCodes", FieldValue.arrayUnion(codeToSave.getId()));
-            updates.put("totalScore", FieldValue.increment(codeToSave.getWorth()));
-            return Tasks.whenAll(
-                    qrCollectionReference.document(codeToSave.getId()).update("players", FieldValue.arrayUnion(currentUserHelper.getUsername())),
-                    FirebaseFirestore.getInstance().collection("Users").document(currentUserHelper.getFirebaseId()).update(updates)
-            );
-        }
-
-        /**
-         * Delete a QR code.
-         * @param qrCodeToDelete QRCode to delete, with ID and score fields
-         * @return A Task which is completed once both of these subtasks are done.
-         */
-        public Task<Void> deleteQRCode(QRCode qrCodeToDelete) {
-
-            // All pending tasks
-            ArrayList<Task<Void>> allTasks = new ArrayList<>();
-
-            // Decreasing score and qrCode
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put("collectedCodes", FieldValue.arrayRemove(qrCodeToDelete.getId()));
-            updates.put("totalScore", FieldValue.increment( -1 * qrCodeToDelete.getWorth()));
-
-            // Put all updates in one tasks
-            qrCodeToDelete.getPlayers().forEach(playerUsername -> {
-                Task<Void> updateTask =  userCollectionReference.document(playerUsername).update(updates);
-                allTasks.add(updateTask);
-            });
-            // Delete qr code.
-            allTasks.add(qrCollectionReference.document(qrCodeToDelete.getId()).delete());
-            //
-            return Tasks.whenAll(allTasks);
-        }
-
-        /**
-         * Removes a QR code from the db
-         * @param qrCode qrCode to delete
-         * @return A Task which is completed once both of these subtasks are done.
-         */
-        public Task<Void> removeUserFromQRCode(QRCode qrCode) {
-
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put("collectedCodes", FieldValue.arrayRemove(qrCode.getId()));
-            updates.put("totalScore", FieldValue.increment( -1 * qrCode.getWorth()));
-
-            return Tasks.whenAll(
-                    userCollectionReference.document(currentUserHelper.getFirebaseId()).update(updates),
-                    qrCollectionReference.document(qrCode.getId()).update("players", FieldValue.arrayRemove(currentUserHelper.getUsername()))
-            );
-        }
-
+    // TODO: Deleting an event, may be a little too nuanced, will be done later on.
+    public Task<Void> deleteEvent(String eventId) {
+        return Tasks.whenAll();
     }
 }

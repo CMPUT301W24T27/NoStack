@@ -1,33 +1,22 @@
 package com.example.nostack.utilstest;
 
-import static com.example.nostack.utils.GenerateProfileImage.generateProfileImage;
-import static com.google.common.base.CharMatcher.any;
 import static com.google.common.base.Verify.verify;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.example.nostack.utils.Attendance;
-import com.example.nostack.utils.AttendeeLocations;
-import com.example.nostack.utils.GenerateProfileImage;
-import com.example.nostack.utils.GeoLocation;
-
-import org.junit.Test;
+import com.example.nostack.models.Attendance;
+import com.example.nostack.models.AttendeeLocations;
+import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.models.GeoLocation;
 
 public class UtilsTest {
 

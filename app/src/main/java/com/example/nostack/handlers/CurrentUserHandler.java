@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.nostack.model.State.UserViewModel;
-import com.example.nostack.model.User.User;
+import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.models.User;
 
 public class CurrentUserHandler {
     private static CurrentUserHandler singleInstance = null;
