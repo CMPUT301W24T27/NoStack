@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startUp"
-        android:name="com.example.nostack.StartUp"
+        android:name="com.example.nostack.views.StartUp"
         android:label="fragment_start_up"
         tools:layout="@layout/fragment_start_up" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
-        android:name="com.example.nostack.ui.attendee.AttendeeHome"
+        android:name="com.example.nostack.views.attendee.AttendeeHome"
         android:label="fragment_attendee_home"
         tools:layout="@layout/fragment_attendee_home" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/attendeeEvent"
-        android:name="com.example.nostack.ui.attendee.AttendeeEvent"
+        android:name="com.example.nostack.views.attendee.AttendeeEvent"
         android:label="fragment_attendee_event"
         tools:layout="@layout/fragment_attendee_event" >
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/userProfile"
-        android:name="com.example.nostack.ui.UserProfile"
+        android:name="com.example.nostack.views.user.UserProfile"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" >
         <action
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/organizerHome"
-        android:name="com.example.nostack.ui.organizer.OrganizerHome"
+        android:name="com.example.nostack.views.organizer.OrganizerHome"
         android:label="fragment_organizer_home"
         tools:layout="@layout/fragment_organizer_home" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/organizerEventCreate"
-        android:name="com.example.nostack.ui.organizer.OrganizerEventCreate"
+        android:name="com.example.nostack.views.organizer.OrganizerEventCreate"
         android:label="fragment_organizer_event_create"
         tools:layout="@layout/fragment_organizer_event_create" >
         <action
@@ -73,12 +73,12 @@
     </fragment>
     <fragment
         android:id="@+id/organizerViewEvent"
-        android:name="com.example.nostack.ui.organizer.OrganizerViewEvent"
+        android:name="com.example.nostack.views.organizer.OrganizerViewEvent"
         android:label="fragment_organizer_view_event"
         tools:layout="@layout/fragment_organizer_view_event" />
     <fragment
         android:id="@+id/organizer_event"
-        android:name="com.example.nostack.ui.organizer.OrganizerEvent"
+        android:name="com.example.nostack.views.organizer.OrganizerEvent"
         android:label="fragment_organizer_event"
         tools:layout="@layout/fragment_organizer_event" >
         <action
@@ -100,12 +100,12 @@
     </fragment>
     <fragment
         android:id="@+id/organizerQRCode"
-        android:name="com.example.nostack.ui.organizer.OrganizerQRCode"
+        android:name="com.example.nostack.views.organizer.OrganizerQRCode"
         android:label="fragment_organizer_q_r_code"
         tools:layout="@layout/fragment_organizer_q_r_code" />
     <fragment
         android:id="@+id/organizerEventAttendeeList"
-        android:name="com.example.nostack.ui.organizer.OrganizerEventAttendeeList"
+        android:name="com.example.nostack.views.organizer.OrganizerEventAttendeeList"
         android:label="fragment_organizer_event_attendee_list"
         tools:layout="@layout/fragment_organizer_event_attendee_list" >
         <action
@@ -117,7 +117,7 @@
     </fragment>
     <fragment
         android:id="@+id/organizerAttendeeMap"
-        android:name="com.example.nostack.ui.organizer.OrganizerAttendeeMap"
+        android:name="com.example.nostack.views.organizer.OrganizerAttendeeMap"
         android:label="fragment_organizer_attendee_map"
         tools:layout="@layout/fragment_organizer_attendee_map" >
         <action
@@ -126,7 +126,7 @@
     </fragment>
     <fragment
         android:id="@+id/usersSignups"
-        android:name="com.example.nostack.ui.organizer.usersSignups"
+        android:name="com.example.nostack.views.organizer.usersSignups"
         android:label="fragment_users_signups"
         tools:layout="@layout/fragment_users_signups" >
         <action

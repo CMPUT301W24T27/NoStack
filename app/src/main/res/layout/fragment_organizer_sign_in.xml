@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     app:circularflow_defaultRadius="10sp"
-    tools:context=".ui.organizer.OrganizerSignIn">
+    tools:context=".views.organizer.OrganizerSignIn">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

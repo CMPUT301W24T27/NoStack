@@ -4,14 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import com.example.nostack.model.Events.Event;
-import com.example.nostack.utils.QrCode;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.zxing.qrcode.encoder.QRCode;
+import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
 
 import java.util.Date;
 

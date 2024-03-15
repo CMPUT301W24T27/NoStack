@@ -2,7 +2,7 @@ package com.example.nostack.modeltests;
 
 import static org.junit.Assert.assertEquals;
 
-import com.example.nostack.model.User.User;
+import com.example.nostack.models.User;
 
 import org.junit.Test;
 

@@ -7,7 +7,7 @@ android:layout_height="match_parent"
 android:background="@color/black"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 android:padding="10dp"
-tools:context=".ui.organizer.OrganizerEventAttendeeList">
+tools:context=".views.organizer.OrganizerEventAttendeeList">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"

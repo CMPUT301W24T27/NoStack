@@ -72,7 +72,7 @@ loadScripts(document, 'script');</script>
 <h1 title="Class Event" class="title">Class Event</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.example.nostack.model.Events.Event</div>
+<div class="inheritance">com.example.nostack.models.Event</div>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
@@ -91,7 +91,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="../../../../../serialized-form.html#com.example.nostack.model.Events.Event">Serialized Form</a></li>
+<li><a href="../../../../../serialized-form.html#com.example.nostack.models.Event">Serialized Form</a></li>
 </ul>
 </dd>
 </dl>
@@ -119,7 +119,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-last even-row-color">
 <div class="block">This creates an event using an eventName, eventId and an eventLocation</div>
 </div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.util.Date,java.util.Date,com.example.nostack.utils.QrCode,java.lang.String)" class="member-name-link">Event</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.util.Date,java.util.Date,com.example.nostack.models.QrCode,java.lang.String)" class="member-name-link">Event</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;location,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;startDate,
@@ -155,7 +155,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addAnnouncement(com.example.nostack.utils.Announcement)" class="member-name-link">addAnnouncement</a><wbr>(<a href="../../utils/Announcement.html" title="class in com.example.nostack.utils">Announcement</a>&nbsp;announcement)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addAnnouncement(com.example.nostack.models.Announcement)" class="member-name-link">addAnnouncement</a><wbr>(<a href="../../utils/Announcement.html" title="class in com.example.nostack.utils">Announcement</a>&nbsp;announcement)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This function adds the announcements to the event</div>
 </div>
@@ -245,7 +245,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="block">This function sets the capacity of the event</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCheckInQr(com.example.nostack.utils.QrCode)" class="member-name-link">setCheckInQr</a><wbr>(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;checkInQr)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCheckInQr(com.example.nostack.models.QrCode)" class="member-name-link">setCheckInQr</a><wbr>(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;checkInQr)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This function sets the Qr code to check into the event</div>
 </div>
@@ -270,7 +270,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="block">This function sets the URL of the banner image for the event</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setEventQr(com.example.nostack.utils.QrCode)" class="member-name-link">setEventQr</a><wbr>(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;eventQr)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setEventQr(com.example.nostack.models.QrCode)" class="member-name-link">setEventQr</a><wbr>(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;eventQr)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This function sets the Qr code for the event</div>
 </div>
@@ -349,7 +349,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.util.Date,java.util.Date,com.example.nostack.utils.QrCode,java.lang.String)">
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.util.Date,java.util.Date,com.example.nostack.models.QrCode,java.lang.String)">
 <h3>Event</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Event</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;location,
@@ -530,7 +530,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="addAnnouncement(com.example.nostack.utils.Announcement)">
+<section class="detail" id="addAnnouncement(com.example.nostack.models.Announcement)">
 <h3>addAnnouncement</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addAnnouncement</span><wbr><span class="parameters">(<a href="../../utils/Announcement.html" title="class in com.example.nostack.utils">Announcement</a>&nbsp;announcement)</span></div>
 <div class="block">This function adds the announcements to the event</div>
@@ -596,7 +596,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="setCheckInQr(com.example.nostack.utils.QrCode)">
+<section class="detail" id="setCheckInQr(com.example.nostack.models.QrCode)">
 <h3>setCheckInQr</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setCheckInQr</span><wbr><span class="parameters">(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;checkInQr)</span></div>
 <div class="block">This function sets the Qr code to check into the event</div>
@@ -618,7 +618,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </section>
 </li>
 <li>
-<section class="detail" id="setEventQr(com.example.nostack.utils.QrCode)">
+<section class="detail" id="setEventQr(com.example.nostack.models.QrCode)">
 <h3>setEventQr</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setEventQr</span><wbr><span class="parameters">(<a href="../../utils/QrCode.html" title="class in com.example.nostack.utils">QrCode</a>&nbsp;eventQr)</span></div>
 <div class="block">This function sets the Qr code for the event</div>
