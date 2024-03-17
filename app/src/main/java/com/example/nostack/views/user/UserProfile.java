@@ -252,6 +252,7 @@ public class UserProfile extends Fragment {
                 ((TextView) view.findViewById(R.id.userLastName)).setText(user.getLastName());
                 ((TextView) view.findViewById(R.id.userEmail)).setText(user.getEmailAddress());
                 ((TextView) view.findViewById(R.id.userPhoneNumber)).setText(user.getPhoneNumber());
+                ((TextView) view.findViewById(R.id.profilename)).setText(user.getUsername());
 
                 // Set profile image from URL
                 updateProfilePicture();

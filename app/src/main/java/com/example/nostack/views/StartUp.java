@@ -15,6 +15,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.models.Profile;
 import com.example.nostack.models.User;
+import com.example.nostack.services.GenerateName;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,17 +102,26 @@ public class StartUp extends Fragment {
         String uuid = profile.getUuid();
 
         if (!profile.exists()) {
-            showCreateProfile(container, inflater);
+            try {
+                CreateProfile();
+            } catch (IOException e) {
+                Log.e("StartUp", "Error creating user profile", e);
+                Snackbar.make(getActivity().findViewById(android.R.id.content), "Error creating user profile.", Snackbar.LENGTH_LONG).show();
+            }
             Log.d("StartUp", profile.exists() + "");
         } else {
             Log.d("StartUp", uuid);
             profile.retrieveProfile(uuid)
-                    .thenApply(success -> {
-                        if (!success) {
-                            showCreateProfile(container, inflater);
+                .thenApply(success -> {
+                    if (!success) {
+                       try {
+                            CreateProfile();
+                        } catch (IOException e) {
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Error creating user profile.", Snackbar.LENGTH_LONG).show();
                         }
-                        return null;
-                    });
+                    }
+                    return null;
+                });
         }
 
         view.findViewById(R.id.AttendeeSignInButton).setOnClickListener(new View.OnClickListener() {
@@ -131,71 +145,38 @@ public class StartUp extends Fragment {
     }
 
     /**
-     * This method displays the necessary dialogue boxes to create a profile
-     *
-     * @param container The parent view that the fragment's UI should be attached to.
-     * @param inflater  The LayoutInflater object that can be used to inflate
+     * Generates a random name for the user and creates a profile for the user
+     * @throws IOException
+     * @return void
      */
-    private void showCreateProfile(ViewGroup container, LayoutInflater inflater) {
-        View dialogue = inflater.inflate(R.layout.user_info_pop_up, container, false);
+    private void CreateProfile() throws IOException {
+        String[] randomName = new String[3];
 
-
-        EditText firstName = dialogue.findViewById(R.id.addFirstNameField);
-        EditText lastName = dialogue.findViewById(R.id.addLastNameField);
-        EditText emailAddress = dialogue.findViewById(R.id.addEmailField);
-        EditText phoneNumber = dialogue.findViewById(R.id.addPhoneField);
-        EditText username = dialogue.findViewById(R.id.addUsernameField);
-
-
-        Button saveButton = dialogue.findViewById(R.id.saveInfoFormButton);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        GenerateName.generateNameAsync(new GenerateName.GenerateNameListener() {
             @Override
-            public void onClick(View v) {
-                Log.d("StartUp", "Save button clicked");
-
-                if (firstName.getText().toString().isEmpty() || lastName.getText().toString().isEmpty() || emailAddress.getText().toString().isEmpty() || phoneNumber.getText().toString().isEmpty() || username.getText().toString().isEmpty()) {
-                    // Make all fields red
-                    if (firstName.getText().toString().isEmpty()) {
-                        firstName.setError("First name is required");
-                    }
-                    if (lastName.getText().toString().isEmpty()) {
-                        lastName.setError("Last name is required");
-                    }
-                    if (emailAddress.getText().toString().isEmpty()) {
-                        emailAddress.setError("Email address is required");
-                    }
-                    if (phoneNumber.getText().toString().isEmpty()) {
-                        phoneNumber.setError("Phone number is required");
-                    }
-                    if (username.getText().toString().isEmpty()) {
-                        username.setError("Username is required");
-                    }
+            public void onNameGenerated(String[] name, Exception e) {
+                if (e != null) {
+                    Log.e("StartUp", "Error generating name", e);
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Error generating name.", Snackbar.LENGTH_LONG).show();
                     return;
                 }
+                randomName[0] = name[0];
+                randomName[1] = name[1];
+                randomName[2] = name[2];
 
                 User user = new User(
-                        firstName.getText().toString(),
-                        lastName.getText().toString(),
-                        username.getText().toString(),
-                        emailAddress.getText().toString(),
-                        phoneNumber.getText().toString(),
+                        randomName[0],
+                        randomName[1],
+                        randomName[0].toLowerCase(Locale.ROOT) + "-" + randomName[1].toLowerCase(Locale.ROOT) + "-" + randomName[2],
+                        null,
+                        null,
                         null
                 );
+                Log.d("StartUp", user.getFirstName() + " " + user.getLastName());
 
-
-                // Pass the User object to createProfile
                 profile.createProfile(user);
-
-                // Close the dialogue box
-                dialog.dismiss();
-
             }
         });
-        dialog = builder.setView(dialogue).create();
-        dialog.show();
     }
 }
 
