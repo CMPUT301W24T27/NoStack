@@ -145,8 +145,8 @@ public class AttendeeHome extends Fragment {
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
 
             if (user != null) {
-                Log.d("AttendeeHome", "User logged in: " + user.getFirstName());
-                userWelcome.setText(user.getFirstName());
+                Log.d("AttendeeHome", "User logged in: " + user.getUsername());
+                userWelcome.setText(user.getUsername());
 
 //                eventsRef.get().addOnCompleteListener(task -> {
 //                    if (task.isSuccessful()) {

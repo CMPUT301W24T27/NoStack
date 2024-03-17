@@ -127,8 +127,8 @@ public class OrganizerHome extends Fragment {
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Log.d("OrganizerHome", "User logged in: " + user.getFirstName());
-                userWelcome.setText(user.getFirstName());
+                Log.d("OrganizerHome", "User logged in: " + user.getUsername());
+                userWelcome.setText(user.getUsername());
 
                 eventsRef.whereEqualTo("organizerId", user.getUuid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

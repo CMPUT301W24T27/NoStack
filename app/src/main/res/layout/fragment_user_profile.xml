@@ -216,7 +216,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="Last Name"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:text="JohnDoe@hotmail.com"
                 android:textColor="@color/white"
