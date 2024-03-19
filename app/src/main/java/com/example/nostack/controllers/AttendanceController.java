@@ -3,6 +3,7 @@ package com.example.nostack.controllers;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Attendance;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -55,5 +56,10 @@ public class AttendanceController {
 
     public Task<Void> attendanceCheckIn(String id) {
         return attendanceCollectionReference.document(id).update("numCheckIn", FieldValue.increment(1));
+    }
+
+    // TODO: Deleting an attendance, may be a little too nuanced, will be done later on.
+    public Task<Void> deleteAttendance(String attendanceId) {
+        return Tasks.whenAll();
     }
 }

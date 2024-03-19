@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
-import com.example.nostack.models.Image;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.services.ImageUploader;
 import com.example.nostack.viewmodels.user.UserViewModel;
 
@@ -44,7 +44,7 @@ public class UserProfile extends Fragment {
     private static final int IMAGE_PICK_CODE = 100;
 
     private UserViewModel userViewModel;
-    private Image image;
+    private ImageViewHandler imageViewHandler;
 
     public UserProfile() {
         // Required empty public constructor
@@ -149,7 +149,7 @@ public class UserProfile extends Fragment {
         }
 
         imageUploader = new ImageUploader();
-        image = new Image(getActivity());
+        imageViewHandler = new ImageViewHandler(getActivity());
     }
 
     /**
@@ -274,7 +274,7 @@ public class UserProfile extends Fragment {
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                image.setUserProfileImage(user, profileImage);
+                imageViewHandler.setUserProfileImage(user, profileImage);
             }
         });
     }
