@@ -19,7 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.user.UserViewModel;
-import com.example.nostack.models.Image;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -50,7 +50,7 @@ public class OrganizerEvent extends Fragment {
     private TextView msgTV;
 
     private Button attendeeListButton;
-    private Image image;
+    private ImageViewHandler imageViewHandler;
 
 
     public OrganizerEvent() {
@@ -93,7 +93,7 @@ public class OrganizerEvent extends Fragment {
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
-        image = new Image(getActivity());
+        imageViewHandler = new ImageViewHandler(getActivity());
     }
 
     /**
@@ -214,11 +214,11 @@ public class OrganizerEvent extends Fragment {
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                image.setUserProfileImage(user, eventProfileImage);
+                imageViewHandler.setUserProfileImage(user, eventProfileImage);
             }
         });
 
         // Set Event Banner
-        image.setEventImage(event, eventBanner);
+        imageViewHandler.setEventImage(event, eventBanner);
     }
 }

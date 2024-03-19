@@ -18,7 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.user.UserViewModel;
-import com.example.nostack.models.Image;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +46,7 @@ public class AttendeeEvent extends Fragment {
     private CollectionReference eventsRef;
     boolean registered;
     Button register;
-    private Image image;
+    private ImageViewHandler imageViewHandler;
 
 
     public AttendeeEvent() {
@@ -91,7 +91,7 @@ public class AttendeeEvent extends Fragment {
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
-        image = new Image(getActivity());
+        imageViewHandler = new ImageViewHandler(getActivity());
     }
 
     /**
@@ -199,11 +199,11 @@ public class AttendeeEvent extends Fragment {
         //set profile image
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                image.setUserProfileImage(user, eventProfileImage);
+                imageViewHandler.setUserProfileImage(user, eventProfileImage);
             }
         });
 
         // Set the event image
-        image.setEventImage(event, eventImage);
+        imageViewHandler.setEventImage(event, eventImage);
     }
 }
