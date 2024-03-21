@@ -52,4 +52,5 @@ dependencies {
     implementation("com.tbuonomo:dotsindicator:5.0")
     implementation ("com.google.android.gms:play-services-maps:18.0.0")
     implementation ("org.osmdroid:osmdroid-android:6.1.7")
+    implementation ("com.google.firebase:firebase-appcheck-safetynet:16.0.0")
 }

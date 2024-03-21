@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -58,8 +59,6 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Log.d("EventArrayAdptRecycleView", events.get(position).getName());
-
         holder.eventTitle.setText(events.get(position).getName());
         holder.eventLocationTitle.setText(events.get(position).getLocation());
 
@@ -78,9 +77,11 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
             holder.eventStartDateTitle.setText(startDate);
             holder.eventTimeTitle.setText(startTime + " - " + endTime);
         }
+        holder.eventImage.setVisibility(View.INVISIBLE);
         String uri = events.get(position).getEventBannerImgUrl();
 
         if (uri != null) {
+            Log.d("TestURI", uri);
             // Get image from firebase storage
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
             final long ONE_MEGABYTE = 1024 * 1024;
@@ -91,10 +92,12 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
                 RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
                 d.setCornerRadius(50f);
                 holder.eventImage.setImageDrawable(d);
+                Log.d("EventImageLoader","Loading Event Image: " + events.get(position).getName());
             }).addOnFailureListener(exception -> {
                 Log.w("User Profile", "Error getting profile image", exception);
             });
         }
+        holder.eventImage.setVisibility(View.VISIBLE);
     }
 
     public void addEvent(Event event) {
@@ -116,5 +119,15 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
     @Override
     public int getItemCount() {
         return events.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }
