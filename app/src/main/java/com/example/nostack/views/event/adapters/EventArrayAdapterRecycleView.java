@@ -34,7 +34,7 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
     private ArrayList<Event> events;
     private LayoutInflater inflater;
     private Fragment currFragment;
-    private AdapterView.OnItemClickListener itemClickListener;
+    private OnItemClickListener listener;
 
     TextView eventTitle;
     TextView eventStartDateTitle;
@@ -42,6 +42,17 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
     TextView eventLocationTitle;
     ImageView eventImage;
 
+    public boolean containsEvent(Event event) {
+        boolean contained = false;
+        for (Event event1:events) {
+            if (event.getId().equals(event1.getId())) {return true;}
+        }
+        return contained;
+    }
+
+    public void addEvent(Event event) {
+        events.add(event);
+    }
 
 
     public EventArrayAdapterRecycleView(Context context, ArrayList<Event> events, Fragment currfragment) {
@@ -53,14 +64,13 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.eventlistcontent, parent, false);
+        View view = inflater.inflate(R.layout.eventlistcontent, parent, true);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Event event = events.get(position);
-//        TODO: Set views here.
 
         if (event != null) {
 
@@ -108,8 +118,11 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
         return events.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements AdapterView.OnItemClickListener, View.OnClickListener {
+    public interface OnItemClickListener {
+        void onItemClick(Event event);
+    }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             eventTitle = itemView.findViewById(R.id.EventListContentNameText);
@@ -117,11 +130,18 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
             eventTimeTitle = itemView.findViewById(R.id.EventListContentTimeText);
             eventLocationTitle = itemView.findViewById(R.id.EventListContentLocationText);
             eventImage = itemView.findViewById(R.id.EventListContentPosterImage);
-        }
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((listener != null) && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(events.get(getAdapterPosition()));
+                    }
+                }
+            });
         }
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
