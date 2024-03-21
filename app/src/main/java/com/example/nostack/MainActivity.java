@@ -9,15 +9,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.EventCheckinHandler;
+import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.models.Image;
 
-  public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Register Handlers and Services
         CurrentUserHandler.setOwnerActivity(this);
         CurrentUserHandler.setSingleton();
+
+        ImageViewHandler.setOwnerActivity(this);
+        ImageViewHandler.setSingleton();
     }
 
     @Override

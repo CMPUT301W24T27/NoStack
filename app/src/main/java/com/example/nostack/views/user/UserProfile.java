@@ -19,8 +19,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.models.Image;
 import com.example.nostack.services.ImageUploader;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 
 import javax.annotation.Nullable;
 
@@ -149,7 +150,7 @@ public class UserProfile extends Fragment {
         }
 
         imageUploader = new ImageUploader();
-        imageViewHandler = new ImageViewHandler(getActivity());
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**

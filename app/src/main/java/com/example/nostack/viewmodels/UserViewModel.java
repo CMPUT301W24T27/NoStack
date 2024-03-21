@@ -1,4 +1,4 @@
-package com.example.nostack.viewmodels.user;
+package com.example.nostack.viewmodels;
 
 import android.util.Log;
 

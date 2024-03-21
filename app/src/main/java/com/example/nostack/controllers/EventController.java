@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
@@ -36,15 +37,22 @@ public class EventController {
     }
 
     public Task<QuerySnapshot> getAllEvents() {
-        return eventCollectionReference.get();
+        return eventCollectionReference
+                .orderBy("startDate", Query.Direction.ASCENDING)
+                .get();
     }
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizerId) {
-        return eventCollectionReference.whereEqualTo("organizerId", organizerId).get();
+        return eventCollectionReference
+                .whereEqualTo("organizerId", organizerId)
+                .get();
     }
 
     public Task<QuerySnapshot> getAttendeeEvents(String attendeeId) {
-        return eventCollectionReference.whereArrayContains("attendees", attendeeId).get();
+        return eventCollectionReference
+                .whereArrayContains("attendees", attendeeId)
+                .orderBy("startDate", Query.Direction.ASCENDING)
+                .get();
     }
 
     public Task<DocumentSnapshot> getEvent(String eventId) {
@@ -93,6 +101,32 @@ public class EventController {
         });
     }
 
+    public Task<Void> unregisterToEvent(String eventId, String userId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        return db.runTransaction(transaction -> {
+            DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+
+            if (attendees != null && attendees.contains(userId)) {
+                transaction.update(eventRef, "attendees", FieldValue.arrayRemove(userId));
+                return null;
+            } else {
+                throw new RuntimeException("User is not registered for this event.");
+            }
+        }).continueWithTask(task -> {
+            if (task.isSuccessful()) {
+                String attendanceId = Attendance.buildAttendanceId(eventId, userId);
+                return attendanceController.deleteAttendance(attendanceId);
+            } else {
+                throw new RuntimeException("Failed to delete attendance.");
+            }
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Event Controller", "Successfully unregistered user from event.");
+        }).addOnFailureListener(e -> {
+            Log.e("Event Controller", "Failed to unregister user from event.", e);
+        });
+    }
+
     public Task<Void> eventCheckIn(String eventId) {
         return eventCheckIn(currentUserHandler.getCurrentUserId(), eventId);
     }
@@ -109,7 +143,14 @@ public class EventController {
             if (attendees != null && attendees.contains(userId)) {
                 return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId));
             } else {
-                throw new RuntimeException("User has not registered for this event.");
+                // For now, if the user is not registered, when checking in, it automatically
+                // registers them.
+                return registerToEvent(eventId, userId).continueWithTask(registerTask -> {
+                    if (!registerTask.isSuccessful()) {
+                        throw new RuntimeException("Failed to register for the event before checking in.");
+                    }
+                    return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId));
+                });
             }
         }).addOnSuccessListener(aVOid -> {
             Log.d("Event Controller", "Successfully checked-in user.");

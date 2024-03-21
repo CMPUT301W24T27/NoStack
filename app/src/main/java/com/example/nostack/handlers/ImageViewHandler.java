@@ -7,26 +7,46 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nostack.models.Event;
 import com.example.nostack.models.User;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class ImageViewHandler {
 
-    private final int screenWidth;
-    private final int screenHeight;
-    private final Activity activity;
+    private static int screenWidth;
+    private static int screenHeight;
+    private static ImageViewHandler singleInstance = null;
+    private static AppCompatActivity ownerActivity;
 
-    public ImageViewHandler(Activity activity) {
-        this.activity = activity;
+    public static void setSingleton() {
+        if (ownerActivity == null) {
+            throw new RuntimeException("Owner activity must be set in MainActivity.");
+        }
+        singleInstance = new ImageViewHandler();
+    }
+
+    public static ImageViewHandler getSingleton() {
+        if (singleInstance == null) {
+            setSingleton();
+        }
+        return singleInstance;
+    }
+
+    public static void setOwnerActivity(AppCompatActivity activity) {
+        ownerActivity = activity;
+    }
+
+    public ImageViewHandler() {
         DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
+        ownerActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         screenWidth = metrics.widthPixels;
         screenHeight = metrics.heightPixels;
     }
@@ -48,7 +68,7 @@ public class ImageViewHandler {
             storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 //                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, screenWidth, screenHeight, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), bmp);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(ownerActivity.getResources(), bmp);
                 eventBanner.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
                 Log.w("User Profile", "Error getting profile image", exception);
@@ -71,7 +91,7 @@ public class ImageViewHandler {
             storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 300, 300, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), scaledBmp);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(ownerActivity.getResources(), scaledBmp);
                 d.setCornerRadius(100f);
                 imageView.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
@@ -81,7 +101,7 @@ public class ImageViewHandler {
             // generate profile image if user has no profile image
             Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
             Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 300, 300, false);
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(activity.getResources(), scaledBmp);
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(ownerActivity.getResources(), scaledBmp);
             d.setCornerRadius(100f);
             imageView.setImageDrawable(d);
         }

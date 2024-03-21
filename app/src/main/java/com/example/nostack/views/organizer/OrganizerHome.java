@@ -23,7 +23,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.services.GenerateProfileImage;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
