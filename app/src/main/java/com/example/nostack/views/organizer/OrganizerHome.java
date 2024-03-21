@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +18,14 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.views.event.adapters.EventArrayAdapter;
+import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,7 +42,7 @@ public class OrganizerHome extends Fragment {
 
     private EventArrayAdapter eventArrayAdapter;
     private ArrayList<Event> dataList;
-    private ListView eventList;
+    private RecyclerView eventList;
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
     private Activity activity;
@@ -57,6 +58,7 @@ public class OrganizerHome extends Fragment {
     private String mParam2;
     private TextView userWelcome;
     private UserViewModel userViewModel;
+    private EventArrayAdapterRecycleView newEventArrayAdapter;
 
 
     public OrganizerHome() {
@@ -123,7 +125,8 @@ public class OrganizerHome extends Fragment {
 
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
-        eventList.setAdapter(eventArrayAdapter);
+        newEventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this);
+        eventList.setAdapter(newEventArrayAdapter);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -171,6 +174,7 @@ public class OrganizerHome extends Fragment {
                         .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
             }
         });
+
 
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
