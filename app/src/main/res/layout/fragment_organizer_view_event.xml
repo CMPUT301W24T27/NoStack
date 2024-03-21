@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.attendee.AttendeeEvent">
+    tools:context=".views.attendee.AttendeeEvent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -170,10 +170,10 @@
             app:layout_constraintVertical_bias="0.05" />
 
         <Button
-            android:id="@+id/button_manage_announcements"
+            android:id="@+id/button_see_signups"
             android:layout_width="168dp"
             android:layout_height="78dp"
-            android:text="Manage Announcements"
+            android:text="See Signups"
             android:backgroundTint="@color/lightBlue"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/QR_code"

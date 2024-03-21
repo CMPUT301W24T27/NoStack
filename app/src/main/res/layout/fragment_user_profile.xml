@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.UserProfile">
+    tools:context=".views.user.UserProfile">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -216,7 +216,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="Last Name"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:text="JohnDoe@hotmail.com"
                 android:textColor="@color/white"

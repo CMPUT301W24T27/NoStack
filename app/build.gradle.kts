@@ -50,4 +50,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.tbuonomo:dotsindicator:5.0")
+    implementation ("com.google.android.gms:play-services-maps:18.0.0")
+    implementation ("org.osmdroid:osmdroid-android:6.1.7")
 }
