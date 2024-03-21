@@ -101,6 +101,10 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
         events.add(event);
     }
 
+    public void clear() {
+        events.clear();
+    }
+
     public boolean containsEvent(Event event) {
         boolean contained = false;
         for (Event event1:events) {
