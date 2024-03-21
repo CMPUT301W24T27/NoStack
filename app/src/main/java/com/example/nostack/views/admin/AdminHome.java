@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +16,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nostack.R;
-import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.user.UserViewModel;
-import com.example.nostack.views.organizer.OrganizerHome;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +36,9 @@ public class AdminHome extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ViewPager2 viewPager;
+    private DotsIndicator dotsIndicator;
+    private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class};
 
     public AdminHome() {
         // Required empty public constructor
@@ -75,6 +78,11 @@ public class AdminHome extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
+        viewPager = view.findViewById(R.id.admin_viewPager2);
+        Log.d("AdminHome", "viewPager:"+ viewPager);
+        viewPager.setAdapter(new MyFragmentAdapter(this));
+//        dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
+//        dotsIndicator.attachTo(viewPager);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -94,7 +102,34 @@ public class AdminHome extends Fragment {
             }
         });
 
+
         // Inflate the layout for this fragment
         return view;
+    }
+    private static class MyFragmentAdapter extends FragmentStateAdapter {
+
+        public MyFragmentAdapter(Fragment fragment) {
+            super(fragment);
+        }
+
+        /**
+         * This method is called when the fragment is being created and then sets up the view for the fragment
+         *
+         * @param position The position of the fragment
+         * @return a null fragment if there is an exception
+         */
+        @Override
+        public Fragment createFragment(int position) {
+            try {
+                return (Fragment) fragments[position].newInstance();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return fragments.length;
+        }
     }
 }
