@@ -1,13 +1,13 @@
 package com.example.nostack.views.event.adapters;
 
+import static java.util.Locale.CANADA;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,12 +29,12 @@ import java.util.ArrayList;
 /**
  * EventArrayAdapter is an ArrayAdapter for the Event class
  */
-public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
+public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHolder> {
 
     private ArrayList<Event> events;
     private LayoutInflater inflater;
     private Fragment currFragment;
-    private AdapterView.OnItemClickListener itemClickListener;
+    private Context context;
 
     TextView eventTitle;
     TextView eventStartDateTitle;
@@ -46,82 +46,71 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter {
 
     public EventArrayAdapterRecycleView(Context context, ArrayList<Event> events, Fragment currfragment) {
         this.events = events;
-        this.inflater = LayoutInflater.from(context);
+        this.context = context;
         this.currFragment = currfragment;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.eventlistcontent, parent, false);
-        return new ViewHolder(view);
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.eventlistcontent,parent,false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Event event = events.get(position);
-//        TODO: Set views here.
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Log.d("EventArrayAdptRecycleView", events.get(position).getName());
 
-        if (event != null) {
+        holder.eventTitle.setText(events.get(position).getName());
+        holder.eventLocationTitle.setText(events.get(position).getLocation());
 
-            DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
-            DateFormat tf = new SimpleDateFormat("h:mm a");
+        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", CANADA);
+        DateFormat tf = new SimpleDateFormat("h:mm a", CANADA);
 
-            String startDate = df.format(event.getStartDate());
-            String endDate = df.format(event.getEndDate());
-            String startTime = tf.format(event.getStartDate());
-            String endTime = tf.format(event.getEndDate());
+        String startDate = df.format(events.get(position).getStartDate());
+        String endDate = df.format(events.get(position).getEndDate());
+        String startTime = tf.format(events.get(position).getStartDate());
+        String endTime = tf.format(events.get(position).getEndDate());
 
-            if (!startDate.equals(endDate)) {
-                eventStartDateTitle.setText(startDate + " to");
-                eventTimeTitle.setText(endDate);
-            } else {
-                eventStartDateTitle.setText(startDate);
-                eventTimeTitle.setText(startTime + " - " + endTime);
-            }
-
-            eventTitle.setText(event.getName());
-            eventLocationTitle.setText(event.getLocation());
-
-            String uri = event.getEventBannerImgUrl();
-
-            if (uri != null) {
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(50f);
-                    eventImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            }
+        if (!startDate.equals(endDate)) {
+            holder.eventStartDateTitle.setText(startDate + " to");
+            holder.eventTimeTitle.setText(endDate);
+        } else {
+            holder.eventStartDateTitle.setText(startDate);
+            holder.eventTimeTitle.setText(startTime + " - " + endTime);
         }
+        String uri = events.get(position).getEventBannerImgUrl();
+
+        if (uri != null) {
+            // Get image from firebase storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
+                d.setCornerRadius(50f);
+                holder.eventImage.setImageDrawable(d);
+            }).addOnFailureListener(exception -> {
+                Log.w("User Profile", "Error getting profile image", exception);
+            });
+        }
+    }
+
+    public void addEvent(Event event) {
+        events.add(event);
+    }
+
+    public boolean containsEvent(Event event) {
+        boolean contained = false;
+        for (Event event1:events) {
+            if (event.getId().equals(event1.getId())) {return true;}
+        }
+        return contained;
     }
 
     @Override
     public int getItemCount() {
         return events.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements AdapterView.OnItemClickListener, View.OnClickListener {
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            eventTitle = itemView.findViewById(R.id.EventListContentNameText);
-            eventStartDateTitle = itemView.findViewById(R.id.EventListContentDateText);
-            eventTimeTitle = itemView.findViewById(R.id.EventListContentTimeText);
-            eventLocationTitle = itemView.findViewById(R.id.EventListContentLocationText);
-            eventImage = itemView.findViewById(R.id.EventListContentPosterImage);
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        }
     }
 }

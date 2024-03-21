@@ -18,6 +18,7 @@ import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  * Creates the AttendeeEvents fragment which is used to display the events that the attendee is attending
  */
 public class AttendeeEvents extends Fragment {
-    private EventArrayAdapter eventArrayAdapter;
+    private EventArrayAdapterRecycleView eventArrayAdapter;
     private ListView eventList;
     private ArrayList<Event> dataList;
     private UserViewModel userViewModel;
@@ -74,7 +75,7 @@ public class AttendeeEvents extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
 
         eventList = rootView.findViewById(R.id.listView_upcomingEvents);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());

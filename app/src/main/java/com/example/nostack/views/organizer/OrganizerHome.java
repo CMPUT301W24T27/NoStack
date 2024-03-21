@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -18,13 +17,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.services.GenerateProfileImage;
 import com.example.nostack.viewmodels.user.UserViewModel;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
  */
 public class OrganizerHome extends Fragment {
 
-    private EventArrayAdapter eventArrayAdapter;
     private ArrayList<Event> dataList;
     private RecyclerView eventList;
     private FirebaseFirestore db;
@@ -58,7 +56,7 @@ public class OrganizerHome extends Fragment {
     private String mParam2;
     private TextView userWelcome;
     private UserViewModel userViewModel;
-    private EventArrayAdapterRecycleView newEventArrayAdapter;
+    private EventArrayAdapterRecycleView eventArrayAdapter;
 
 
     public OrganizerHome() {
@@ -124,9 +122,9 @@ public class OrganizerHome extends Fragment {
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
-        newEventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this);
-        eventList.setAdapter(newEventArrayAdapter);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this);
+        eventList.setAdapter(eventArrayAdapter);
+        eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -139,6 +137,7 @@ public class OrganizerHome extends Fragment {
                             Event event = document.toObject(Event.class);
                             if (!eventArrayAdapter.containsEvent(event)) {
                                 eventArrayAdapter.addEvent(event);
+                                eventArrayAdapter.notifyItemInserted(eventArrayAdapter.getItemCount() - 1);
                                 Log.d("EventAdd", document.toObject(Event.class).getName());
                             }
                         }
@@ -163,17 +162,17 @@ public class OrganizerHome extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = eventArrayAdapter.getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
-                NavHostFragment.findNavController(OrganizerHome.this)
-                        .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
-            }
-        });
+//        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Event event = eventArrayAdapter.getItem(position);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("eventData", event);
+//
+//                NavHostFragment.findNavController(OrganizerHome.this)
+//                        .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
+//            }
+//        });
 
 
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
