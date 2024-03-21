@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.models.User;
 
 public class CurrentUserHandler {
@@ -16,6 +16,7 @@ public class CurrentUserHandler {
         if (ownerActivity == null) {
             throw new RuntimeException("Owner activity must be set in MainActivity.");
         }
+        singleInstance = new CurrentUserHandler();
         userViewModel = new ViewModelProvider(ownerActivity).get(UserViewModel.class);
     }
 
@@ -25,6 +26,8 @@ public class CurrentUserHandler {
         }
         return singleInstance;
     }
+
+    public CurrentUserHandler() {}
 
     public static void setOwnerActivity(AppCompatActivity activity) {
         ownerActivity = activity;
@@ -38,5 +41,10 @@ public class CurrentUserHandler {
         } else {
             return null;
         }
+    }
+
+    public User getCurrentUser() {
+        LiveData<User> userLiveData = userViewModel.getUser();
+        return userLiveData.getValue();
     }
 }

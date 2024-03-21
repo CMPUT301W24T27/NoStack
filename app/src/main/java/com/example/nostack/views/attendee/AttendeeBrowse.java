@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,13 +16,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.example.nostack.viewmodels.UserViewModel;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -32,10 +33,7 @@ public class AttendeeBrowse extends Fragment {
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private ArrayList<Event> dataList;
-    private UserViewModel userViewModel;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
+    private EventViewModel eventViewModel;
 
     public AttendeeBrowse() {
     }
@@ -48,11 +46,7 @@ public class AttendeeBrowse extends Fragment {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         dataList = new ArrayList<>();
     }
 
@@ -70,31 +64,39 @@ public class AttendeeBrowse extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment only once
         View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
-
         eventList = rootView.findViewById(R.id.listView_yourEvents);
         eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
+        return rootView;
+    }
 
-        Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", document.toObject(Event.class).getName());
-                        }
-                    }
-                });
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
+            }
+        });
+
+        // Fetch and get events
+        eventViewModel.fetchAllEvents();
+        eventViewModel.getAllEvents().observe(getViewLifecycleOwner(), events -> {
+            eventArrayAdapter.clear();
+            for (Event event : events) {
+                eventArrayAdapter.addEvent(event);
+            }
+            eventArrayAdapter.notifyDataSetChanged();
+        });
 
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = eventArrayAdapter.getItem(position);
+                eventViewModel.fetchEvent(event.getId());
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);
 
@@ -102,9 +104,5 @@ public class AttendeeBrowse extends Fragment {
                         .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
             }
         });
-
-        // Return the modified layout
-        return rootView;
     }
-
 }

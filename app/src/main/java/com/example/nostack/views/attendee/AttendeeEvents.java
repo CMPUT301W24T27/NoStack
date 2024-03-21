@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,9 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,11 +37,8 @@ public class AttendeeEvents extends Fragment {
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private ArrayList<Event> dataList;
-    private UserViewModel userViewModel;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-
+    private EventViewModel eventViewModel;
+    private CurrentUserHandler currentUserHandler;
 
     public AttendeeEvents() {
     }
@@ -51,65 +51,62 @@ public class AttendeeEvents extends Fragment {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        currentUserHandler = CurrentUserHandler.getSingleton();
         dataList = new ArrayList<>();
     }
 
     /**
-     * This method is called when the fragment is being created and displays the view for the fragment
+     * This method is called when the fragment is being created and then sets up the view for the fragment
      *
-     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment
-     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
-     *                           The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
-     * @return The View for the fragment's UI, or null.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return Returns the modified view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment only once
-        View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
-
-        eventList = rootView.findViewById(R.id.listView_upcomingEvents);
+        View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
+        eventList = rootView.findViewById(R.id.listView_yourEvents);
         eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
 
-        Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
-                        .where(Filter.arrayContains("attendees", user.getUuid()))
-                        .get().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                // Reset the list of events
-                                eventArrayAdapter.clear();
 
-                                // Add the events to the list
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Event event = document.toObject(Event.class);
-                                    eventArrayAdapter.addEvent(event);
-                                    Log.d("EventAdd", document.toObject(Event.class).getName());
-                                }
-                                eventArrayAdapter.notifyDataSetChanged();
-                                Log.d("EventAdd", "Event Added");
-                            } else {
-                                Log.d("EventAdd", "Error getting documents: ", task.getException());
-                            }
-                        });
 
-            } else {
-                Log.d("AttendeeHome", "User is null");
+        return rootView;
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
             }
         });
 
-        // Clickable event list
+        // Fetch and get events
+        eventViewModel.fetchAttendeeEvents(currentUserHandler.getCurrentUserId());
+        eventViewModel.getAttendeeEvents().observe(getViewLifecycleOwner(), events -> {
+            eventArrayAdapter.clear();
+            for (Event event : events) {
+                eventArrayAdapter.addEvent(event);
+            }
+            eventArrayAdapter.notifyDataSetChanged();
+
+        });
+
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = eventArrayAdapter.getItem(position);
+                eventViewModel.fetchEvent(event.getId());
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);
 
@@ -117,9 +114,6 @@ public class AttendeeEvents extends Fragment {
                         .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
             }
         });
-
-        // Return the modified layout
-        return rootView;
     }
-
 }
+
