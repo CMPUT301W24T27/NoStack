@@ -139,6 +139,13 @@ public class StartUp extends Fragment {
             }
         });
 
+        view.findViewById(R.id.AdministratorSignInButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                NavHostFragment.findNavController(StartUp.this)
+                        .navigate(R.id.action_startUp_to_adminHome);
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;

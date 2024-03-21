@@ -59,7 +59,7 @@
         </GridLayout>
 
         <ImageButton
-            android:id="@+id/attendee_profileButton"
+            android:id="@+id/admin_profileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"

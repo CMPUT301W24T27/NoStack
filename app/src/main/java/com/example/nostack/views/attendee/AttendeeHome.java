@@ -175,7 +175,7 @@ public class AttendeeHome extends Fragment {
      */
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(AttendeeHome.this)
@@ -183,7 +183,7 @@ public class AttendeeHome extends Fragment {
             }
         });
 
-        ImageButton profileImage = getView().findViewById(R.id.attendee_profileButton);
+        ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user.getProfileImageUrl() != null) {
                 String uri = user.getProfileImageUrl();
