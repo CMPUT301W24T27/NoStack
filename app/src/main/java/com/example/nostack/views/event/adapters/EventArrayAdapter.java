@@ -66,7 +66,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
      * @param event The event to add
      */
     public void addEvent(Event event) {
-        add(event);
+        if (!containsEvent(event)) {
+            add(event);
+        }
     }
 
     /**

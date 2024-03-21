@@ -60,6 +60,6 @@ public class AttendanceController {
 
     // TODO: Deleting an attendance, may be a little too nuanced, will be done later on.
     public Task<Void> deleteAttendance(String attendanceId) {
-        return Tasks.whenAll();
+        return attendanceCollectionReference.document(attendanceId).delete();
     }
 }
