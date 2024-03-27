@@ -39,17 +39,17 @@ tools:context=".views.attendee.AttendeeEvent">
         <TextView
             android:id="@+id/OrganizerEventDescriptionText"
             android:layout_width="362dp"
-            android:layout_height="401dp"
-            android:layout_marginTop="37dp"
+            android:layout_height="201dp"
+            android:layout_marginTop="36dp"
             android:text="Full Event Description Goes Here..."
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="OrganizerEventAnnouncements"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText"
-            app:layout_constraintVertical_bias="0.666" />
+            app:layout_constraintVertical_bias="0" />
 
         <Button
             android:id="@+id/OrganizerEventShareButton"
@@ -57,25 +57,44 @@ tools:context=".views.attendee.AttendeeEvent">
             android:layout_height="28dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/share_icon"
-            app:layout_constraintBottom_toTopOf="@+id/OrganizerEventDescriptionText"
+            app:layout_constraintBottom_toBottomOf="@+id/AttendeeEventTitleText"
+            app:layout_constraintTop_toTopOf="@+id/AttendeeEventTitleText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/AttendeeEventTitleText" />
+            app:layout_constraintStart_toEndOf="@+id/AttendeeEventTitleText"
+            app:layout_constraintVertical_bias="0.1"/>
+
+        <TextView
+            android:id="@+id/OrganizerEventAnnouncements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:text="Announcements"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/OrganizerEventDateText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/OrganizerEventDescriptionText"
+            app:layout_constraintVertical_bias="0.3" />
 
         <TextView
             android:id="@+id/OrganizerEventDateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="308dp"
+            android:layout_marginTop="0dp"
             android:text="Event Start Date"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/OrganizerEventLocationText"
+            app:layout_constraintBottom_toTopOf="@+id/OrganizerEventTimeText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.06"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/OrganizerEventDescriptionText"
+            app:layout_constraintTop_toTopOf="@+id/AttendeeEventUserImage"
             app:layout_constraintVertical_bias="0.3" />
 
         <ImageView
@@ -144,6 +163,22 @@ tools:context=".views.attendee.AttendeeEvent">
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/CreateNotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/yellow"
+        android:text="Send Notification"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventDateTime"
+        app:layout_constraintBottom_toTopOf="OrganizerEventQRCodeButton"/>
 
     <Button
         android:id="@+id/OrganizerEventQRCodeButton"

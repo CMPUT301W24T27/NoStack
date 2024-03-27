@@ -168,6 +168,15 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
+        view.findViewById(R.id.CreateNotificationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("eventData", event);
+
+            }
+        });
+
         return view;
     }
 
