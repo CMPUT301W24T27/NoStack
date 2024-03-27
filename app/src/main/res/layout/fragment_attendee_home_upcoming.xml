@@ -7,16 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <ProgressBar
-        android:id="@+id/upcomingProgressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <GridLayout
         android:id="@+id/gridLayout3"
         android:layout_width="246dp"

@@ -1,7 +1,5 @@
 package com.example.nostack.views.attendee;
 
-import static android.view.View.GONE;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,7 +94,7 @@ public class AttendeeEvents extends Fragment {
                                     eventArrayAdapter.notifyItemInserted(eventArrayAdapter.getItemCount() - 1);
                                     Log.d("EventAdd", document.toObject(Event.class).getName());
                                 }
-                                eventArrayAdapter.notifyDataSetChanged();
+                                eventArrayAdapter.notifyItemInserted(0);
                                 Log.d("EventAdd", "Event Added");
                             } else {
                                 Log.d("EventAdd", "Error getting documents: ", task.getException());
@@ -107,8 +105,6 @@ public class AttendeeEvents extends Fragment {
                 Log.d("AttendeeHome", "User is null");
             }
         });
-
-        rootView.findViewById(R.id.upcomingProgressBar).setVisibility(GONE);
 
         // Clickable event list
 //        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

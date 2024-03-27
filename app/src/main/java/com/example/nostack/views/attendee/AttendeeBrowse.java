@@ -1,7 +1,5 @@
 package com.example.nostack.views.attendee;
 
-import static android.view.View.GONE;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -94,7 +92,6 @@ public class AttendeeBrowse extends Fragment {
                     }
                 });
 
-        rootView.findViewById(R.id.browseProgressBar).setVisibility(GONE);
 
 //        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
