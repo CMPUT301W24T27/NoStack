@@ -162,7 +162,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(OrganizerHome.this)
