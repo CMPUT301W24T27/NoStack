@@ -95,7 +95,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Event event = document.toObject(Event.class);
                                     eventArrayAdapter.addEvent(event);
-                                    eventArrayAdapter.notifyItemInserted(eventArrayAdapter.getItemCount() - 1);
+                                    eventArrayAdapter.notifyDataSetChanged();
                                     Log.d("EventAdd", document.toObject(Event.class).getName());
                                 }
                                 eventArrayAdapter.notifyItemInserted(0);

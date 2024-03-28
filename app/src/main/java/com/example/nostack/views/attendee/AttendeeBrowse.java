@@ -80,7 +80,6 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventArrayAdapter.notifyDataSetChanged();
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
 
@@ -91,7 +90,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Event event = document.toObject(Event.class);
                             eventArrayAdapter.addEvent(event);
-                            eventArrayAdapter.notifyItemInserted(eventArrayAdapter.getItemCount() - 1);
+                            eventArrayAdapter.notifyDataSetChanged();
                             Log.d("EventAdd", document.toObject(Event.class).getName());
                         }
                     }

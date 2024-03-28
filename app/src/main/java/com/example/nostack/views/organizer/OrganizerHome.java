@@ -138,7 +138,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
                             Event event = document.toObject(Event.class);
                             if (!eventArrayAdapter.containsEvent(event)) {
                                 eventArrayAdapter.addEvent(event);
-                                eventArrayAdapter.notifyItemInserted(eventArrayAdapter.getItemCount() - 1);
+                                eventArrayAdapter.notifyDataSetChanged();
                                 Log.d("EventAdd", document.toObject(Event.class).getName());
                             }
                         }
