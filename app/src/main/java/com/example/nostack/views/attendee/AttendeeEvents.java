@@ -79,7 +79,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventArrayAdapter.notifyDataSetChanged();
+        eventList.setItemViewCacheSize(30);
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {

@@ -127,6 +127,8 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        eventList.setItemViewCacheSize(30);
+
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 Log.d("OrganizerHome", "User logged in: " + user.getUsername());
