@@ -6,36 +6,37 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.EventViewModel;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.UserViewModel;
+import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
+import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
  */
-public class AttendeeBrowse extends Fragment {
-    private EventArrayAdapter eventArrayAdapter;
-    private ListView eventList;
+public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInterface {
+    private EventArrayAdapterRecycleView eventArrayAdapter;
+    private RecyclerView eventList;
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
-    private UserViewModel userViewModel;
-
     public AttendeeBrowse() {
     }
 
@@ -67,7 +68,7 @@ public class AttendeeBrowse extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
         eventList = rootView.findViewById(R.id.listView_yourEvents);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         return rootView;
     }
@@ -92,18 +93,17 @@ public class AttendeeBrowse extends Fragment {
             }
             eventArrayAdapter.notifyDataSetChanged();
         });
-
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = eventArrayAdapter.getItem(position);
-                eventViewModel.fetchEvent(event.getId());
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);
-
-                NavHostFragment.findNavController(AttendeeBrowse.this)
-                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-            }
-        });
+        eventList.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+
+    @Override
+    public void OnItemClick(int position) {
+        Event event = eventArrayAdapter.getEvent(position);
+        eventViewModel.fetchEvent(event.getId());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+
+        NavHostFragment.findNavController(AttendeeBrowse.this)
+            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+    };
 }

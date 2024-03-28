@@ -175,8 +175,7 @@ public class UserProfile extends Fragment {
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                NavHostFragment.findNavController(UserProfile.this)
-                        .navigate(R.id.action_userProfile_to_attendeeHome);
+                NavHostFragment.findNavController(UserProfile.this).popBackStack();
             }
         });
 

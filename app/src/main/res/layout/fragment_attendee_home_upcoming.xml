@@ -7,18 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <ListView
-        android:id="@+id/listView_upcomingEvents"
-        android:layout_width="352dp"
-        android:layout_height="758dp"
-        android:layout_marginTop="37dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridLayout3"
-        app:layout_constraintVertical_bias="0.13999999" />
-
     <GridLayout
         android:id="@+id/gridLayout3"
         android:layout_width="246dp"
@@ -53,6 +41,19 @@
             android:textColor="@color/lightBlue"
             android:textSize="17sp" />
     </GridLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listView_upcomingEvents"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
