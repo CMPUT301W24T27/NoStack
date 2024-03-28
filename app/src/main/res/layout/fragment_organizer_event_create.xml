@@ -154,17 +154,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/EventCreationLimitLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="50dp"
-            android:hint="Limit (default to unlimited)"
+            android:layout_marginEnd="10dp"
+            android:hint="User Limit"
             app:endIconDrawable="@drawable/baseline_add_box_24"
             app:endIconMode="custom"
             app:endIconTint="@color/yellow"
             app:hintEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/unlimitedUserSwitch"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/EventCreationLocationLayout">
 
@@ -173,8 +173,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"
-                android:textColor="@color/white"
                 android:inputType="number"
+                android:textColor="@color/white"
                 android:textColorHint="@color/SignInUpTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -273,6 +273,19 @@
             app:layout_constraintBottom_toBottomOf="@+id/backButton"
             app:layout_constraintStart_toEndOf="@+id/backButton"
             app:layout_constraintTop_toTopOf="@+id/backButton" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/unlimitedUserSwitch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:paddingStart="8dp"
+            android:text="Unlimited"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/EventCreationDescriptionLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EventCreationLocationLayout" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
