@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -39,7 +40,11 @@ public class QrCodeController {
         return qrCollectionReference.get();
     }
 
-    public Task<QuerySnapshot> getInactiveQrcodes() {
+    public Task<DocumentSnapshot> getQrCode(String qrCodeId) {
+        return qrCollectionReference.document(qrCodeId).get();
+    }
+
+    public Task<QuerySnapshot> getInactiveQrCodes() {
         return qrCollectionReference
                 .whereEqualTo("active", false)
                 .whereEqualTo("type", 0)
@@ -59,6 +64,9 @@ public class QrCodeController {
         return qrCollectionReference.document(qrCodeId).update(updates);
     }
 
+    public Task<Void> addQrCode(QrCode qrCode) {
+        return qrCollectionReference.document(qrCode.getId()).set(qrCode);
+    }
 
     // TODO: Deleting a QrCode, may be a little too nuanced, will be done later on.
     public Task<Void> deleteQrCode(String qrCodeId) {

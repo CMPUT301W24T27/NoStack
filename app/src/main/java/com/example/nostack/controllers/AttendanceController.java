@@ -33,7 +33,7 @@ public class AttendanceController {
         return attendanceCollectionReference.whereEqualTo("eventId", eventId).get();
     }
 
-    public Task<QuerySnapshot>getGetAttendanceByUser() {
+    public Task<QuerySnapshot>getAttendanceByUser() {
         return getAttendanceByUser(currentUserHandler.getCurrentUserId());
     }
 
@@ -58,8 +58,7 @@ public class AttendanceController {
         return attendanceCollectionReference.document(id).update("numCheckIn", FieldValue.increment(1));
     }
 
-    // TODO: Deleting an attendance, may be a little too nuanced, will be done later on.
     public Task<Void> deleteAttendance(String attendanceId) {
-        return Tasks.whenAll();
+        return attendanceCollectionReference.document(attendanceId).delete();
     }
 }

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +38,7 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
     private Fragment currFragment;
     private Context context;
     private final EventArrayRecycleViewInterface eventArrayRecycleViewInterface;
+    private final ImageViewHandler imageViewHandler = ImageViewHandler.getSingleton();
     TextView eventTitle;
     TextView eventStartDateTitle;
     TextView eventTimeTitle;

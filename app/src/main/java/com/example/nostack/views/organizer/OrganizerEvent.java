@@ -18,7 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -93,7 +93,7 @@ public class OrganizerEvent extends Fragment {
         eventsRef = db.collection("events");
         activity = getActivity();
         dataList = new ArrayList<>();
-        imageViewHandler = new ImageViewHandler(getActivity());
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**

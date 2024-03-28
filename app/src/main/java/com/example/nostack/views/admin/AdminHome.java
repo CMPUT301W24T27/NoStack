@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.organizer.OrganizerHome;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 

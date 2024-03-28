@@ -27,7 +27,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.activity.ScanActivity;
 import com.example.nostack.handlers.EventCheckinHandler;
 import com.example.nostack.services.GenerateProfileImage;
