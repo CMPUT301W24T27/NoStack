@@ -80,8 +80,6 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventList.setItemViewCacheSize(30);
-
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
 
         eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
