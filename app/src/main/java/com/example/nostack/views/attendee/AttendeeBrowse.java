@@ -34,6 +34,7 @@ public class AttendeeBrowse extends Fragment {
     private ListView eventList;
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
+    private UserViewModel userViewModel;
 
     public AttendeeBrowse() {
     }

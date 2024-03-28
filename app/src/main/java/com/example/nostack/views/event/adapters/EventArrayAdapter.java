@@ -118,6 +118,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             eventTitle.setText(event.getName());
             eventLocationTitle.setText(event.getLocation());
 
+            eventImage.setVisibility(View.INVISIBLE);
             String uri = event.getEventBannerImgUrl();
 
             if (uri != null) {
@@ -135,6 +136,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                     Log.w("User Profile", "Error getting profile image", exception);
                 });
             }
+            eventImage.setVisibility(View.VISIBLE);
         }
         return view;
     }

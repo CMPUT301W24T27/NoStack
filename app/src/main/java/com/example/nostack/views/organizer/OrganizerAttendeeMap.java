@@ -77,7 +77,6 @@ public class OrganizerAttendeeMap extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 NavHostFragment.findNavController(OrganizerAttendeeMap.this).popBackStack();
             }
         });
