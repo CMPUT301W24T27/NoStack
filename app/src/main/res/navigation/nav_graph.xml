@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_startUp_to_organizerHome"
             app:destination="@id/organizerHome" />
+        <action
+            android:id="@+id/action_startUp_to_adminHome"
+            app:destination="@id/adminHome" />
     </fragment>
     <fragment
         android:id="@+id/attendeeHome"
@@ -132,6 +135,15 @@
         <action
             android:id="@+id/action_usersSignups_to_organizer_event"
             app:destination="@id/organizer_event" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminHome"
+        android:name="com.example.nostack.views.admin.AdminHome"
+        android:label="fragment_admin_home"
+        tools:layout="@layout/fragment_admin_home" >
+        <action
+            android:id="@+id/action_adminHome_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
 
 

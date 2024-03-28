@@ -170,7 +170,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             }
         });
 
-        ImageButton profileImage = getView().findViewById(R.id.attendee_profileButton);
+        ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user.getProfileImageUrl() != null) {
                 String uri = user.getProfileImageUrl();
