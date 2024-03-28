@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,13 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -52,16 +56,19 @@ public class OrganizerEventCreate extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private String mParam2;
+    private Boolean isUnlimited;
     private Activity activity;
     private ImageUploader imageUploader;
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
     private FloatingActionButton backButton;
+    private String previousLimit;
     private TextInputEditText eventTitleEditText;
     private TextInputEditText eventStartEditText;
     private TextInputLayout eventStartLayout;
     private TextInputEditText eventEndEditText;
     private TextInputLayout eventEndLayout;
+    private TextView eventCreationTitle;
     private TextInputEditText eventLocationEditText;
     private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
@@ -69,6 +76,7 @@ public class OrganizerEventCreate extends Fragment {
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
     private SharedPreferences preferences;
+    private SwitchCompat unlimitedButton;
     private String userUUID;
     private ActivityResultLauncher<String> imagePickerLauncher;
 
@@ -136,6 +144,8 @@ public class OrganizerEventCreate extends Fragment {
         eventLimitEditText = view.findViewById(R.id.EventCreationLimitEditText);
         backButton = view.findViewById(R.id.backButton);
         createButton = view.findViewById(R.id.EventCreationCreateEventButton);
+        unlimitedButton = view.findViewById(R.id.unlimitedUserSwitch);
+        eventCreationTitle = view.findViewById(R.id.EventCreationTitle);
 
         // Check if the event is being edited
         checkEditEvent();
@@ -168,6 +178,23 @@ public class OrganizerEventCreate extends Fragment {
                         storeEventToDb(event);
                     }
                     NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                }
+            }
+        });
+        unlimitedButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    eventLimitEditText.setFocusable(false);
+                    previousLimit = String.valueOf(eventLimitEditText.getText());
+                    eventLimitEditText.setText("");
+                    unlimitedButton.setTextColor(getContext().getColor(R.color.SignInUpTextColor));
+                } else {
+                    eventLimitEditText.setFocusableInTouchMode(true);
+                    unlimitedButton.setTextColor(Color.GRAY);
+                    if (previousLimit != null) {
+                        eventLimitEditText.setText(previousLimit);
+                    }
                 }
             }
         });
@@ -240,6 +267,8 @@ public class OrganizerEventCreate extends Fragment {
             if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
                 int limit = Integer.parseInt(eventLimitEditText.getText().toString());
                 newEvent.setCapacity(limit);
+            } else {
+                newEvent.setCapacity(-1);
             }
 
 
@@ -319,9 +348,19 @@ public class OrganizerEventCreate extends Fragment {
             eventDescEditText.setText(event.getDescription());
             eventStartEditText.setText(startDate);
             eventEndEditText.setText(endDate);
-            eventLimitEditText.setText(String.valueOf(event.getCapacity()));
             eventImageView.setTag(event.getEventBannerImgUrl());
+            if (event.getCapacity() == -1) {
+                unlimitedButton.setChecked(true);
+                isUnlimited = true;
+                eventLimitEditText.setClickable(false);
+                eventLimitEditText.setFocusable(false);
+                unlimitedButton.setTextColor(getContext().getColor(R.color.SignInUpTextColor));
+            } else {
+                eventLimitEditText.setText(String.valueOf(event.getCapacity()));
+                unlimitedButton.setTextColor(Color.GRAY);
+            }
 
+            eventCreationTitle.setText("Edit Event");
             createButton.setText("Update Event");
         }
     }
