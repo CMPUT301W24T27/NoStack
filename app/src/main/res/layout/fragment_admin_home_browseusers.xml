@@ -45,10 +45,9 @@
         android:layout_height="554dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/admin_gridLayout2"
-        app:layout_constraintVertical_bias="0.27" />
+        app:layout_constraintVertical_bias="0.122" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

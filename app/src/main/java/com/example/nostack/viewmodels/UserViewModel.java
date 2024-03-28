@@ -84,13 +84,12 @@ public class UserViewModel extends ViewModel {
                     List<User> users = new ArrayList<>();
                     for (DocumentSnapshot document:queryDocumentSnapshots) {
                         User user = document.toObject(User.class);
-                        if (user.getFirstName() == null){
-                            user.setFirstName("Null");
-                        }else {
+                        Log.d("UserViewModel - get profiles", user.getUuid());
+                        if (user != null){
+                            Log.d("UserVM", "User not null, added");
                             users.add(user);
-                            Log.d("UserViewModel", document.toObject(User.class).getFirstName());
+                            //Log.d("UserViewModel - pass", user.getFirstName());
                         }
-
                     }
                     allUsersLiveData.postValue(users);
                 }).addOnFailureListener(e -> {

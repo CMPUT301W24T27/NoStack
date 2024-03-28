@@ -42,7 +42,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
     public boolean containsUser(User user) {
         boolean contained = false;
         for (User user1:ourUsers) {
-            if (user1.getUuid().equals(user1.getUuid())) {return true;}
+            if (user.getUuid().equals(user1.getUuid())) {return true;}
         }
         return contained;
     }
