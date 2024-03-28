@@ -25,6 +25,7 @@ import com.example.nostack.models.Event;
 import com.example.nostack.services.GenerateProfileImage;
 import com.example.nostack.viewmodels.user.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
+import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Creates the OrganizerHome fragment which is used to display the events that the organizer has created
  */
-public class OrganizerHome extends Fragment {
+public class OrganizerHome extends Fragment implements EventArrayRecycleViewInterface {
 
     private ArrayList<Event> dataList;
     private RecyclerView eventList;
@@ -122,7 +123,7 @@ public class OrganizerHome extends Fragment {
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
-        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -161,20 +162,6 @@ public class OrganizerHome extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Event event = eventArrayAdapter.getItem(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("eventData", event);
-//
-//                NavHostFragment.findNavController(OrganizerHome.this)
-//                        .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
-//            }
-//        });
-
-
         view.findViewById(R.id.attendee_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,5 +197,14 @@ public class OrganizerHome extends Fragment {
                 profileImage.setImageDrawable(d);
             }
         });
+    }
+
+    @Override
+    public void OnItemClick(int position) {
+        Event event = eventArrayAdapter.getEvent(position);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        NavHostFragment.findNavController(OrganizerHome.this)
+                .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.user.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
+import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Creates the AttendeeEvents fragment which is used to display the events that the attendee is attending
  */
-public class AttendeeEvents extends Fragment {
+public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInterface {
     private EventArrayAdapterRecycleView eventArrayAdapter;
     private RecyclerView eventList;
     private ArrayList<Event> dataList;
@@ -73,9 +75,11 @@ public class AttendeeEvents extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
 
         eventList = rootView.findViewById(R.id.listView_upcomingEvents);
-        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        eventArrayAdapter.notifyDataSetChanged();
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -123,4 +127,13 @@ public class AttendeeEvents extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void OnItemClick(int position) {
+        Event event = eventArrayAdapter.getEvent(position);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+
+        NavHostFragment.findNavController(AttendeeEvents.this)
+                .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+    }
 }

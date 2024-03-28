@@ -85,7 +85,7 @@ public class OrganizerEvent extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("eventData");
+            event = (Event) getArguments().getSerializable("event");
         }
 
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
@@ -177,48 +177,50 @@ public class OrganizerEvent extends Fragment {
      * @param view The view that the information will be updated on
      */
     public void updateScreenInformation(@NonNull View view) {
-        TextView eventTitle = view.findViewById(R.id.AttendeeEventTitleText);
-        TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
-        TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
-        TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
-        TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
+            TextView eventTitle = view.findViewById(R.id.AttendeeEventTitleText);
+            TextView eventDescription = view.findViewById(R.id.OrganizerEventDescriptionText);
+            TextView eventLocation = view.findViewById(R.id.OrganizerEventLocationText);
+            TextView eventStartDate = view.findViewById(R.id.OrganizerEventDateText);
+            TextView eventStartTime = view.findViewById(R.id.OrganizerEventTimeText);
 
-        ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
-        ImageView eventBanner = view.findViewById(R.id.OrganizerEventImage);
+            ImageView eventProfileImage = view.findViewById(R.id.AttendeeEventUserImage);
+            ImageView eventBanner = view.findViewById(R.id.OrganizerEventImage);
 
-        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
-        DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
+            DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
+            DateFormat tf = new SimpleDateFormat("h:mm a", Locale.CANADA);
 
-        String startDate = df.format(event.getStartDate());
-        String endDate = df.format(event.getEndDate());
-        String startTime = tf.format(event.getStartDate());
-        String endTime = tf.format(event.getEndDate());
+        if (event != null) {
+            String startDate = df.format(event.getStartDate());
+            String endDate = df.format(event.getEndDate());
+            String startTime = tf.format(event.getStartDate());
+            String endTime = tf.format(event.getEndDate());
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int screenWidth = metrics.widthPixels;
-        int screenHeight = metrics.heightPixels;
+            DisplayMetrics metrics = new DisplayMetrics();
+            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int screenWidth = metrics.widthPixels;
+            int screenHeight = metrics.heightPixels;
 
-        if (!startDate.equals(endDate)) {
-            eventStartDate.setText(startDate + " to");
-            eventStartTime.setText(endDate);
-        } else {
-            eventStartDate.setText(startDate);
-            eventStartTime.setText(startTime + " - " + endTime);
-        }
-
-        eventTitle.setText(event.getName());
-        eventDescription.setText(event.getDescription());
-        eventLocation.setText(event.getLocation());
-
-        //set profile image
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                imageViewHandler.setUserProfileImage(user, eventProfileImage);
+            if (!startDate.equals(endDate)) {
+                eventStartDate.setText(startDate + " to");
+                eventStartTime.setText(endDate);
+            } else {
+                eventStartDate.setText(startDate);
+                eventStartTime.setText(startTime + " - " + endTime);
             }
-        });
 
-        // Set Event Banner
-        imageViewHandler.setEventImage(event, eventBanner);
+            eventTitle.setText(event.getName());
+            eventDescription.setText(event.getDescription());
+            eventLocation.setText(event.getLocation());
+
+            //set profile image
+            userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                if (user != null) {
+                    imageViewHandler.setUserProfileImage(user, eventProfileImage);
+                }
+            });
+
+            // Set Event Banner
+            imageViewHandler.setEventImage(event, eventBanner);
+        }
     }
 }

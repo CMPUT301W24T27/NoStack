@@ -36,7 +36,7 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
     private LayoutInflater inflater;
     private Fragment currFragment;
     private Context context;
-
+    private final EventArrayRecycleViewInterface eventArrayRecycleViewInterface;
     TextView eventTitle;
     TextView eventStartDateTitle;
     TextView eventTimeTitle;
@@ -45,16 +45,18 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
 
 
 
-    public EventArrayAdapterRecycleView(Context context, ArrayList<Event> events, Fragment currfragment) {
+    public EventArrayAdapterRecycleView(Context context, ArrayList<Event> events, Fragment currfragment, EventArrayRecycleViewInterface eventArrayRecycleViewInterface) {
         this.events = events;
         this.context = context;
         this.currFragment = currfragment;
+        this.eventArrayRecycleViewInterface = eventArrayRecycleViewInterface;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.eventlistcontent,parent,false));
+        View itemView = LayoutInflater.from(context).inflate(R.layout.eventlistcontent, parent, false);
+        return new MyViewHolder(itemView,eventArrayRecycleViewInterface);
     }
 
     @Override
@@ -98,6 +100,10 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
             });
         }
         holder.eventImage.setVisibility(View.VISIBLE);
+    }
+
+    public Event getEvent(int position) {
+        return events.get(position);
     }
 
     public void addEvent(Event event) {
