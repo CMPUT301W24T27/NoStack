@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,8 +19,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.User;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.user.UserViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
+import com.example.nostack.views.user.UserArrayAdapter;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,15 +36,10 @@ import java.util.ArrayList;
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
  */
 public class AdminBrowseProfiles extends Fragment {
-    private EventArrayAdapter eventArrayAdapter;
-    private ListView eventList;
-    private ArrayList<Event> dataList;
+    private UserArrayAdapter UserArrayAdapter;
+    private ListView userList;
+    private ArrayList<User> dataList;
     private UserViewModel userViewModel;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-    private EventController eventController;
-    Task<QuerySnapshot> allEvents;
     public AdminBrowseProfiles() {
     }
 
@@ -52,13 +51,7 @@ public class AdminBrowseProfiles extends Fragment {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        eventController = new EventController();
-
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("users");
-        activity = getActivity();
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         dataList = new ArrayList<>();
 
     }
@@ -78,27 +71,46 @@ public class AdminBrowseProfiles extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment only once
-        View view = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
-
-        eventList = view.findViewById(R.id.viewPager2);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
-        eventList.setAdapter(eventArrayAdapter);
-
-        eventsRef.orderBy("startDate", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventArrayAdapter.addEvent(event);
-                            Log.d("EventAdd", document.toObject(Event.class).getName());
-                        }
-                    }
-                });
-
-
-        // Return the modified layout
+        View view = inflater.inflate(R.layout.fragment_admin_home_browseusers, container, false);
+        userList = view.findViewById(R.id.admin_viewPager2);
+        UserArrayAdapter = new UserArrayAdapter(getContext(), dataList, this);
+        userList.setAdapter(UserArrayAdapter);
         return view;
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Watch for errors
+        userViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                userViewModel.clearErrorLiveData();
+            }
+        });
+
+        // Fetch and get users
+        userViewModel.fetchAllUsers();
+        userViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
+            UserArrayAdapter.clear();
+            for (User user : users) {
+                UserArrayAdapter.addUser(user);
+            }
+            UserArrayAdapter.notifyDataSetChanged();
+        });
+
+//        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                User user = UserArrayAdapter.getItem(position);
+//                userViewModel.fetchEvent(event.getId());
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("event", event);
+//
+//                NavHostFragment.findNavController(AdminBrowseEvents.this)
+//                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+//            }
+//        });
     }
 
 }
