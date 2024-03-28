@@ -109,20 +109,6 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
                 Log.d("AttendeeHome", "User is null");
             }
         });
-
-        // Clickable event list
-//        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Event event = eventArrayAdapter.getItem(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("event", event);
-//
-//                NavHostFragment.findNavController(AttendeeEvents.this)
-//                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-//            }
-//        });
-
         // Return the modified layout
         return rootView;
     }
