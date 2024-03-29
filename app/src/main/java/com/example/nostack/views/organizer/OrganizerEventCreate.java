@@ -322,7 +322,15 @@ public class OrganizerEventCreate extends Fragment {
     }
 
     private void storeToDbEventWithBanner(Uri imageUri, Event event) {
-        imageUploader.uploadImage("event/banner/", imageUri, new ImageUploader.UploadListener() {
+        Uri compressedImageUri = null;
+
+        try {
+            compressedImageUri = ImageUploader.compressImage(imageUri, 0.5, getContext());
+        } catch (Exception e) {
+            Log.w("Event creation", "Image compression failed:", e);
+        }
+
+        imageUploader.uploadImage("event/banner/", compressedImageUri, new ImageUploader.UploadListener() {
             @Override
             public void onUploadSuccess(String imageUrl) {
                 event.setEventBannerImgUrl(imageUrl);
