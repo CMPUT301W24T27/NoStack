@@ -23,6 +23,8 @@ import com.example.nostack.models.Image;
 import com.example.nostack.services.ImageUploader;
 import com.example.nostack.viewmodels.UserViewModel;
 
+import java.io.IOException;
+
 import javax.annotation.Nullable;
 
 /**
@@ -84,7 +86,16 @@ public class UserProfile extends Fragment {
      * @param imageUri The Uri of the image to be uploaded
      */
     private void uploadProfileImage(Uri imageUri) {
-        imageUploader.uploadImage("user/profile/", imageUri, new ImageUploader.UploadListener() {
+        Uri compressedImageUri = null;
+
+        try{
+            compressedImageUri = imageUploader.compressImage(imageUri, 0.5, getContext());
+        }
+        catch (IOException e){
+            Log.w("User edit", "Profile image compression failed:", e);
+        }
+
+        imageUploader.uploadImage("user/profile/", compressedImageUri, new ImageUploader.UploadListener() {
             @Override
             public void onUploadSuccess(String imageUrl) {
                 // Update user profile with the downloaded image URL
