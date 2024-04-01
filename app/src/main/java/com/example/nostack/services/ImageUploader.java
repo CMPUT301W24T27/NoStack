@@ -1,8 +1,12 @@
 package com.example.nostack.services;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.google.firebase.storage.FirebaseStorage;
@@ -89,5 +93,38 @@ public class ImageUploader {
         return imageUri;
     }
 
+    /**
+     * Compress image
+     *
+     * @param imageUri The URI of the image to compress
+     * @param quality  The quality (in decimal 0 < quality <= 1) of the compressed image
+     * @return The URI of the compressed image
+     */
+    public static Uri compressImage(Uri imageUri, double quality, Context context) throws IOException{
+        // Check if quality is within domain
+        if(quality <= 0 || quality > 1) {
+            throw new IllegalArgumentException("Quality must be in the range: 0 < quality <= 1");
+        }
 
+        // Check if imageUri is null
+        if (imageUri == null) {
+            throw new IllegalArgumentException("Image URI cannot be null");
+        }
+
+        // Convert to bitmap
+        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+        // Create temporary file to cache compressed image
+        String filename = UUID.randomUUID().toString() + ".jpg";
+        File file = new File(context.getCacheDir(), filename);
+
+        // Compress image
+        FileOutputStream out = new FileOutputStream(file);
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, (int)(quality * 100), out);
+        out.flush();
+        out.close();
+
+        // Return URI to compressed image
+        return Uri.fromFile(file);
+    }
 }
