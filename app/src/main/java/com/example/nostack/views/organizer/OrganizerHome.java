@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +17,15 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.viewmodels.UserViewModel;
+import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
+import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,11 +38,10 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Creates the OrganizerHome fragment which is used to display the events that the organizer has created
  */
-public class OrganizerHome extends Fragment {
+public class OrganizerHome extends Fragment implements EventArrayRecycleViewInterface {
 
-    private EventArrayAdapter eventArrayAdapter;
     private ArrayList<Event> dataList;
-    private ListView eventList;
+    private RecyclerView eventList;
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
     private Activity activity;
@@ -57,6 +57,7 @@ public class OrganizerHome extends Fragment {
     private String mParam2;
     private TextView userWelcome;
     private UserViewModel userViewModel;
+    private EventArrayAdapterRecycleView eventArrayAdapter;
 
 
     public OrganizerHome() {
@@ -122,8 +123,9 @@ public class OrganizerHome extends Fragment {
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
+        eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
@@ -136,6 +138,7 @@ public class OrganizerHome extends Fragment {
                             Event event = document.toObject(Event.class);
                             if (!eventArrayAdapter.containsEvent(event)) {
                                 eventArrayAdapter.addEvent(event);
+                                eventArrayAdapter.notifyDataSetChanged();
                                 Log.d("EventAdd", document.toObject(Event.class).getName());
                             }
                         }
@@ -159,19 +162,6 @@ public class OrganizerHome extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = eventArrayAdapter.getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
-                NavHostFragment.findNavController(OrganizerHome.this)
-                        .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
-            }
-        });
-
         view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,5 +197,14 @@ public class OrganizerHome extends Fragment {
                 profileImage.setImageDrawable(d);
             }
         });
+    }
+
+    @Override
+    public void OnItemClick(int position) {
+        Event event = eventArrayAdapter.getEvent(position);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        NavHostFragment.findNavController(OrganizerHome.this)
+                .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
     }
 }

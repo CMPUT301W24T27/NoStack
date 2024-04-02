@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nostack.R;
+import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.UserViewModel;
-import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+import com.example.nostack.views.organizer.OrganizerHome;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 /**
  * A simple {@link Fragment} subclass.
