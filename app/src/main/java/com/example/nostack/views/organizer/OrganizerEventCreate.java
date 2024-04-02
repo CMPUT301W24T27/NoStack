@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -179,6 +180,15 @@ public class OrganizerEventCreate extends Fragment {
                         Log.w("Event creation", "Image compression failed:", e);
                         compressedImageUri = null;
                     }
+
+                    // Watch for errors
+                    eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+                        if (errorMessage != null && !errorMessage.isEmpty()) {
+                            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                            eventViewModel.clearErrorLiveData();
+                        }
+                    });
+
                     eventViewModel.addEvent(event, compressedImageUri);
                     NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
@@ -25,7 +26,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.activity.ScanActivity;
@@ -40,6 +43,8 @@ import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+
+import org.checkerframework.checker.units.qual.Current;
 
 import java.util.ArrayList;
 
@@ -57,15 +62,9 @@ public class AttendeeHome extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private TextView userWelcome;
     private UserViewModel userViewModel;
-    private EventArrayAdapter eventArrayAdapter;
-    private ArrayList<Event> dataList;
-    private ListView eventList;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-
+    private EventViewModel eventViewModel;
+    private CurrentUserHandler currentUserHandler;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
@@ -108,10 +107,8 @@ public class AttendeeHome extends Fragment {
         }
 
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
-        dataList = new ArrayList<>();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        currentUserHandler = CurrentUserHandler.getSingleton();
     }
 
     /**
@@ -136,10 +133,6 @@ public class AttendeeHome extends Fragment {
         dotsIndicator = rootView.findViewById(R.id.dots_indicator);
         dotsIndicator.attachTo(viewPager);
 
-//        eventList = rootView.findViewById(R.id.listView_yourEvents);
-//        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
-//        eventList.setAdapter(eventArrayAdapter);
-
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -147,22 +140,19 @@ public class AttendeeHome extends Fragment {
             if (user != null) {
                 Log.d("AttendeeHome", "User logged in: " + user.getUsername());
                 userWelcome.setText(user.getUsername());
-
-//                eventsRef.get().addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                            Event event = document.toObject(Event.class);
-//                            eventArrayAdapter.addEvent(event);
-//                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
-//                        }
-//                    }
-//                });
             } else {
                 Log.d("AttendeeHome", "User is null");
             }
         });
 
-        // Return the modified layout
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
+            }
+        });
+
         return rootView;
     }
 
@@ -261,63 +251,30 @@ public class AttendeeHome extends Fragment {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            // for testing
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//            builder.setTitle("Scan Result");
-//            builder.setMessage(result.getContents());
-
-            // Check if the QR code is for an event description or check-in
-            // "result" is a string of type 0.uuid or 1.uuid
             if (result.getContents().charAt(0) == '0') {
                 handleCheckInQR(result.getContents().substring(2));
             } else if (result.getContents().charAt(0) == '1') {
                 handleEventDescQR(result.getContents().substring(2));
             }
-//            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialogInterface, int i) {
-//                    dialogInterface.dismiss();
-//                }
-//            }).show();
         }
     });
 
     public void handleEventDescQR(String eventUID) {
-        DocumentReference eventRef = eventsRef.document("36cdc8b1-3bb2-4625-8d34-14fed20f3d98");
-
-        eventRef.get().addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Event event = document.toObject(Event.class);
-                    Log.d("AttendeeHome", "Event: " + event.getName());
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("event", event);
-                    NavHostFragment.findNavController(AttendeeHome.this)
-                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-                }
-            }
-
-        });
+        eventViewModel.fetchEvent(eventUID);
+        Event event = eventViewModel.getEvent().getValue();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        NavHostFragment.findNavController(AttendeeHome.this)
+                .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
     }
 
     public void handleCheckInQR(String eventUID) {
-        EventCheckinHandler ecHandler = new EventCheckinHandler(getActivity(), getContext());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Check-in Successful!");
         builder.setMessage("You have successfully checked in to the event!");
 
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                try {
-                    ecHandler.checkInUser(eventUID, user.getUuid());
-                } catch (Exception e) {
-                    Log.e("AttendeeHome", "Error checking in user: " + e);
-                }
-            }
-        });
-
+        eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID);
         builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
