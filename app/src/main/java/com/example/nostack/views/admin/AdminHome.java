@@ -38,7 +38,7 @@ public class AdminHome extends Fragment {
     private String mParam2;
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
-    private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class};
+    private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class, AdminBrowseImages.class};
 
     public AdminHome() {
         // Required empty public constructor

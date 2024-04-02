@@ -114,12 +114,13 @@ public class EventViewModel extends ViewModel {
         return organizerEventsLiveData;
     }
 
-    public void addEvent(Event event) {
+    public void addEvent(Event event, String imageUri) {
         eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
                     fetchAllEvents();
                     fetchOrganizerEvents(userId);
+
                 }).addOnFailureListener( e-> {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());

@@ -22,13 +22,13 @@ import java.util.ArrayList;
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
  */
-public class AdminBrowseEvents extends Fragment {
+public class AdminBrowseImages extends Fragment {
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
 
-    public AdminBrowseEvents() {
+    public AdminBrowseImages() {
     }
 
     /**
@@ -57,7 +57,7 @@ public class AdminBrowseEvents extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_admin_home_browseevents, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_admin_home_browseimages, container, false);
         eventList = rootView.findViewById(R.id.admin_viewPager2);
         eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
         eventList.setAdapter(eventArrayAdapter);
@@ -75,15 +75,15 @@ public class AdminBrowseEvents extends Fragment {
             }
         });
 
-        // Fetch and get events
-        eventViewModel.fetchAllEvents();
-        eventViewModel.getAllEvents().observe(getViewLifecycleOwner(), events -> {
-            eventArrayAdapter.clear();
-            for (Event event : events) {
-                eventArrayAdapter.addEvent(event);
-            }
-            eventArrayAdapter.notifyDataSetChanged();
-        });
+//        // Fetch and get Images
+//        eventViewModel.fetchAllEvents();
+//        eventViewModel.getAllEvents().observe(getViewLifecycleOwner(), events -> {
+//            eventArrayAdapter.clear();
+//            for (Event event : events) {
+//                eventArrayAdapter.addEvent(event);
+//            }
+//            eventArrayAdapter.notifyDataSetChanged();
+//        });
 
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -93,7 +93,7 @@ public class AdminBrowseEvents extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);
 
-                NavHostFragment.findNavController(AdminBrowseEvents.this)
+                NavHostFragment.findNavController(AdminBrowseImages.this)
                         .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
             }
         });
