@@ -129,7 +129,7 @@
     </fragment>
     <fragment
         android:id="@+id/usersSignups"
-        android:name="com.example.nostack.views.organizer.usersSignups"
+        android:name="com.example.nostack.views.organizer.OrganizerEventRegistrations"
         android:label="fragment_users_signups"
         tools:layout="@layout/fragment_users_signups" >
         <action

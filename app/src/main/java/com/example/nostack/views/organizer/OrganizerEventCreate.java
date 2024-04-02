@@ -25,11 +25,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.services.ImageUploader;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,6 +41,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,7 +60,6 @@ public class OrganizerEventCreate extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private String mParam2;
-    private Boolean isUnlimited;
     private Activity activity;
     private ImageUploader imageUploader;
     private FirebaseFirestore db;
@@ -73,13 +76,15 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
     private Button createButton;
+    private boolean isUnlimited;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
     private SharedPreferences preferences;
     private SwitchCompat unlimitedButton;
     private String userUUID;
     private ActivityResultLauncher<String> imagePickerLauncher;
-
+    private EventViewModel eventViewModel;
+    private CurrentUserHandler currentUserHandler;
 
     public OrganizerEventCreate() {
         // Required empty public constructor
@@ -111,12 +116,9 @@ public class OrganizerEventCreate extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageUploader = new ImageUploader();
-        preferences = activity.getApplicationContext().getSharedPreferences("com.example.nostack", Context.MODE_PRIVATE);
-        userUUID = preferences.getString("uuid", null);
+        currentUserHandler = CurrentUserHandler.getSingleton();
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri o) {
@@ -168,15 +170,16 @@ public class OrganizerEventCreate extends Fragment {
                         && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)) {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
-
                     Event event = createEvent();
-
                     Uri eventBannerUri = (Uri) eventImageView.getTag();
-                    if (eventBannerUri != null) {
-                        storeToDbEventWithBanner(eventBannerUri, event);
-                    } else {
-                        storeEventToDb(event);
+                    Uri compressedImageUri = null;
+                    try {
+                        compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
+                    } catch (Exception e) {
+                        Log.w("Event creation", "Image compression failed:", e);
+                        compressedImageUri = null;
                     }
+                    eventViewModel.addEvent(event, compressedImageUri);
                     NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                 }
             }
@@ -260,7 +263,7 @@ public class OrganizerEventCreate extends Fragment {
                         eventDescEditText.getText().toString(),
                         formatter.parse(startDateString),
                         formatter.parse(endDateString),
-                        userUUID
+                        currentUserHandler.getCurrentUserId()
                 );
             }
 
@@ -277,26 +280,6 @@ public class OrganizerEventCreate extends Fragment {
         }
 
         return newEvent;
-    }
-
-    private void storeEventToDb(Event newEvent) {
-        eventsRef
-                .document(newEvent.getId())
-                .set(newEvent)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        if(event != null){
-                            Log.w("Firestore", "Event updated.");
-                            Snackbar.make(activity.findViewById(android.R.id.content), "Event updated.", Snackbar.LENGTH_LONG).show();
-                        }
-                        else {
-                            Log.w("Firestore", "Event created.");
-                            Snackbar.make(activity.findViewById(android.R.id.content), "New event created.", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.w("Firestore", "Error creating event", e));
     }
 
     private void openDateTimePickerDialog(TextInputEditText t) {
@@ -319,31 +302,6 @@ public class OrganizerEventCreate extends Fragment {
         // Show the date dialog first when it closes show the time dialog
         dateDialog.setOnDismissListener(dialog -> timeDialog.show());
         dateDialog.show();
-    }
-
-    private void storeToDbEventWithBanner(Uri imageUri, Event event) {
-        Uri compressedImageUri = null;
-
-        try {
-            compressedImageUri = ImageUploader.compressImage(imageUri, 0.5, getContext());
-        } catch (Exception e) {
-            Log.w("Event creation", "Image compression failed:", e);
-        }
-
-        imageUploader.uploadImage("event/banner/", compressedImageUri, new ImageUploader.UploadListener() {
-            @Override
-            public void onUploadSuccess(String imageUrl) {
-                event.setEventBannerImgUrl(imageUrl);
-                storeEventToDb(event);
-                Log.d("User edit", "Image upload successful.:");
-            }
-
-            @Override
-            public void onUploadFailure(Exception exception) {
-                Log.w("Event creation", "Image upload failed:", exception);
-                // TODO: Show error to user
-            }
-        });
     }
 
     private void checkEditEvent() {

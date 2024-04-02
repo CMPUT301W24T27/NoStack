@@ -163,6 +163,15 @@ public class EventController {
         return eventCollectionReference.document(event.getId()).set(event);
     }
 
+    public Task<Void> removeEventImage(String eventId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+
+        return eventRef.update("eventBannerImgUrl", null)
+                .addOnSuccessListener(aVoid -> Log.d("EventController", "Event image successfully removed."))
+                .addOnFailureListener(e -> Log.e("EventController", "Failed to remove event image.", e));
+    }
+
+
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
     public Task<Void> deleteEvent(String eventId) {
         return Tasks.whenAll();

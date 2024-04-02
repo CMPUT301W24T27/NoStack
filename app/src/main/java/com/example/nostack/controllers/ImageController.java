@@ -33,8 +33,7 @@ public class ImageController {
     public ImageController() {
     }
 
-    public Task<String> addImage(String storagePath, Uri imageUri, String referenceId) {
-
+    public Task<String> addImage(String storagePath, Uri imageUri) {
         String uuid = UUID.randomUUID().toString();
         StorageReference storageRef = storage.getReference().child(storagePath + uuid);
 
@@ -45,20 +44,11 @@ public class ImageController {
                     }
                     return storageRef.getDownloadUrl();
                 })
-                .continueWithTask(task -> {
+                .continueWith(task -> {
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
-                    String downloadUrl = task.getResult().toString();
-
-                    Image newImage = new Image();
-                    newImage.setPath(storagePath);
-                    newImage.setUrl(downloadUrl);
-                    newImage.setReferenceId(referenceId);
-                    newImage.setId(uuid);
-
-                    return imageCollectionReference.document(uuid).set(newImage)
-                            .continueWithTask(ignoredTask -> Tasks.forResult(downloadUrl));
+                    return task.getResult().toString();
                 });
     }
 
