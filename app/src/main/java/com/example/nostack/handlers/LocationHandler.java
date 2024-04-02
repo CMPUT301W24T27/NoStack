@@ -16,17 +16,31 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.nostack.viewmodels.UserViewModel;
 
 public class LocationHandler {
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-    private LocationManager locationManager;
-    private Activity activity;
-    private Context context;
-    public LocationHandler(Context context, Activity activity, LocationManager locationManager) {
-        this.activity = activity;
-        this.context = context;
-        this.locationManager = locationManager;
+    private static LocationManager locationManager;
+    private static Activity activity;
+    private static Context context;
+    private static LocationHandler singleInstance = null;
+
+    public static void setSingleton(Context context, Activity activity, LocationManager locationManager) {
+        if (activity == null) {
+            throw new RuntimeException("Activity, context, and location manager must be set in MainActivity.");
+        }
+        singleInstance = new LocationHandler();
     }
+    public static LocationHandler getSingleton() {
+        if (singleInstance == null) {
+            throw new RuntimeException("Activity, context, and location manager must be set in MainActivity.");
+        }
+        return singleInstance;
+    }
+
+    public LocationHandler() {}
 
     public void handleLocationPermissions() {
         if (!isLocationEnabled()) {

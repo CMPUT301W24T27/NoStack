@@ -1,7 +1,11 @@
 package com.example.nostack.controllers;
 
+import android.location.Location;
+
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Attendance;
+import com.example.nostack.models.GeoLocation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -14,6 +18,7 @@ public class AttendanceController {
     private static AttendanceController singleInstance = null;
     private final CollectionReference attendanceCollectionReference = FirebaseFirestore.getInstance().collection("attendance");
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
+    private final LocationHandler locationHandler = LocationHandler.getSingleton();
 
     public static AttendanceController getInstance() {
         if (singleInstance == null) {
@@ -51,6 +56,11 @@ public class AttendanceController {
 
     public Task<Void> createAttendance(String userId, String eventId) {
         Attendance newAtt = new Attendance(userId, eventId);
+        Location location = locationHandler.getLocation();
+        if (location != null) {
+            GeoLocation latlng = new GeoLocation(location.getLatitude(), location.getLongitude());
+            newAtt.setGeoLocation(latlng);
+        }
         return attendanceCollectionReference.document(newAtt.getId()).set(newAtt);
     }
 

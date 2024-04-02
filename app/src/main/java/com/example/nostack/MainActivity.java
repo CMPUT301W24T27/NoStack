@@ -1,6 +1,8 @@
 package com.example.nostack;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.EventCheckinHandler;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Image;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         ImageViewHandler.setOwnerActivity(this);
         ImageViewHandler.setSingleton();
+
+        LocationHandler.setSingleton(this, this, (LocationManager) this.getSystemService(Context.LOCATION_SERVICE) );
     }
 
     @Override

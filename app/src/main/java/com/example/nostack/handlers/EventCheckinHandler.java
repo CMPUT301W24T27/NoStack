@@ -39,8 +39,7 @@ public class EventCheckinHandler {
         this.eventsRef = db.collection("events");
         this.activity = activity;
         this.context = context;
-        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        this.locationHandler = new LocationHandler(this.context, this.activity, this.locationManager);
+        this.locationHandler = LocationHandler.getSingleton();
     }
     /**
      * Checks in a user to an event
