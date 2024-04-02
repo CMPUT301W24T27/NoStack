@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".views.organizer.OrganizerQRCode" >
+    tools:context=".views.organizer.OrganizerEventPageQRCode" >
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/backButton"
@@ -60,38 +60,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/OrganizerQRImage"
+            android:id="@+id/OrganizerEventQRImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/ic_launcher_background" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/OrganizerEventPageButton"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="45dp"
-        android:layout_marginBottom="25dp"
-        android:backgroundTint="@color/white"
-        android:text="Get Event Page QR Code"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/OrganizerQRBackground"
-        app:layout_constraintVertical_bias="1.0" />
-
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event Check-in Code"
+        android:text="Event Page Code"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/backButton"

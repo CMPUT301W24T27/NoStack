@@ -105,7 +105,11 @@
         android:id="@+id/organizerQRCode"
         android:name="com.example.nostack.views.organizer.OrganizerQRCode"
         android:label="fragment_organizer_q_r_code"
-        tools:layout="@layout/fragment_organizer_q_r_code" />
+        tools:layout="@layout/fragment_organizer_q_r_code" >
+        <action
+            android:id="@+id/action_organizerQRCode_to_organizerEventPageQRCode"
+            app:destination="@id/organizerEventPageQRCode" />
+    </fragment>
     <fragment
         android:id="@+id/organizerEventAttendeeList"
         android:name="com.example.nostack.views.organizer.OrganizerEventAttendeeList"
@@ -145,6 +149,11 @@
             android:id="@+id/action_adminHome_to_userProfile"
             app:destination="@id/userProfile" />
     </fragment>
+    <fragment
+        android:id="@+id/organizerEventPageQRCode"
+        android:name="com.example.nostack.views.organizer.OrganizerEventPageQRCode"
+        android:label="fragment_organizer_event_page_q_r_code"
+        tools:layout="@layout/fragment_organizer_event_page_q_r_code" />
 
 
 </navigation>
