@@ -79,6 +79,7 @@ public class AttendeeHome extends Fragment {
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
+    private LocationHandler locationHandler;
 
 
     public AttendeeHome() {
@@ -146,29 +147,10 @@ public class AttendeeHome extends Fragment {
         dotsIndicator.attachTo(viewPager);
 
         Activity activity = getActivity();
-
         assert activity != null;
-
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity,"Location Permission Granted",Toast.LENGTH_LONG).show();
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(activity);
-            builder.setMessage("This app would prefer to have location services in order to maximize customer services and features on this app")
-                    .setTitle("Permission Request")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-            builder.show();
-        } else {
-            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
-        }
-
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
+        locationHandler.handleLocationPermissions();
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -284,12 +266,7 @@ public class AttendeeHome extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Check-in Successful!");
         builder.setMessage("You have successfully checked in to the event!");
-
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        LocationHandler locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
-        locationHandler.handleLocationPermissions();
         Location location = locationHandler.getLocation();
-
         eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location);
         builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
