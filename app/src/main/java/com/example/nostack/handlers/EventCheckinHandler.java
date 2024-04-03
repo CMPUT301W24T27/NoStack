@@ -53,28 +53,6 @@ public class EventCheckinHandler {
      * @param userId The ID of the user
      */
     public void checkInUser(String eventId, String userId) {
-
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context,"Location Permission Granted",Toast.LENGTH_LONG).show();
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage("This app would prefer to have location services in order to maximize customer services and features on this app")
-                    .setTitle("Permission Request")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-            builder.show();
-        } else {
-            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
-        }
-
         Location location = locationHandler.getLocation();
         if (location == null) {
             Log.d("Location Check", "Location is Null");

@@ -1,8 +1,10 @@
 package com.example.nostack.views.attendee;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
@@ -71,6 +74,7 @@ public class AttendeeHome extends Fragment {
     private UserViewModel userViewModel;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private ImageViewHandler imageViewHandler;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
@@ -140,6 +144,30 @@ public class AttendeeHome extends Fragment {
         viewPager.setAdapter(new MyFragmentAdapter(this));
         dotsIndicator = rootView.findViewById(R.id.dots_indicator);
         dotsIndicator.attachTo(viewPager);
+
+        Activity activity = getActivity();
+
+        assert activity != null;
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(activity,"Location Permission Granted",Toast.LENGTH_LONG).show();
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(activity);
+            builder.setMessage("This app would prefer to have location services in order to maximize customer services and features on this app")
+                    .setTitle("Permission Request")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        } else {
+            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
+        }
 
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
