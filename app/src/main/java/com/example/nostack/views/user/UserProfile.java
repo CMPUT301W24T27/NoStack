@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Image;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.services.ImageUploader;
 import com.example.nostack.viewmodels.UserViewModel;
 
@@ -285,7 +286,7 @@ public class UserProfile extends Fragment {
         ImageButton profileImage = getView().findViewById(R.id.profileImage);
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                imageViewHandler.setUserProfileImage(user, profileImage);
+                imageViewHandler.setUserProfileImage(user, profileImage, getResources(), new ImageDimension(300, 300));
             }
         });
     }

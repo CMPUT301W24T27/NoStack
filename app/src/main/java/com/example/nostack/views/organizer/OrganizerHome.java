@@ -25,6 +25,8 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.services.GenerateProfileImage;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
@@ -167,8 +169,8 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             }
         });
 
-        ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
-        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage);
+        ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
     }
 
     @Override

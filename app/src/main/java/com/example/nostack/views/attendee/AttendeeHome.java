@@ -30,8 +30,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.UserViewModel;
@@ -69,6 +71,7 @@ public class AttendeeHome extends Fragment {
     private UserViewModel userViewModel;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
+    private ImageViewHandler imageViewHandler;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
@@ -113,6 +116,7 @@ public class AttendeeHome extends Fragment {
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**
@@ -178,32 +182,7 @@ public class AttendeeHome extends Fragment {
         });
 
         ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user.getProfileImageUrl() != null) {
-                String uri = user.getProfileImageUrl();
-
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 72, 72, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
-                    profileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            } else {
-                // generate profile image if user has no profile image
-                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                d.setCornerRadius(100f);
-                profileImage.setImageDrawable(d);
-            }
-        });
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
 
         view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -212,7 +212,7 @@ public class OrganizerEvent extends Fragment {
             eventDescription.setText(event.getDescription());
             eventLocation.setText(event.getLocation());
 
-            imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage);
+            imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
             imageViewHandler.setEventImage(event, eventBanner);
         }
     }
