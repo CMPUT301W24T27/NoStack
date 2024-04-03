@@ -1,9 +1,14 @@
 package com.example.nostack.views.attendee;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +17,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
@@ -25,7 +32,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.ImageDimension;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.activity.ScanActivity;
@@ -40,6 +52,8 @@ import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+
+import org.checkerframework.checker.units.qual.Current;
 
 import java.util.ArrayList;
 
@@ -57,18 +71,15 @@ public class AttendeeHome extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private TextView userWelcome;
     private UserViewModel userViewModel;
-    private EventArrayAdapter eventArrayAdapter;
-    private ArrayList<Event> dataList;
-    private ListView eventList;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-
+    private EventViewModel eventViewModel;
+    private CurrentUserHandler currentUserHandler;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private ImageViewHandler imageViewHandler;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
+    private LocationHandler locationHandler;
 
 
     public AttendeeHome() {
@@ -108,10 +119,9 @@ public class AttendeeHome extends Fragment {
         }
 
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
-        dataList = new ArrayList<>();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        currentUserHandler = CurrentUserHandler.getSingleton();
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**
@@ -136,10 +146,11 @@ public class AttendeeHome extends Fragment {
         dotsIndicator = rootView.findViewById(R.id.dots_indicator);
         dotsIndicator.attachTo(viewPager);
 
-//        eventList = rootView.findViewById(R.id.listView_yourEvents);
-//        eventArrayAdapter = new EventArrayAdapter(getContext(),dataList,this);
-//        eventList.setAdapter(eventArrayAdapter);
-
+        Activity activity = getActivity();
+        assert activity != null;
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
+        locationHandler.handleLocationPermissions();
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -147,22 +158,19 @@ public class AttendeeHome extends Fragment {
             if (user != null) {
                 Log.d("AttendeeHome", "User logged in: " + user.getUsername());
                 userWelcome.setText(user.getUsername());
-
-//                eventsRef.get().addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        for (QueryDocumentSnapshot document : task.getResult()) {
-//                            Event event = document.toObject(Event.class);
-//                            eventArrayAdapter.addEvent(event);
-//                            Log.d("EventAdd", "" + document.toObject(Event.class).getName());
-//                        }
-//                    }
-//                });
             } else {
                 Log.d("AttendeeHome", "User is null");
             }
         });
 
-        // Return the modified layout
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
+            }
+        });
+
         return rootView;
     }
 
@@ -184,32 +192,7 @@ public class AttendeeHome extends Fragment {
         });
 
         ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user.getProfileImageUrl() != null) {
-                String uri = user.getProfileImageUrl();
-
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 72, 72, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
-                    profileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            } else {
-                // generate profile image if user has no profile image
-                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                d.setCornerRadius(100f);
-                profileImage.setImageDrawable(d);
-            }
-        });
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
 
         view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,63 +244,30 @@ public class AttendeeHome extends Fragment {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            // for testing
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//            builder.setTitle("Scan Result");
-//            builder.setMessage(result.getContents());
-
-            // Check if the QR code is for an event description or check-in
-            // "result" is a string of type 0.uuid or 1.uuid
             if (result.getContents().charAt(0) == '0') {
                 handleCheckInQR(result.getContents().substring(2));
             } else if (result.getContents().charAt(0) == '1') {
                 handleEventDescQR(result.getContents().substring(2));
             }
-//            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialogInterface, int i) {
-//                    dialogInterface.dismiss();
-//                }
-//            }).show();
         }
     });
 
     public void handleEventDescQR(String eventUID) {
-        DocumentReference eventRef = eventsRef.document("36cdc8b1-3bb2-4625-8d34-14fed20f3d98");
-
-        eventRef.get().addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Event event = document.toObject(Event.class);
-                    Log.d("AttendeeHome", "Event: " + event.getName());
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("event", event);
-                    NavHostFragment.findNavController(AttendeeHome.this)
-                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-                }
-            }
-
-        });
+        eventViewModel.fetchEvent(eventUID);
+        Event event = eventViewModel.getEvent().getValue();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event", event);
+        NavHostFragment.findNavController(AttendeeHome.this)
+                .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
     }
 
     public void handleCheckInQR(String eventUID) {
-        EventCheckinHandler ecHandler = new EventCheckinHandler(getActivity(), getContext());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Check-in Successful!");
         builder.setMessage("You have successfully checked in to the event!");
-
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                try {
-                    ecHandler.checkInUser(eventUID, user.getUuid());
-                } catch (Exception e) {
-                    Log.e("AttendeeHome", "Error checking in user: " + e);
-                }
-            }
-        });
-
+        Location location = locationHandler.getLocation();
+        eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location);
         builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

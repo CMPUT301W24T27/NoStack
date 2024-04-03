@@ -1,5 +1,7 @@
 package com.example.nostack.viewmodels;
 
+import android.location.Location;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -8,8 +10,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.nostack.controllers.EventController;
+import com.example.nostack.controllers.ImageController;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.services.ImageUploader;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ public class EventViewModel extends ViewModel {
     private final MutableLiveData<Event> eventLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final EventController eventController = EventController.getInstance();
+    private final ImageController imageController = ImageController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
     public LiveData<String> getErrorLiveData() {
@@ -114,8 +119,9 @@ public class EventViewModel extends ViewModel {
         return organizerEventsLiveData;
     }
 
-    public void addEvent(Event event) {
-        eventController.addEvent(event)
+    public void addEvent(Event event, @Nullable Uri imageUri) {
+
+        Runnable addEventRunnable = () -> eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
                     fetchAllEvents();
@@ -124,6 +130,20 @@ public class EventViewModel extends ViewModel {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());
                 });
+
+        if (imageUri != null) {
+            String storagePath = "event/banner";
+            imageController.addImage(storagePath, imageUri)
+                    .addOnSuccessListener(imageUrl -> {
+                        event.setEventBannerImgUrl(imageUrl);
+                        addEventRunnable.run();
+                    }).addOnFailureListener(e -> {
+                        Log.e("EventViewModel", "Error uploading image", e);
+                        errorLiveData.postValue(e.getMessage());
+                    });
+        } else {
+            addEventRunnable.run();
+        }
     }
 
     public void updateEvent(Event event) {
@@ -170,8 +190,8 @@ public class EventViewModel extends ViewModel {
                 });
     }
 
-    public void eventCheckIn(String userId, String eventId) {
-        eventController.eventCheckIn(userId, eventId)
+    public void eventCheckIn(String userId, String eventId, @Nullable Location location) {
+        eventController.eventCheckIn(userId, eventId, location)
                 .addOnSuccessListener(aVoid -> {
                     fetchAttendeeEvents(userId);
                 })

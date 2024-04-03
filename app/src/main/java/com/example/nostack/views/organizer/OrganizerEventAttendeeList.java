@@ -9,14 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
+import com.example.nostack.viewmodels.AttendanceViewModel;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventAttendeesArrayAdapter;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.AttendeeLocations;
@@ -42,10 +48,10 @@ public class OrganizerEventAttendeeList extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Event event;
-    private FirebaseFirestore db;
-    private CollectionReference attendanceRef;
+    private AttendanceViewModel attendanceViewModel;
     private EventAttendeesArrayAdapter attendeesArrayAdapter;
     private ArrayList<Attendance> dataList;
+    private ImageViewHandler imageViewHandler;
     private ListView attendeeList;
 
     public OrganizerEventAttendeeList() {
@@ -80,10 +86,9 @@ public class OrganizerEventAttendeeList extends Fragment {
         if (getArguments() != null) {
             event = (Event) getArguments().getSerializable("eventData");
         }
-
-        db = FirebaseFirestore.getInstance();
-        attendanceRef = db.collection("attendance");
         dataList = new ArrayList<>();
+        attendanceViewModel = new ViewModelProvider(requireActivity()).get(AttendanceViewModel.class);
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**
@@ -108,15 +113,23 @@ public class OrganizerEventAttendeeList extends Fragment {
         attendeesArrayAdapter = new EventAttendeesArrayAdapter(getContext(), dataList, this);
         attendeeList.setAdapter(attendeesArrayAdapter);
 
-        attendanceRef.whereEqualTo("eventId", event.getId()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot doc : task.getResult()) {
-                    Attendance attendance = doc.toObject(Attendance.class);
-                    if (!attendeesArrayAdapter.containsAttendance(attendance)) {
-                        attendeesArrayAdapter.addAttendance(attendance);
-                    }
-                }
+        // Watch for errors
+        attendanceViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                attendanceViewModel.clearErrorLiveData();
             }
+        });
+
+        // Fetch and get events
+        attendanceViewModel.fetchAttendanceByEvent(event.getId());
+        attendanceViewModel.getAttendanceByEvent().observe(getViewLifecycleOwner(), attendances -> {
+            attendeesArrayAdapter.clear();
+            for (Attendance attendance : attendances) {
+                attendeesArrayAdapter.addAttendance(attendance);
+            }
+            attendeesArrayAdapter.notifyDataSetChanged();
+
         });
 
         updateScreenInformation(view);
@@ -125,20 +138,7 @@ public class OrganizerEventAttendeeList extends Fragment {
 
     private void updateScreenInformation(View view) {
         ImageView eventBanner = view.findViewById(R.id.event_attendee_list_event_banner);
-        if (event.getEventBannerImgUrl() != null) {
-            // Get image from firebase storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(event.getEventBannerImgUrl());
-            final long ONE_MEGABYTE = 1024 * 1024;
-
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(this.getResources(), bmp);
-                d.setCornerRadius(0f);
-                eventBanner.setImageDrawable(d);
-            }).addOnFailureListener(exception -> {
-                Log.w("User Profile", "Error getting profile image", exception);
-            });
-        }
+        imageViewHandler.setEventImage(event, eventBanner);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override

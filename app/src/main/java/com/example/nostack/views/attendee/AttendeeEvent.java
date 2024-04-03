@@ -166,7 +166,7 @@ public class AttendeeEvent extends Fragment {
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
         eventAttendees.setText("Attendees: " + event.getAttendees().size());
-        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage);
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
         imageViewHandler.setEventImage(event, eventImage);
     }
 }

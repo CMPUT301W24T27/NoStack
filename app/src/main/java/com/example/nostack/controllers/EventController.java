@@ -1,6 +1,9 @@
 package com.example.nostack.controllers;
 
+import android.location.Location;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
@@ -90,7 +93,7 @@ public class EventController {
             return null;
         }).continueWithTask(task -> {
             if (task.isSuccessful()) {
-                return attendanceController.createAttendance(userId, eventId);
+                return attendanceController.createAttendance(userId, eventId, null);
             } else {
                 throw new RuntimeException("Failed to create attendance.");
             }
@@ -128,10 +131,10 @@ public class EventController {
     }
 
     public Task<Void> eventCheckIn(String eventId) {
-        return eventCheckIn(currentUserHandler.getCurrentUserId(), eventId);
+        return eventCheckIn(currentUserHandler.getCurrentUserId(), eventId, null);
     }
 
-    public Task<Void> eventCheckIn(String userId, String eventId) {
+    public Task<Void> eventCheckIn(String userId, String eventId, @Nullable Location location) {
         return getEvent(eventId).continueWithTask(task -> {
             if (!task.isSuccessful() || task.getResult() == null) {
                 throw new RuntimeException("Failed to get event details.");
@@ -141,7 +144,7 @@ public class EventController {
             List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
             if (attendees != null && attendees.contains(userId)) {
-                return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId));
+                return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId), location);
             } else {
                 // For now, if the user is not registered, when checking in, it automatically
                 // registers them.
@@ -149,7 +152,7 @@ public class EventController {
                     if (!registerTask.isSuccessful()) {
                         throw new RuntimeException("Failed to register for the event before checking in.");
                     }
-                    return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId));
+                    return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId), location);
                 });
             }
         }).addOnSuccessListener(aVOid -> {
@@ -162,6 +165,15 @@ public class EventController {
     public Task<Void> updateEvent(Event event) {
         return eventCollectionReference.document(event.getId()).set(event);
     }
+
+    public Task<Void> removeEventImage(String eventId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+
+        return eventRef.update("eventBannerImgUrl", null)
+                .addOnSuccessListener(aVoid -> Log.d("EventController", "Event image successfully removed."))
+                .addOnFailureListener(e -> Log.e("EventController", "Failed to remove event image.", e));
+    }
+
 
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
     public Task<Void> deleteEvent(String eventId) {

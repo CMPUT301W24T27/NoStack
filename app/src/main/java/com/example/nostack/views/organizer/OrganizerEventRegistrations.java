@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Creates the fragment for the organizer to be able to see the event attendee list
  */
-public class usersSignups extends Fragment {
+public class OrganizerEventRegistrations extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +41,7 @@ public class usersSignups extends Fragment {
     private ArrayList<String> dataList;
     private ListView signupList;
 
-    public usersSignups() {
+    public OrganizerEventRegistrations() {
         // Required empty public constructor
     }
 
@@ -129,7 +129,7 @@ public class usersSignups extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("eventData", event);
 
-                NavHostFragment.findNavController(usersSignups.this).popBackStack();
+                NavHostFragment.findNavController(OrganizerEventRegistrations.this).popBackStack();
             }
         });
     }

@@ -1,14 +1,19 @@
 package com.example.nostack.handlers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+import android.Manifest;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
-import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.GeoLocation;
@@ -48,9 +53,10 @@ public class EventCheckinHandler {
      * @param userId The ID of the user
      */
     public void checkInUser(String eventId, String userId) {
-
         Location location = locationHandler.getLocation();
-
+        if (location == null) {
+            Log.d("Location Check", "Location is Null");
+        }
         DocumentReference eventDocRef = eventsRef.document(eventId);
         DocumentReference attendanceDocRef = attendanceRef.document(Attendance.buildAttendanceId(eventId, userId));
         eventDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
