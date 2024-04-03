@@ -1,6 +1,8 @@
 package com.example.nostack.views;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Profile;
 import com.example.nostack.models.User;
 import com.example.nostack.services.GenerateName;

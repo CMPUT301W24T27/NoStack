@@ -280,6 +280,7 @@ public class AttendeeHome extends Fragment {
 
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         LocationHandler locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
+        locationHandler.handleLocationPermissions();
         Location location = locationHandler.getLocation();
 
         eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location);
