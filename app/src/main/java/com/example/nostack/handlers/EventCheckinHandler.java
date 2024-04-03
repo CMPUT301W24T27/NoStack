@@ -1,14 +1,19 @@
 package com.example.nostack.handlers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+import android.Manifest;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
-import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.GeoLocation;
@@ -39,7 +44,8 @@ public class EventCheckinHandler {
         this.eventsRef = db.collection("events");
         this.activity = activity;
         this.context = context;
-        this.locationHandler = LocationHandler.getSingleton();
+        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.locationHandler = new LocationHandler(this.context, this.activity, this.locationManager);
     }
     /**
      * Checks in a user to an event
@@ -48,8 +54,31 @@ public class EventCheckinHandler {
      */
     public void checkInUser(String eventId, String userId) {
 
-        Location location = locationHandler.getLocation();
 
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context,"Location Permission Granted",Toast.LENGTH_LONG).show();
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage("This app would prefer to have location services in order to maximize customer services and features on this app")
+                    .setTitle("Permission Request")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        } else {
+            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
+        Location location = locationHandler.getLocation();
+        if (location == null) {
+            Log.d("Location Check", "Location is Null");
+        }
         DocumentReference eventDocRef = eventsRef.document(eventId);
         DocumentReference attendanceDocRef = attendanceRef.document(Attendance.buildAttendanceId(eventId, userId));
         eventDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

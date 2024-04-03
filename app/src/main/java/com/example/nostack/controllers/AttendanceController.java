@@ -2,6 +2,8 @@ package com.example.nostack.controllers;
 
 import android.location.Location;
 
+import androidx.annotation.Nullable;
+
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Attendance;
@@ -18,8 +20,6 @@ public class AttendanceController {
     private static AttendanceController singleInstance = null;
     private final CollectionReference attendanceCollectionReference = FirebaseFirestore.getInstance().collection("attendance");
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
-    private final LocationHandler locationHandler = LocationHandler.getSingleton();
-
     public static AttendanceController getInstance() {
         if (singleInstance == null) {
             singleInstance = new AttendanceController();
@@ -51,12 +51,11 @@ public class AttendanceController {
     }
 
     public Task<Void> createAttendance(String eventId) {
-        return createAttendance(currentUserHandler.getCurrentUserId(), eventId);
+        return createAttendance(currentUserHandler.getCurrentUserId(), eventId, null);
     }
 
-    public Task<Void> createAttendance(String userId, String eventId) {
+    public Task<Void> createAttendance(String userId, String eventId, @Nullable Location location) {
         Attendance newAtt = new Attendance(userId, eventId);
-        Location location = locationHandler.getLocation();
         if (location != null) {
             GeoLocation latlng = new GeoLocation(location.getLatitude(), location.getLongitude());
             newAtt.setGeoLocation(latlng);
@@ -64,7 +63,11 @@ public class AttendanceController {
         return attendanceCollectionReference.document(newAtt.getId()).set(newAtt);
     }
 
-    public Task<Void> attendanceCheckIn(String id) {
+    public Task<Void> attendanceCheckIn(String id, @Nullable Location location) {
+        if (location != null) {
+            GeoLocation latlng = new GeoLocation(location.getLatitude(), location.getLongitude());
+            return attendanceCollectionReference.document(id).update("numCheckIn", FieldValue.increment(1), "geoLocation", latlng);
+        }
         return attendanceCollectionReference.document(id).update("numCheckIn", FieldValue.increment(1));
     }
 

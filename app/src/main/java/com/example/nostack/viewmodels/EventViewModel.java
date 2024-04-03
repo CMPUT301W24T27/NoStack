@@ -1,5 +1,6 @@
 package com.example.nostack.viewmodels;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -189,8 +190,8 @@ public class EventViewModel extends ViewModel {
                 });
     }
 
-    public void eventCheckIn(String userId, String eventId) {
-        eventController.eventCheckIn(userId, eventId)
+    public void eventCheckIn(String userId, String eventId, @Nullable Location location) {
+        eventController.eventCheckIn(userId, eventId, location)
                 .addOnSuccessListener(aVoid -> {
                     fetchAttendeeEvents(userId);
                 })

@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
         ImageViewHandler.setOwnerActivity(this);
         ImageViewHandler.setSingleton();
-
-        LocationHandler.setSingleton(this, this, (LocationManager) this.getSystemService(Context.LOCATION_SERVICE) );
     }
 
     @Override

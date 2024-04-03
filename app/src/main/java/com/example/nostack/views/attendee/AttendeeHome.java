@@ -1,9 +1,12 @@
 package com.example.nostack.views.attendee;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
@@ -274,7 +278,11 @@ public class AttendeeHome extends Fragment {
         builder.setTitle("Check-in Successful!");
         builder.setMessage("You have successfully checked in to the event!");
 
-        eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID);
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationHandler locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
+        Location location = locationHandler.getLocation();
+
+        eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location);
         builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
