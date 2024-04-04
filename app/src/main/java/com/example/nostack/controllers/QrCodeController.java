@@ -47,7 +47,6 @@ public class QrCodeController {
     public Task<QuerySnapshot> getInactiveQrCodes() {
         return qrCollectionReference
                 .whereEqualTo("active", false)
-                .whereEqualTo("type", 0)
                 .get();
     }
 

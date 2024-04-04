@@ -21,6 +21,7 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.EventViewModel;
+import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.google.firebase.firestore.CollectionReference;
@@ -45,6 +46,7 @@ public class OrganizerEvent extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private EventViewModel eventViewModel;
+    private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
 
@@ -84,6 +86,7 @@ public class OrganizerEvent extends Fragment {
             event = (Event) getArguments().getSerializable("event");
         }
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
     }
@@ -119,9 +122,12 @@ public class OrganizerEvent extends Fragment {
         eventViewModel.fetchEvent(event.getId());
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             this.event = event;
+            updateScreenInformation(view);
         });
 
-        updateScreenInformation(view);
+        // Fetch the QrCode
+        qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
+
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,15 +157,11 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        view.findViewById(R.id.button_See_Registered).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.button_end_event).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_usersSignups, bundle);
-
+                eventViewModel.endEvent(event.getId(), currentUserHandler.getCurrentUserId());
+                Toast.makeText(getContext(), "Event has been successfully ended.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -208,7 +210,15 @@ public class OrganizerEvent extends Fragment {
                 eventStartTime.setText(startTime + " - " + endTime);
             }
 
-            eventTitle.setText(event.getName());
+            if (event.getActive() == null || !event.getActive()) {
+                eventTitle.setText(event.getName() + " (Ended)");
+                view.findViewById(R.id.button_end_event).setClickable(false);
+                view.findViewById(R.id.button_end_event).setAlpha(0.5f);
+            } else {
+                eventTitle.setText(event.getName());
+                view.findViewById(R.id.button_end_event).setClickable(true);
+                view.findViewById(R.id.button_end_event).setAlpha(1f);
+            }
             eventDescription.setText(event.getDescription());
             eventLocation.setText(event.getLocation());
 

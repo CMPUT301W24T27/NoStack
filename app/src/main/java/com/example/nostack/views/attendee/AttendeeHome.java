@@ -1,12 +1,8 @@
 package com.example.nostack.views.attendee;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,17 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -37,25 +30,14 @@ import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.ImageDimension;
+import com.example.nostack.models.QrCode;
 import com.example.nostack.viewmodels.EventViewModel;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
+import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.activity.ScanActivity;
-import com.example.nostack.handlers.EventCheckinHandler;
-import com.example.nostack.services.GenerateProfileImage;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
-
-import org.checkerframework.checker.units.qual.Current;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +55,7 @@ public class AttendeeHome extends Fragment {
 
     private UserViewModel userViewModel;
     private EventViewModel eventViewModel;
+    private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private ImageViewHandler imageViewHandler;
@@ -120,6 +103,7 @@ public class AttendeeHome extends Fragment {
 
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
         imageViewHandler = ImageViewHandler.getSingleton();
     }
@@ -183,6 +167,22 @@ public class AttendeeHome extends Fragment {
      */
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
+            }
+        });
+
+        qrCodeViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                qrCodeViewModel.clearErrorLiveData();
+            }
+        });
+
         view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,7 +242,7 @@ public class AttendeeHome extends Fragment {
 
     }
 
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+    public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
             if (result.getContents().charAt(0) == '0') {
                 handleCheckInQR(result.getContents().substring(2));
@@ -252,28 +252,68 @@ public class AttendeeHome extends Fragment {
         }
     });
 
-    public void handleEventDescQR(String eventUID) {
+   public void handleEventDescQR(String eventUID) {
         eventViewModel.fetchEvent(eventUID);
-        Event event = eventViewModel.getEvent().getValue();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event", event);
-        NavHostFragment.findNavController(AttendeeHome.this)
-                .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
+            @Override
+            public void onChanged(Event event) {
+                if (event != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event", event);
+                    NavHostFragment.findNavController(AttendeeHome.this)
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                }
+            }
+        });
     }
 
-    public void handleCheckInQR(String eventUID) {
-
+    public void handleCheckInQR(String qrCodeId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Check-in Successful!");
-        builder.setMessage("You have successfully checked in to the event!");
-        Location location = locationHandler.getLocation();
-        eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location);
-        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        }).show();
 
+        qrCodeViewModel.fetchQrCode(qrCodeId);
+        qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), new Observer<QrCode>() {
+            @Override
+            public void onChanged(QrCode qrCode) {
+                if (qrCode != null) {
+                    String eventUID = qrCode.getEventId();
+                    eventViewModel.fetchEvent(eventUID);
+                    eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
+                        @Override
+                        public void onChanged(Event event) {
+                            if (event != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("event", event);
+                                Location location = locationHandler.getLocation();
+                                eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location)
+                                        .addOnSuccessListener(aVoid -> {
+                                            eventViewModel.fetchAttendeeEvents(currentUserHandler.getCurrentUserId());
+                                            builder.setTitle("Check-in Successful!");
+                                            builder.setMessage("You have successfully checked in to " +event.getName()+"! Enjoy the event!");
+                                            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.dismiss();
+                                                    NavHostFragment.findNavController(AttendeeHome.this)
+                                                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                                                }
+                                            }).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            builder.setTitle("Check-in Failed!");
+                                            builder.setMessage(e.getMessage());
+                                            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.dismiss();
+                                                }
+                                            }).show();
+                                            Log.e("EventViewModel", "Error checking-in to event", e);
+                                        });
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 }

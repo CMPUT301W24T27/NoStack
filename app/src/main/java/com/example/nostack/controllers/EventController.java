@@ -19,6 +19,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Date;
 import java.util.List;
 
 public class EventController {
@@ -41,20 +42,21 @@ public class EventController {
 
     public Task<QuerySnapshot> getAllEvents() {
         return eventCollectionReference
-                .orderBy("startDate", Query.Direction.ASCENDING)
+                .orderBy("createdDate", Query.Direction.DESCENDING)
                 .get();
     }
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizerId) {
         return eventCollectionReference
                 .whereEqualTo("organizerId", organizerId)
+                .orderBy("createdDate", Query.Direction.DESCENDING)
                 .get();
     }
 
     public Task<QuerySnapshot> getAttendeeEvents(String attendeeId) {
         return eventCollectionReference
                 .whereArrayContains("attendees", attendeeId)
-                .orderBy("startDate", Query.Direction.ASCENDING)
+                .orderBy("createdDate", Query.Direction.DESCENDING)
                 .get();
     }
 
@@ -76,12 +78,20 @@ public class EventController {
 
         return db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            String eventName = eventSnapshot.getString("name");
+            Boolean isActive = eventSnapshot.getBoolean("active");
+            Date endDate = eventSnapshot.getDate("endDate");
+            Date currentDate = new Date();
+            if (isActive == null || !isActive || endDate.before(currentDate)) {
+                throw new RuntimeException("The event " + eventName+  " is no longer active or has already ended.");
+            }
+
             long maxCap = eventSnapshot.getLong("capacity");
             long currCap = eventSnapshot.getLong("currentCapacity");
             List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
             if ((maxCap > 0) && (currCap >= maxCap)) {
-                throw new RuntimeException("The event is at full capacity.");
+                throw new RuntimeException("The event" +eventName+" is at full capacity.");
             }
 
             if (attendees != null && attendees.contains(userId)) {
@@ -95,7 +105,10 @@ public class EventController {
             if (task.isSuccessful()) {
                 return attendanceController.createAttendance(userId, eventId, null);
             } else {
-                throw new RuntimeException("Failed to create attendance.");
+                Exception e = task.getException();
+                String errorMessage = e != null ? e.getMessage() : "Unknown error";
+                throw new RuntimeException("(Failed to create attendance) " + errorMessage);
+
             }
         }).addOnSuccessListener(aVOid -> {
             Log.d("Event Controller", "Successfully registered user.");
@@ -141,6 +154,14 @@ public class EventController {
             }
 
             DocumentSnapshot eventSnapshot = task.getResult();
+            String eventName = eventSnapshot.getString("name");
+            Boolean isActive = eventSnapshot.getBoolean("active");
+            Date endDate = eventSnapshot.getDate("endDate");
+            Date currentDate = new Date();
+            if (isActive == null || !isActive || endDate.before(currentDate)) {
+                throw new RuntimeException("The event " + eventName+  " is no longer active or has already ended.");
+            }
+
             List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
             if (attendees != null && attendees.contains(userId)) {
@@ -174,6 +195,9 @@ public class EventController {
                 .addOnFailureListener(e -> Log.e("EventController", "Failed to remove event image.", e));
     }
 
+    public Task<Void> endEvent(String eventId) {
+        return eventCollectionReference.document(eventId).update("active", false);
+    };
 
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
     public Task<Void> deleteEvent(String eventId) {
