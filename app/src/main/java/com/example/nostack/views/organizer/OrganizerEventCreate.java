@@ -172,7 +172,12 @@ public class OrganizerEventCreate extends Fragment {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
                     Event event = createEvent();
-                    Uri eventBannerUri = (Uri) eventImageView.getTag();
+                    Uri eventBannerUri;
+                    try {
+                        eventBannerUri = (Uri) eventImageView.getTag();
+                    } catch (Exception e) {
+                        eventBannerUri = Uri.parse((String) eventImageView.getTag());
+                    }
                     Uri compressedImageUri = null;
                     try {
                         compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
