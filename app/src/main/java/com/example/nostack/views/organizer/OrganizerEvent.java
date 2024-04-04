@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.google.firebase.firestore.CollectionReference;
@@ -41,15 +44,8 @@ public class OrganizerEvent extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Event event;
-    private String mParam2;
-    private ArrayList<Event> dataList;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-    private UserViewModel userViewModel;
-    private TextView msgTV;
-
-    private Button attendeeListButton;
+    private EventViewModel eventViewModel;
+    private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
 
 
@@ -87,13 +83,9 @@ public class OrganizerEvent extends Fragment {
         if (getArguments() != null) {
             event = (Event) getArguments().getSerializable("event");
         }
-
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
-        dataList = new ArrayList<>();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
+        currentUserHandler = CurrentUserHandler.getSingleton();
     }
 
     /**
@@ -115,8 +107,21 @@ public class OrganizerEvent extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_event, container, false);
 
-        updateScreenInformation(view);
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
+            }
+        });
 
+        // Fetch event (in our case update it) and Get event
+        eventViewModel.fetchEvent(event.getId());
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            this.event = event;
+        });
+
+        updateScreenInformation(view);
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,11 +200,6 @@ public class OrganizerEvent extends Fragment {
             String startTime = tf.format(event.getStartDate());
             String endTime = tf.format(event.getEndDate());
 
-            DisplayMetrics metrics = new DisplayMetrics();
-            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int screenWidth = metrics.widthPixels;
-            int screenHeight = metrics.heightPixels;
-
             if (!startDate.equals(endDate)) {
                 eventStartDate.setText(startDate + " to");
                 eventStartTime.setText(endDate);
@@ -212,14 +212,7 @@ public class OrganizerEvent extends Fragment {
             eventDescription.setText(event.getDescription());
             eventLocation.setText(event.getLocation());
 
-            //set profile image
-            userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-                if (user != null) {
-                    imageViewHandler.setUserProfileImage(user, eventProfileImage);
-                }
-            });
-
-            // Set Event Banner
+            imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
             imageViewHandler.setEventImage(event, eventBanner);
         }
     }

@@ -49,6 +49,14 @@ public class UserController {
         return userCollectionReference.document(user.getUuid()).set(user);
     }
 
+    public Task<Void> removeUserProfileImage(String userId) {
+        DocumentReference userRef = userCollectionReference.document(userId);
+        return userRef.update("profileImageUrl", null)
+                .addOnSuccessListener(aVoid -> Log.d("UserController", "User profile image successfully removed."))
+                .addOnFailureListener(e -> Log.e("UserController", "Failed to remove user profile image.", e));
+    }
+
+
     // TODO: Deleting a user, may be a little too nuanced, will be done later on.
     public Task<Void> deleteUser(String userId) {
         return Tasks.whenAll();

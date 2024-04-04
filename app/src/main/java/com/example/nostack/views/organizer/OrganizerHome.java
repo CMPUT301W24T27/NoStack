@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -21,8 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
@@ -42,10 +48,6 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
 
     private ArrayList<Event> dataList;
     private RecyclerView eventList;
-    private FirebaseFirestore db;
-    private CollectionReference eventsRef;
-    private Activity activity;
-
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,8 +58,10 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
     private String mParam1;
     private String mParam2;
     private TextView userWelcome;
-    private UserViewModel userViewModel;
+    private CurrentUserHandler currentUserHandler;
+    private EventViewModel eventViewModel;
     private EventArrayAdapterRecycleView eventArrayAdapter;
+    private ImageViewHandler imageViewHandler;
 
 
     public OrganizerHome() {
@@ -96,10 +100,9 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
-        db = FirebaseFirestore.getInstance();
-        eventsRef = db.collection("events");
-        activity = getActivity();
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        currentUserHandler = CurrentUserHandler.getSingleton();
+        imageViewHandler = ImageViewHandler.getSingleton();
         dataList = new ArrayList<>();
     }
 
@@ -120,33 +123,29 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
-        TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
 
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                Log.d("OrganizerHome", "User logged in: " + user.getUsername());
-                userWelcome.setText(user.getUsername());
-
-                eventsRef.whereEqualTo("organizerId", user.getUuid()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            if (!eventArrayAdapter.containsEvent(event)) {
-                                eventArrayAdapter.addEvent(event);
-                                eventArrayAdapter.notifyDataSetChanged();
-                                Log.d("EventAdd", document.toObject(Event.class).getName());
-                            }
-                        }
-                    }
-                });
-            } else {
-                Log.d("OrganizerHome", "User is null");
+        // Watch for errors
+        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                eventViewModel.clearErrorLiveData();
             }
+        });
+
+        // Fetch and get events
+        eventViewModel.fetchOrganizerEvents(currentUserHandler.getCurrentUserId());
+        eventViewModel.getOrganizerEvents().observe(getViewLifecycleOwner(), events -> {
+            eventArrayAdapter.clear();
+            for (Event event : events) {
+                eventArrayAdapter.addEvent(event);
+            }
+            eventArrayAdapter.notifyDataSetChanged();
+
         });
 
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
@@ -170,33 +169,8 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             }
         });
 
-        ImageButton profileImage = getView().findViewById(R.id.admin_profileButton);
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user.getProfileImageUrl() != null) {
-                String uri = user.getProfileImageUrl();
-
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 72, 72, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                    d.setCornerRadius(100f);
-                    profileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
-            } else {
-                // generate profile image if user has no profile image
-                Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), scaledBmp);
-                d.setCornerRadius(100f);
-                profileImage.setImageDrawable(d);
-            }
-        });
+        ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
     }
 
     @Override

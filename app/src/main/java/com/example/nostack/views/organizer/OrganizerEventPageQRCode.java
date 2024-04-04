@@ -29,9 +29,10 @@ import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Creates the fragment to display the QR code for the event and allow for exporting of the QR code
+ * Use the {@link OrganizerEventPageQRCode#newInstance} factory method to
+ * create an instance of this fragment.
  */
-public class OrganizerQRCode extends Fragment {
+public class OrganizerEventPageQRCode extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,7 +44,7 @@ public class OrganizerQRCode extends Fragment {
     private String mParam2;
     private final Integer QR_CODE_DIMENSION = 500;
 
-    public OrganizerQRCode() {
+    public OrganizerEventPageQRCode() {
         // Required empty public constructor
     }
 
@@ -74,11 +75,11 @@ public class OrganizerQRCode extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment OrganizerQRCode.
+     * @return A new instance of fragment OrganizerEventPageQRCode.
      */
     // TODO: Rename and change types and number of parameters
-    public static OrganizerQRCode newInstance(Event event) {
-        OrganizerQRCode fragment = new OrganizerQRCode();
+    public static OrganizerEventPageQRCode newInstance(Event event) {
+        OrganizerEventPageQRCode fragment = new OrganizerEventPageQRCode();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, event);
         fragment.setArguments(args);
@@ -116,9 +117,9 @@ public class OrganizerQRCode extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_organizer_q_r_code, container, false);
-//
-        QrCode qrCode = event.getCheckInQr();
+        View view = inflater.inflate(R.layout.fragment_organizer_event_page_q_r_code, container, false);
+
+        QrCode qrCode = event.getEventQr();
         String qrCodeText = qrCode.getType() + "." + qrCode.getCode();
         Bitmap bitmap;
         MultiFormatWriter writer = new MultiFormatWriter();
@@ -137,23 +138,14 @@ public class OrganizerQRCode extends Fragment {
             Log.e("QRCodeWriter", "Unable to generate QR code... " + e);
         }
 
-        ImageView qrCodeImageView = view.findViewById(R.id.OrganizerQRImage);
+        ImageView qrCodeImageView = view.findViewById(R.id.OrganizerEventQRImage);
         Bitmap qrBmp = bmp;
         qrCodeImageView.setImageBitmap(bmp);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerQRCode.this).popBackStack();
-            }
-        });
-
-        view.findViewById(R.id.OrganizerEventPageButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData",event);
-                NavHostFragment.findNavController(OrganizerQRCode.this).navigate(R.id.action_organizerQRCode_to_organizerEventPageQRCode,bundle);
+                NavHostFragment.findNavController(OrganizerEventPageQRCode.this).popBackStack();
             }
         });
 
