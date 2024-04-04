@@ -7,7 +7,9 @@ import com.example.nostack.models.Image;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -31,6 +33,16 @@ public class ImageController {
     }
 
     public ImageController() {
+    }
+
+    public Task<QuerySnapshot> getAllImages() {
+        return imageCollectionReference
+                .orderBy("url", Query.Direction.ASCENDING)
+                .get();
+    }
+
+    public Task<DocumentSnapshot> getImage(String id) {
+        return imageCollectionReference.document(id).get();
     }
 
     public Task<String> addImage(String storagePath, Uri imageUri) {

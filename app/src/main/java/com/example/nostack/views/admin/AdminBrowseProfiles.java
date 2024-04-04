@@ -33,7 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 /**
- * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
+ * Creates the AdminBrowseProfiles fragment which is used to display all the users
  */
 public class AdminBrowseProfiles extends Fragment {
     private UserArrayAdapter UserArrayAdapter;
@@ -99,18 +99,6 @@ public class AdminBrowseProfiles extends Fragment {
             UserArrayAdapter.notifyDataSetChanged();
         });
 
-//        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                User user = UserArrayAdapter.getItem(position);
-//                userViewModel.fetchEvent(event.getId());
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("event", event);
-//
-//                NavHostFragment.findNavController(AdminBrowseEvents.this)
-//                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-//            }
-//        });
     }
 
 }

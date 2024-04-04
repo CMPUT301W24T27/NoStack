@@ -5,28 +5,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
 import com.example.nostack.viewmodels.EventViewModel;
+import com.example.nostack.viewmodels.ImageViewModel;
+import com.example.nostack.views.attendee.AttendeeBrowse;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
  */
 public class AdminBrowseImages extends Fragment {
-    private EventArrayAdapter eventArrayAdapter;
-    private ListView eventList;
-    private ArrayList<Event> dataList;
-    private EventViewModel eventViewModel;
+    private ImageArrayAdapter imageArrayAdapter;
+    private ListView imageList;
+    private ArrayList<Image> dataList;
+    private ImageViewModel imageViewModel;
 
     public AdminBrowseImages() {
     }
@@ -39,7 +47,7 @@ public class AdminBrowseImages extends Fragment {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        imageViewModel = new ViewModelProvider(requireActivity()).get(ImageViewModel.class);
         dataList = new ArrayList<>();
     }
 
@@ -58,9 +66,9 @@ public class AdminBrowseImages extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_admin_home_browseimages, container, false);
-        eventList = rootView.findViewById(R.id.admin_viewPager2);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
-        eventList.setAdapter(eventArrayAdapter);
+        imageList = rootView.findViewById(R.id.admin_viewPager2);
+        imageArrayAdapter = new ImageArrayAdapter(getContext(), dataList, this);
+        imageList.setAdapter(imageArrayAdapter);
         return rootView;
     }
 
@@ -68,34 +76,22 @@ public class AdminBrowseImages extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Watch for errors
-        eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+        imageViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                eventViewModel.clearErrorLiveData();
+                imageViewModel.clearErrorLiveData();
             }
         });
 
-//        // Fetch and get Images
-//        eventViewModel.fetchAllEvents();
-//        eventViewModel.getAllEvents().observe(getViewLifecycleOwner(), events -> {
-//            eventArrayAdapter.clear();
-//            for (Event event : events) {
-//                eventArrayAdapter.addEvent(event);
-//            }
-//            eventArrayAdapter.notifyDataSetChanged();
-//        });
-
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = eventArrayAdapter.getItem(position);
-                eventViewModel.fetchEvent(event.getId());
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);
-
-                NavHostFragment.findNavController(AdminBrowseImages.this)
-                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+        // Fetch and get Images
+        imageViewModel.fetchAllImages();
+        imageViewModel.getAllImages().observe(getViewLifecycleOwner(), images -> {
+            imageArrayAdapter.clear();
+            for (Image image : images) {
+                imageArrayAdapter.addImage(image);
             }
+            imageArrayAdapter.notifyDataSetChanged();
         });
+
     }
 }

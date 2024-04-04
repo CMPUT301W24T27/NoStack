@@ -1,4 +1,4 @@
-package com.example.nostack.views.user;
+package com.example.nostack.views.admin;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
 import com.example.nostack.models.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -29,27 +30,27 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class ImageArrayAdapter extends ArrayAdapter<Image> {
     private ConstraintLayout layout;
     private Fragment currFragment;
-    private ArrayList<User> ourUsers;
-    public UserArrayAdapter(@NonNull Context context, ArrayList<User> User, Fragment currfragment) {
-        super(context, 0,User);
+    private ArrayList<Image> ourImages;
+    public ImageArrayAdapter(@NonNull Context context, ArrayList<Image> Image, Fragment currfragment) {
+        super(context, 0,Image);
         currFragment = currfragment;
-        ourUsers = User;
+        ourImages = Image;
     }
 
-    public boolean containsUser(User user) {
+    public boolean containsImage(Image image) {
         boolean contained = false;
-        for (User user1:ourUsers) {
-            if (user.getUuid().equals(user1.getUuid())) {return true;}
+        for (Image image1:ourImages) {
+            if (image.getId().equals(image1.getId())) {return true;}
         }
         return contained;
     }
 
-    public void addUser(User user) {
-        if (!containsUser(user)) {
-            add(user);
+    public void addImage(Image image) {
+        if (!containsImage(image)) {
+            add(image);
         }
     }
     @NonNull
@@ -57,25 +58,26 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.profilelistcontent,parent,false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.imagelistcontent,parent,false);
         } else {
             view = convertView;
         }
 
-        User user = getItem(position);
+        Image image = getItem(position);
 
-        TextView profileName = view.findViewById(R.id.ProfileListContentNameText);
-        TextView profileEmail = view.findViewById(R.id.ProfileListContentEmailText);
-        TextView profilePhoneNumber = view.findViewById(R.id.ProfileListContentPhoneNumberText);
-        ImageView profileImage = view.findViewById(R.id.ProfileListContentPosterImage);
+        TextView imageName = view.findViewById(R.id.ImageListContentNameText);
+//        TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
+//        TextView imageCreated = view.findViewById(R.id.ImageListContentCreatedText);
+//        TextView imageType = view.findViewById(R.id.ImageListContentTypeText);
+        ImageView posterImage = view.findViewById(R.id.ImageListContentPosterImage);
 
-        if (user != null) {
+        if (image != null) {
 
-            profileName.setText(user.getUsername());
-            profileEmail.setText(user.getEmailAddress());
-            profilePhoneNumber.setText(user.getPhoneNumber());
+            imageName.setText(image.getReferenceId());
+//            profileEmail.setText(user.getEmailAddress());
+//            profilePhoneNumber.setText(user.getPhoneNumber());
 
-            String uri = user.getProfileImageUrl();
+            String uri = image.getUrl();
 
             if (uri != null) {
                 // Get image from firebase storage
@@ -87,9 +89,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
                     Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
                     RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
                     d.setCornerRadius(50f);
-                    profileImage.setImageDrawable(d);
+                    posterImage.setImageDrawable(d);
                 }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
+                    Log.w("Image Profile", "Error getting Image banner", exception);
                 });
             }
         }

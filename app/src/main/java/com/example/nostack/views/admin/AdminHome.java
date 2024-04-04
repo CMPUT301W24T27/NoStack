@@ -15,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.organizer.OrganizerHome;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,8 +85,8 @@ public class AdminHome extends Fragment {
         viewPager = view.findViewById(R.id.admin_viewPager2);
         Log.d("AdminHome", "viewPager:"+ viewPager);
         viewPager.setAdapter(new MyFragmentAdapter(this));
-//        dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
-//        dotsIndicator.attachTo(viewPager);
+        dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
+        dotsIndicator.attachTo(viewPager);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
