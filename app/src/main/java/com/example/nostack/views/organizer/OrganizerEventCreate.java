@@ -32,8 +32,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
 import com.example.nostack.viewmodels.EventViewModel;
+import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -85,6 +87,7 @@ public class OrganizerEventCreate extends Fragment {
     private SwitchCompat unlimitedButton;
     private ActivityResultLauncher<String> imagePickerLauncher;
     private EventViewModel eventViewModel;
+    private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
     private Boolean isEditing;
     private Boolean isUnlimited;
@@ -120,6 +123,7 @@ public class OrganizerEventCreate extends Fragment {
         }
 
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageUploader = new ImageUploader();
         currentUserHandler = CurrentUserHandler.getSingleton();
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
@@ -129,6 +133,9 @@ public class OrganizerEventCreate extends Fragment {
                 eventImageView.setImageURI(o);
             }
         });
+
+        // Prefetch reusable QR codes
+        qrCodeViewModel.fetchInactiveQrCodes();
     }
 
     @Override
@@ -219,10 +226,15 @@ public class OrganizerEventCreate extends Fragment {
                     if (isEditing) {
                         eventViewModel.updateEvent(event, compressedImageUri);
                     } else {
-                        eventViewModel.addEvent(event,false,compressedImageUri);
+                        Boolean reuse = eventReuseQrCheckBox.isChecked();
+                        if (reuse) {
+                            eventViewModel.setEventWithReuse(event, compressedImageUri);
+                            NavHostFragment.findNavController(OrganizerEventCreate.this).navigate(R.id.action_organizerEventCreate_to_organizerReuseQr);
+                        } else {
+                            eventViewModel.addEvent(event, false, compressedImageUri);
+                            NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                        }
                     }
-
-                    NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                 }
             }
         });
@@ -370,7 +382,7 @@ public class OrganizerEventCreate extends Fragment {
                 eventLimitEditText.setText(String.valueOf(event.getCapacity()));
                 unlimitedButton.setTextColor(Color.GRAY);
             }
-
+            eventReuseQrCheckBox.setVisibility(View.GONE);
             eventCreationTitle.setText("Edit Event");
             createButton.setText("Update Event");
         }
