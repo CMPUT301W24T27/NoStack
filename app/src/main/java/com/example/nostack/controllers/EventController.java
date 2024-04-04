@@ -28,6 +28,7 @@ public class EventController {
     private final CollectionReference eventCollectionReference = FirebaseFirestore.getInstance().collection("events");
     private final CollectionReference attendanceCollectionReference = FirebaseFirestore.getInstance().collection("attendance");
     private final AttendanceController attendanceController = AttendanceController.getInstance();
+    private final QrCodeController qrCodeController = QrCodeController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
     public static EventController getInstance() {

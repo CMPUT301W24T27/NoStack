@@ -63,6 +63,22 @@ public class QrCodeController {
         return qrCollectionReference.document(qrCodeId).update(updates);
     }
 
+    public Task<Void> deactivateQrCodeByEventId(String eventId) {
+        return qrCollectionReference
+                .whereEqualTo("eventId", eventId)
+                .get()
+                .onSuccessTask(queryDocumentSnapshots -> {
+                    List<DocumentSnapshot> qrCodes = queryDocumentSnapshots.getDocuments();
+                    Task<Void> task = Tasks.whenAll();
+                    for (DocumentSnapshot qrCode : qrCodes) {
+                        task = task.continueWithTask(task1 -> {
+                            return deactivateQrCode(qrCode.getId());
+                        });
+                    }
+                    return task;
+                });
+    }
+
     public Task<Void> addQrCode(QrCode qrCode) {
         return qrCollectionReference.document(qrCode.getId()).set(qrCode);
     }

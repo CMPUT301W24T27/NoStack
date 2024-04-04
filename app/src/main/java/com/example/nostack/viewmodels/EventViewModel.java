@@ -212,6 +212,13 @@ public class EventViewModel extends ViewModel {
                 .addOnSuccessListener(aVoid -> {
                     fetchEvent(eventId);
                     fetchOrganizerEvents(userId);
+                    qrCodeController.deactivateQrCodeByEventId(eventId)
+                            .addOnSuccessListener(a -> {
+                                Log.d("EventViewModel", "Successfully deactivated qr code");
+                            }).addOnFailureListener(e -> {
+                                Log.e("EventViewModel", "Error deactivating qr code", e);
+                                errorLiveData.postValue(e.getMessage());
+                            });
                 })
                 .addOnFailureListener(e -> {
                     Log.e("EventViewModel", "Error ending event", e);
