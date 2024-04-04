@@ -43,21 +43,21 @@ public class EventController {
 
     public Task<QuerySnapshot> getAllEvents() {
         return eventCollectionReference
-                .orderBy("createdDate", Query.Direction.DESCENDING)
+                .orderBy("startDate", Query.Direction.ASCENDING)
                 .get();
     }
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizerId) {
         return eventCollectionReference
                 .whereEqualTo("organizerId", organizerId)
-                .orderBy("createdDate", Query.Direction.DESCENDING)
+                .orderBy("startDate", Query.Direction.ASCENDING)
                 .get();
     }
 
     public Task<QuerySnapshot> getAttendeeEvents(String attendeeId) {
         return eventCollectionReference
                 .whereArrayContains("attendees", attendeeId)
-                .orderBy("createdDate", Query.Direction.DESCENDING)
+                .orderBy("startDate", Query.Direction.ASCENDING)
                 .get();
     }
 
