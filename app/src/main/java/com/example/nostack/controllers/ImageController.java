@@ -1,17 +1,16 @@
 package com.example.nostack.controllers;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.nostack.handlers.CurrentUserHandler;
-import com.example.nostack.models.Image;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
@@ -35,10 +34,13 @@ public class ImageController {
     public ImageController() {
     }
 
-    public Task<QuerySnapshot> getAllImages() {
-        return imageCollectionReference
-                .orderBy("url", Query.Direction.ASCENDING)
-                .get();
+    public Task<ListResult> getAllImages() {
+
+        String eventStoragePath = "event/banner";
+        String userStoragePath = "user/profile";
+        StorageReference storageRef = storage.getReference(eventStoragePath);
+        Log.d("ImageController - get all Images", storageRef.listAll().toString());
+        return storageRef.listAll();
     }
 
     public Task<DocumentSnapshot> getImage(String id) {

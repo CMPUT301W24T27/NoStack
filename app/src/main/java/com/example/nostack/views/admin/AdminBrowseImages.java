@@ -1,6 +1,7 @@
 package com.example.nostack.views.admin;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,8 +87,11 @@ public class AdminBrowseImages extends Fragment {
         // Fetch and get Images
         imageViewModel.fetchAllImages();
         imageViewModel.getAllImages().observe(getViewLifecycleOwner(), images -> {
+            Log.d("AdminBrowseImages - size of returned list", String.valueOf(images.size()));
             imageArrayAdapter.clear();
             for (Image image : images) {
+                Log.d("AdminBrowseImages", "IN LOOP");
+                Log.d("AdminBrowseImages", image.getId());
                 imageArrayAdapter.addImage(image);
             }
             imageArrayAdapter.notifyDataSetChanged();

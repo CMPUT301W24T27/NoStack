@@ -49,6 +49,7 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
     }
 
     public void addImage(Image image) {
+        Log.d("ImageArray Adapter - set Images", "Adding image to array adapter");
         if (!containsImage(image)) {
             add(image);
         }
@@ -64,6 +65,7 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
         }
 
         Image image = getItem(position);
+        Log.d("ImageArrayAdapter - Image", String.valueOf(image));
 
         TextView imageName = view.findViewById(R.id.ImageListContentNameText);
 //        TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
