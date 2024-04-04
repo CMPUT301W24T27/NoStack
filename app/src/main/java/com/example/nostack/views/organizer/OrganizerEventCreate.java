@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,15 +79,15 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
     private Button createButton;
-    private boolean isUnlimited;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
     private SharedPreferences preferences;
     private SwitchCompat unlimitedButton;
-    private String userUUID;
     private ActivityResultLauncher<String> imagePickerLauncher;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
+    private Boolean isEditing;
+    private Boolean isUnlimited;
 
     public OrganizerEventCreate() {
         // Required empty public constructor
@@ -171,6 +173,26 @@ public class OrganizerEventCreate extends Fragment {
                         && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)) {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d hh:mm");
+                    try {
+                        Date startDate = formatter.parse(eventStartEditText.getText().toString());
+                        Date endDate = formatter.parse(eventEndEditText.getText().toString());
+                        Date currentTime = new Date();
+
+                        if (endDate.before(startDate)) {
+                            eventEndEditText.setError("Event end date/time must be after start date/time");
+                            return;
+                        } else if (endDate.before(currentTime)) {
+                            eventEndEditText.setError("Event end date/time must be in the future");
+                            return;
+                        }
+
+                    } catch (ParseException e){
+                        eventStartEditText.setError("Invalid date/time format");
+                        eventEndEditText.setError("Invalid date/time format");
+                        return;
+                    }
+
                     Event event = createEvent();
                     Uri eventBannerUri;
                     try {
@@ -194,7 +216,12 @@ public class OrganizerEventCreate extends Fragment {
                         }
                     });
 
-                    eventViewModel.addEvent(event, compressedImageUri);
+                    if (isEditing) {
+                        eventViewModel.updateEvent(event, compressedImageUri);
+                    } else {
+                        eventViewModel.addEvent(event,false,compressedImageUri);
+                    }
+
                     NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                 }
             }
@@ -264,6 +291,7 @@ public class OrganizerEventCreate extends Fragment {
         Event newEvent = null;
         try {
             if(event != null){
+                isEditing = true;
                 newEvent = event;
                 newEvent.setName(eventTitleEditText.getText().toString());
                 newEvent.setLocation(eventLocationEditText.getText().toString());
@@ -272,14 +300,17 @@ public class OrganizerEventCreate extends Fragment {
                 newEvent.setEndDate(formatter.parse(endDateString));
             }
             else {
-                newEvent = new Event(
-                        eventTitleEditText.getText().toString(),
-                        eventLocationEditText.getText().toString(),
-                        eventDescEditText.getText().toString(),
-                        formatter.parse(startDateString),
-                        formatter.parse(endDateString),
-                        currentUserHandler.getCurrentUserId()
-                );
+                isEditing = false;
+                newEvent = new Event();
+                newEvent.setId(UUID.randomUUID().toString());
+                newEvent.setName(eventTitleEditText.getText().toString());
+                newEvent.setLocation(eventLocationEditText.getText().toString());
+                newEvent.setDescription(eventDescEditText.getText().toString());
+                newEvent.setStartDate(formatter.parse(startDateString));
+                newEvent.setEndDate(formatter.parse(endDateString));
+                newEvent.setOrganizerId(currentUserHandler.getCurrentUserId());
+                newEvent.setCurrentCapacity(0);
+                newEvent.setActive(true);
             }
 
             if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
@@ -288,7 +319,6 @@ public class OrganizerEventCreate extends Fragment {
             } else {
                 newEvent.setCapacity(-1);
             }
-
 
         } catch (ParseException e) {
             throw new RuntimeException(e);

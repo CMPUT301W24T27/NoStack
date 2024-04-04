@@ -26,104 +26,16 @@ public class Event implements Serializable {
     private ArrayList<Announcement> announcements;
     private Date startDate;
     private Date endDate;
-    private QrCode checkInQr;
-    private QrCode eventQr;
+    private Date createdDate;
+    private String checkInQrId;
+    private Boolean active;
     private int capacity;
     private int currentCapacity;
 
     /**
-     *This creates an event using just an eventName and an eventId
-     * @param eventName The name of the event
-     * @param eventId The Id for the event
+     * This function creates an event object
      */
-    public Event(String eventName, String eventId) {
-        name = eventName;
-        id = eventId;
-        attendees = new ArrayList<>();
-    }
-
-    public Event() {
-    }
-
-    /**
-     *This creates an event using an eventName, eventId and an eventLocation
-     * @param eventName This is the name of the event
-     * @param eventId This is the Id for the event
-     * @param eventLocation This is the location of the event
-     */
-    public Event(String eventName, String eventId, String eventLocation) {
-        name = eventName;
-        id = eventId;
-        location = eventLocation;
-        attendees = new ArrayList<>();
-        currentCapacity = 0;
-        capacity = -1;
-    }
-
-    /**
-     * This creates an event using a name, location, description, start and end date,
-     *       a Qr to check in and an Id for the organizer
-     * @param name This is the of name the event
-     * @param location This is the location of the event
-     * @param description This is the description of the event
-     * @param startDate This is the starting date of the event
-     * @param endDate This is the ending date of the event
-     * @param checkInQr This is the of Qr code to check into the event
-     * @param organizerId This is the Id of the organizer of the event
-     */
-    public Event(String name, String location, String description, Date startDate, Date endDate, QrCode checkInQr, String organizerId) {
-        this.name = name;
-        this.location = location;
-        this.description = description;
-        this.attendees = new ArrayList<String>();
-        this.announcements = new ArrayList<Announcement>();
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.checkInQr = checkInQr;
-        this.organizerId = organizerId;
-        currentCapacity = 0;
-        capacity = -1;
-
-        // Generate a unique Id
-        id = UUID.randomUUID().toString();
-
-        // Create a QR Code to direct to the event page (WIP)
-        this.eventQr = new QrCode(1, id, id);
-    }
-
-    /**
-     * This creates an event using a name, location, description, start and end date,
-     *       and an Id for the organizer
-     * @param name This is the of name the event
-     * @param location This is the location of the event
-     * @param description This is the description of the event
-     * @param startDate This is the starting date of the event
-     * @param endDate This is the ending date of the event
-     * @param organizerId This is the Id of the organizer of the event
-     */
-    public Event(String name, String location, String description, Date startDate, Date endDate, String organizerId) {
-        this.name = name;
-        this.location = location;
-        this.description = description;
-        this.attendees = new ArrayList<String>();
-        this.announcements = new ArrayList<Announcement>();
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.checkInQr = checkInQr;
-        this.organizerId = organizerId;
-        currentCapacity = 0;
-        capacity = -1;
-
-        // Generate a unique Id
-        id = UUID.randomUUID().toString();
-
-        // Create a QR Code to direct to the event page (WIP)
-        this.eventQr = new QrCode(1, id, id);
-
-        // Create a QR Code for checking in
-        this.checkInQr = new QrCode(0, id, id);
-    }
-
+    public Event() {}
     /**
      * This function gets the name of the event
      * @return Returns the name of the event
@@ -187,32 +99,6 @@ public class Event implements Serializable {
     public ArrayList<String> getAttendees() {
         return attendees;
     }
-    /**
-     * This function adds the attendees at the event as long as the event is not at capacity
-     * @param attendee The attendee to be added to the event
-     */
-    public boolean addAttendee(String attendee) {
-        if ((capacity > 0) && (currentCapacity >= capacity)) {
-            return false;
-        }
-
-        if (!attendees.contains(attendee)) {
-            attendees.add(attendee);
-            currentCapacity++;
-        }
-
-        return true;
-    }
-    /**
-     * This function removes the attendee at the event
-     * @param attendee The attendee to be removed from the event
-     */
-    public void removeAttendee(String attendee) {
-        if (attendees.contains(attendee)) {
-            attendees.remove(attendee);
-            currentCapacity--;
-        }
-    }
 
     /**
      * This function gets an ArrayList of the announcements at the event
@@ -232,6 +118,9 @@ public class Event implements Serializable {
      * This function gets the start date of the event
      * @return Returns the start date of the event
      */
+    public void setAnnouncements(ArrayList<Announcement> announcements) {
+        this.announcements = announcements;
+    }
     public Date getStartDate() {
         return startDate;
     }
@@ -257,32 +146,33 @@ public class Event implements Serializable {
         this.endDate = endDate;
     }
     /**
-     * This function gets the Qr code to check into the event
-     * @return Returns the Qr code to check into the event
+     * This function gets the created date of the event
+     * @return Returns the created date of the event
      */
-    public QrCode getCheckInQr() {
-        return checkInQr;
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    /**
+     * This function sets the created date of the event
+     * @param createdDate The created date of the event
+     */
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+    /**
+     * This function gets the Qr code Id to check into the event
+     * @return Returns the Qr code Id to check into the event
+     */
+    public String getCheckInQrId() {
+        return checkInQrId;
     }
     /**
      * This function sets the Qr code to check into the event
-     * @param checkInQr The Qr code to check into the event
+     * @param checkInQrId The Qr code Id to check into the event
      */
-    public void setCheckInQr(QrCode checkInQr) {
-        this.checkInQr = checkInQr;
-    }
-    /**
-     * This function gets the Qr code for the event
-     * @return Returns the Qr code for the event
-     */
-    public QrCode getEventQr() {
-        return eventQr;
-    }
-    /**
-     * This function sets the Qr code for the event
-     * @param eventQr The Qr code for the event
-     */
-    public void setEventQr(QrCode eventQr) {
-        this.eventQr = eventQr;
+    public void setCheckInQr(String checkInQrId) {
+        this.checkInQrId = checkInQrId;
     }
     /**
      * This function gets the Id of the organizer of the event
@@ -339,5 +229,20 @@ public class Event implements Serializable {
      */
     public void setCurrentCapacity(int currentCapacity) {
         this.currentCapacity = currentCapacity;
+    }
+    /**
+     * This function gets the active status of the event
+     * @return Returns the active status of the event
+     */
+    public Boolean getActive() {
+        return active;
+    }
+
+    /**
+     * This function sets the active status of the event
+     * @param active The active status of the event
+     */
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
