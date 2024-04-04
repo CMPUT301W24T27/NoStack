@@ -1,6 +1,5 @@
 package com.example.nostack.views.attendee;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,21 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
-import com.example.nostack.models.Event;
-import com.example.nostack.models.Image;
-import com.example.nostack.viewmodels.EventViewModel;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -139,6 +133,8 @@ public class AttendeeEvent extends Fragment {
                 NavHostFragment.findNavController(AttendeeEvent.this).popBackStack();
             }
         });
+
+        view.findViewById(R.id.editButton).setVisibility(View.INVISIBLE);
 
     }
 

@@ -13,7 +13,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,17 +29,8 @@ public class LocationHandler {
     }
 
     public void handleLocationPermissions() {
-//        if (!isLocationEnabled()) {
-//            showLocationSettingsDialog();
-//            return;
-//        }
-//
-//        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-//        }
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity,"Location Permission Granted",Toast.LENGTH_LONG).show();
+            Log.d("LocationServices","Location Permission Granted");
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(activity);
             builder.setMessage("This app would prefer to have location services in order to maximize customer services and features on this app")
@@ -53,7 +43,10 @@ public class LocationHandler {
                             dialog.dismiss();
                         }
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        Log.d("LocationServices","Location Permission Denied");
+                        dialog.dismiss();
+                    });
             builder.show();
         } else {
             ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
