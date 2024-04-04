@@ -214,6 +214,8 @@ public class OrganizerEvent extends Fragment {
                 eventTitle.setText(event.getName() + " (Ended)");
                 view.findViewById(R.id.button_end_event).setClickable(false);
                 view.findViewById(R.id.button_end_event).setAlpha(0.5f);
+                view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
+                view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
                 view.findViewById(R.id.button_end_event).setClickable(true);

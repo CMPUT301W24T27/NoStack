@@ -20,7 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventController {
     private static EventController singleInstance = null;
@@ -197,7 +199,10 @@ public class EventController {
     }
 
     public Task<Void> endEvent(String eventId) {
-        return eventCollectionReference.document(eventId).update("active", false);
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", false);
+        return eventRef.update(updates);
     };
 
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
