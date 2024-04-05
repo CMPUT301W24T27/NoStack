@@ -129,6 +129,7 @@ public class AdminBrowseImages extends Fragment {
         imageTitle.setText(image.getId());
         imageSize.setText(image.getSize() + "bytes");
         imageType.setText(image.getType());
+        imageCreated.setText((image.getCreated()));
 
             String uri = image.getUrl();
 

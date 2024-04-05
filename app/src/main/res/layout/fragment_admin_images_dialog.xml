@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="420dp"
-        android:layout_height="292dp"
+        android:layout_width="434dp"
+        android:layout_height="295dp"
         android:background="@drawable/sign_in_up_background"
         android:backgroundTint="@color/SignUpInMenuColor"
         android:orientation="vertical"

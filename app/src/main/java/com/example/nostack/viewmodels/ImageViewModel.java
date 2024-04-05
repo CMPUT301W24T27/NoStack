@@ -19,7 +19,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
  *  ImageViewModel is a ViewModel class that is used to store and manage state for UI components that require Image data
@@ -97,14 +99,15 @@ public class ImageViewModel extends ViewModel {
                                 storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                     @Override
                                     public void onSuccess(StorageMetadata storageMetadata) {
-                                        // TODO: get the metadata for when image was created
                                         Image image = new Image();
                                         image.setUrl(String.valueOf(storageRef));
                                         image.setPath(String.valueOf(storageRef));
                                         image.setSize(String.valueOf(storageMetadata.getSizeBytes()));
                                         image.setType(storageMetadata.getContentType());
                                         image.setId(storageMetadata.getName());
-                                        //image.setCreated(String.valueOf(storageMetadata.getReference()));
+                                        long millis = storageMetadata.getCreationTimeMillis();
+                                        Date date = new Date(TimeUnit.SECONDS.toMillis(millis));
+                                        image.setCreated(String.valueOf(date));
                                         images.add(image);
                                         //images.add(uri.toString());
                                         Log.d("ImageViewModel - get Images", String.valueOf(uri));

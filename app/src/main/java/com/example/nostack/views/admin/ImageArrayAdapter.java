@@ -81,7 +81,7 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
             imageName.setText(image.getId());
             imageSize.setText(image.getSize() + "bytes");
             imageType.setText(image.getType());
-            //imageCreated.setText(image.getCreated()); TODO: Metadata for when image was created is not set
+            imageCreated.setText(image.getCreated());
             Log.d("ImageArrayAdapter - ImageId", String.valueOf(image.getId()));
 
 //            String uri = image.getUrl();
