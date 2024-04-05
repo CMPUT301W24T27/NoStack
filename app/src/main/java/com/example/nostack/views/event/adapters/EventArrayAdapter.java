@@ -26,7 +26,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     private ConstraintLayout layout;
     private Fragment currFragment;
-    private ArrayList<Event> ourEvents;
+    private static ArrayList<Event> ourEvents;
 
     /**
      * Constructor for the EventArrayAdapter
@@ -62,7 +62,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             add(event);
         }
     }
-    public Event getEvent(int position) {
+    public static Event getEvent(int position) {
         return ourEvents.get(position);
     }
 

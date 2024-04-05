@@ -17,28 +17,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/admin_userDialog"
+            android:id="@+id/admin_eventDialog"
             android:layout_width="125dp"
             android:layout_height="125dp"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/admin_userDialogPhoneNumber"
+            app:layout_constraintEnd_toStartOf="@+id/admin_eventDialogEndDate"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle"
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogTitle"
             app:layout_constraintVertical_bias="0.041"
             app:srcCompat="@drawable/baseline_camera_alt_24" />
 
         <TextView
-            android:id="@+id/admin_userDialogTitle"
+            android:id="@+id/admin_eventDialogTitle"
             android:layout_width="310dp"
             android:layout_height="35dp"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="40dp"
-            android:text="Username"
+            android:text="Event Name"
             android:textAlignment="center"
             android:textColor="@color/SignInUpTextColor"
             android:textSize="30dp"
@@ -49,13 +49,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/admin_userDialogEmail"
+            android:id="@+id/admin_eventDialogStartDate"
             android:layout_width="257dp"
             android:layout_height="72dp"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="20dp"
-            android:text="Email"
+            android:text="StartDate"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="17dp"
@@ -63,17 +63,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.918"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle"
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogTitle"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/admin_userDialogPhoneNumber"
+            android:id="@+id/admin_eventDialogEndDate"
             android:layout_width="230dp"
             android:layout_height="57dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="40dp"
-            android:text="Phone Number"
+            android:text="End Date"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="17dp"
@@ -81,53 +81,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogEmail"
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogStartDate"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/admin_userDialogGender"
-            android:layout_width="187dp"
-            android:layout_height="58dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="68dp"
-            android:text="gender"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.934"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogFirstName"
-            app:layout_constraintVertical_bias="0.111" />
-
-        <TextView
-            android:id="@+id/admin_userDialogUUID"
-            android:layout_width="381dp"
-            android:layout_height="59dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="52dp"
-            android:text="UUID"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textColor="@color/white"
-            android:textSize="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogRole" />
-
-        <TextView
-            android:id="@+id/admin_userDialogFirstName"
+            android:id="@+id/admin_eventDialogLocation"
             android:layout_width="189dp"
             android:layout_height="65dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="116dp"
-            android:text="FirstName"
+            android:text="Location"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -135,16 +100,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialog"
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialog"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/admin_userDialogLastName"
+            android:id="@+id/admin_eventDialogCapacity"
             android:layout_width="189dp"
             android:layout_height="65dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="20dp"
-            android:text="LastName"
+            android:text="Capacity"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="15dp"
@@ -152,18 +117,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.954"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialog"
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialog"
             app:layout_constraintVertical_bias="0.04" />
 
         <TextView
-            android:id="@+id/admin_userDialogRole"
-            android:layout_width="187dp"
-            android:layout_height="58dp"
+            android:id="@+id/admin_eventDialogDescription"
+            android:layout_width="387dp"
+            android:layout_height="110dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="7dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="124dp"
-            android:text="Role"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="76dp"
+            android:text="Description"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="17dp"
@@ -171,38 +136,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogFirstName" />
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogLocation" />
 
         <Button
-            android:id="@+id/admin_amkeAdminUserButton"
+            android:id="@+id/admin_deleteUserButton"
             android:layout_width="191dp"
             android:layout_height="63dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/lightBlue"
-            android:text="Make Admin"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogUUID"
-            app:layout_constraintVertical_bias="0.428" />
-
-        <Button
-            android:id="@+id/admin_deleteImageButton"
-            android:layout_width="191dp"
-            android:layout_height="63dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="@color/red"
             android:text="Delete"
             android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/admin_deleteUserButton"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

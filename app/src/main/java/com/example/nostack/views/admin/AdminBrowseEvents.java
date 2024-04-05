@@ -1,21 +1,32 @@
 package com.example.nostack.views.admin;
 
+import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.User;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -87,15 +98,58 @@ public class AdminBrowseEvents extends Fragment {
 
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = eventArrayAdapter.getItem(position);
-                eventViewModel.fetchEvent(event.getId());
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);
-
-                NavHostFragment.findNavController(AdminBrowseEvents.this)
-                        .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                showDialog(EventArrayAdapter.getEvent(position));
+                Toast.makeText(getActivity(), "the item was at position: " + position , Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void showDialog(Event event){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.fragment_admin_events_dialog);
+        dialog.show();
+
+        ImageView eventBanner = dialog.findViewById(R.id.admin_eventDialog);
+        TextView eventTitle = dialog.findViewById(R.id.admin_eventDialogTitle);
+        TextView eventStartDate = dialog.findViewById(R.id.admin_eventDialogStartDate);
+        TextView eventEndDate = dialog.findViewById(R.id.admin_eventDialogEndDate);
+        TextView eventLocation = dialog.findViewById(R.id.admin_eventDialogLocation);
+        TextView eventCapacity = dialog.findViewById(R.id.admin_eventDialogCapacity);
+        TextView eventDescription = dialog.findViewById(R.id.admin_eventDialogDescription);
+
+
+        if (event.getName() != null){
+            eventTitle.setText(event.getName());
+        } else {
+            eventTitle.setText("Event Name: N/A");
+        }
+        eventStartDate.setText("StartDate: " + event.getStartDate());
+        eventEndDate.setText("End Date: " + event.getEndDate());
+        eventLocation.setText("Location: " + event.getLocation());
+        if (event.getCapacity() > 0){
+            eventCapacity.setText("Capacity: " + event.getCapacity());
+        } else {
+            eventCapacity.setText("Capacity: N/A");
+        }
+        eventDescription.setText("Description: " + event.getDescription());
+
+        String uri = event.getEventBannerImgUrl();
+
+        if (uri != null) {
+            Log.w("User Profile - uri not null", uri);
+            // Get image from firebase storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
+                d.setCornerRadius(50f);
+                eventBanner.setImageDrawable(d);
+            }).addOnFailureListener(exception -> {
+                Log.w("User Profile", "Error getting User banner", exception);
+            });
+        }
     }
 }

@@ -150,6 +150,7 @@ public class AdminBrowseProfiles extends Fragment {
         String uri = user.getProfileImageUrl();
 
         if (uri != null) {
+            Log.w("User Profile - uri not null", uri);
             // Get image from firebase storage
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
             final long ONE_MEGABYTE = 1024 * 1024;
@@ -161,7 +162,7 @@ public class AdminBrowseProfiles extends Fragment {
                 d.setCornerRadius(50f);
                 userBanner.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
-                Log.w("Image Profile", "Error getting Image banner", exception);
+                Log.w("User Profile", "Error getting User banner", exception);
             });
         }
     }
