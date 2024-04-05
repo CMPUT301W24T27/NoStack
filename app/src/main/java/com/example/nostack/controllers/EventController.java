@@ -19,7 +19,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventController {
     private static EventController singleInstance = null;
@@ -27,6 +30,7 @@ public class EventController {
     private final CollectionReference eventCollectionReference = FirebaseFirestore.getInstance().collection("events");
     private final CollectionReference attendanceCollectionReference = FirebaseFirestore.getInstance().collection("attendance");
     private final AttendanceController attendanceController = AttendanceController.getInstance();
+    private final QrCodeController qrCodeController = QrCodeController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
     public static EventController getInstance() {
@@ -48,6 +52,7 @@ public class EventController {
     public Task<QuerySnapshot> getOrganizerEvents(String organizerId) {
         return eventCollectionReference
                 .whereEqualTo("organizerId", organizerId)
+                .orderBy("startDate", Query.Direction.ASCENDING)
                 .get();
     }
 
@@ -76,12 +81,20 @@ public class EventController {
 
         return db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            String eventName = eventSnapshot.getString("name");
+            Boolean isActive = eventSnapshot.getBoolean("active");
+            Date endDate = eventSnapshot.getDate("endDate");
+            Date currentDate = new Date();
+            if (isActive == null || !isActive || endDate.before(currentDate)) {
+                throw new RuntimeException("The event " + eventName+  " is no longer active or has already ended.");
+            }
+
             long maxCap = eventSnapshot.getLong("capacity");
             long currCap = eventSnapshot.getLong("currentCapacity");
             List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
             if ((maxCap > 0) && (currCap >= maxCap)) {
-                throw new RuntimeException("The event is at full capacity.");
+                throw new RuntimeException("The event" +eventName+" is at full capacity.");
             }
 
             if (attendees != null && attendees.contains(userId)) {
@@ -95,7 +108,10 @@ public class EventController {
             if (task.isSuccessful()) {
                 return attendanceController.createAttendance(userId, eventId, null);
             } else {
-                throw new RuntimeException("Failed to create attendance.");
+                Exception e = task.getException();
+                String errorMessage = e != null ? e.getMessage() : "Unknown error";
+                throw new RuntimeException("(Failed to create attendance) " + errorMessage);
+
             }
         }).addOnSuccessListener(aVOid -> {
             Log.d("Event Controller", "Successfully registered user.");
@@ -141,6 +157,14 @@ public class EventController {
             }
 
             DocumentSnapshot eventSnapshot = task.getResult();
+            String eventName = eventSnapshot.getString("name");
+            Boolean isActive = eventSnapshot.getBoolean("active");
+            Date endDate = eventSnapshot.getDate("endDate");
+            Date currentDate = new Date();
+            if (isActive == null || !isActive || endDate.before(currentDate)) {
+                throw new RuntimeException("The event " + eventName+  " is no longer active or has already ended.");
+            }
+
             List<String> attendees = (List<String>) eventSnapshot.get("attendees");
 
             if (attendees != null && attendees.contains(userId)) {
@@ -174,6 +198,12 @@ public class EventController {
                 .addOnFailureListener(e -> Log.e("EventController", "Failed to remove event image.", e));
     }
 
+    public Task<Void> endEvent(String eventId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", false);
+        return eventRef.update(updates);
+    };
 
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
     public Task<Void> deleteEvent(String eventId) {

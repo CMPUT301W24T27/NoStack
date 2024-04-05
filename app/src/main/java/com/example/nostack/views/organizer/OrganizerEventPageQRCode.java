@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
+import com.example.nostack.services.QrCodeImageGenerator;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -42,33 +43,9 @@ public class OrganizerEventPageQRCode extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private String mParam2;
-    private final Integer QR_CODE_DIMENSION = 500;
 
     public OrganizerEventPageQRCode() {
         // Required empty public constructor
-    }
-
-    public Uri getImageUri(Bitmap bitmap) {
-        File cachePath = new File(getContext().getCacheDir(), "images");
-        cachePath.mkdirs();
-        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        File imagePath = new File(getContext().getCacheDir(), "images");
-        File newFile = new File(imagePath, "image.png");
-        return FileProvider.getUriForFile(getContext(), "com.example.nostack.provider", newFile);
-    }
-
-    public void shareImageUri(Uri imageUri, Context context) {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.setType("image/png");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
     }
 
     /**
@@ -119,27 +96,9 @@ public class OrganizerEventPageQRCode extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_event_page_q_r_code, container, false);
 
-        QrCode qrCode = event.getEventQr();
-        String qrCodeText = qrCode.getType() + "." + qrCode.getCode();
-        Bitmap bitmap;
-        MultiFormatWriter writer = new MultiFormatWriter();
-        Bitmap bmp = null;
-        try {
-            BitMatrix bitMatrix = writer.encode(qrCodeText, BarcodeFormat.QR_CODE, QR_CODE_DIMENSION, QR_CODE_DIMENSION);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF); // Black and white colors
-                }
-            }
-        } catch (WriterException e) {
-            Log.e("QRCodeWriter", "Unable to generate QR code... " + e);
-        }
-
+        String qrCodeText = "1" + "." + event.getId();
+        Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
         ImageView qrCodeImageView = view.findViewById(R.id.OrganizerEventQRImage);
-        Bitmap qrBmp = bmp;
         qrCodeImageView.setImageBitmap(bmp);
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
@@ -152,7 +111,7 @@ public class OrganizerEventPageQRCode extends Fragment {
         view.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri imageUri = getImageUri(qrBmp);
+                Uri imageUri = getImageUri(bmp);
 
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
@@ -165,4 +124,28 @@ public class OrganizerEventPageQRCode extends Fragment {
 
         return view;
     }
+
+    public Uri getImageUri(Bitmap bitmap) {
+        File cachePath = new File(getContext().getCacheDir(), "images");
+        cachePath.mkdirs();
+        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File imagePath = new File(getContext().getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        return FileProvider.getUriForFile(getContext(), "com.example.nostack.provider", newFile);
+    }
+
+    public void shareImageUri(Uri imageUri, Context context) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/png");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
+    }
+
 }

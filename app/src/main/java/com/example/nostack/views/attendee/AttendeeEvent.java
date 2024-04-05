@@ -11,21 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
-import com.example.nostack.models.Event;
-import com.example.nostack.models.Image;
-import com.example.nostack.viewmodels.EventViewModel;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -104,29 +99,42 @@ public class AttendeeEvent extends Fragment {
         eventViewModel.fetchEvent(event.getId());
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             this.event = event;
+            updateScreenInformation(view);
         });
 
-        updateScreenInformation(view);
         Button register = view.findViewById(R.id.AttendeeEventRegisterButton);
         register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (event.getAttendees() != null && event.getAttendees().contains(currentUserHandler.getCurrentUserId())) {
-                    eventViewModel.unregisterToEvent(currentUserHandler.getCurrentUserId(), event.getId());
-                    Snackbar.make(getView(), "Unregistered from event", Snackbar.LENGTH_LONG).show();
-                    register.setText("Register");
+                    eventViewModel.unregisterToEvent(currentUserHandler.getCurrentUserId(), event.getId())
+                            .addOnSuccessListener(aVoid -> {
+                                eventViewModel.fetchEvent(event.getId());
+                                Snackbar.make(getView(), "Unregistered from event", Snackbar.LENGTH_LONG).show();
+                                register.setText("Register");
+                        }).addOnFailureListener(e -> {
+                            Log.e("EventViewModel", "Error unregistering to event", e);
+                        });
                 } else {
-                    eventViewModel.registerToEvent(currentUserHandler.getCurrentUserId(), event.getId());
-                    Snackbar.make(getView(), "Registered for event", Snackbar.LENGTH_LONG).show();
-                    register.setText("Unregister");
+                    eventViewModel.registerToEvent(currentUserHandler.getCurrentUserId(), event.getId())
+                            .addOnSuccessListener(aVoid -> {
+                                eventViewModel.fetchEvent(event.getId());
+                                Snackbar.make(getView(), "Succesfully registered to event", Snackbar.LENGTH_LONG).show();
+                                register.setText("Unregister");
+                            }).addOnFailureListener(e -> {
+                                Snackbar.make(getView(), "Error registering to event: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                Log.e("EventViewModel", "Error registering to event", e);
+                            });
                 }
             }
-        });
+});
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 NavHostFragment.findNavController(AttendeeEvent.this).popBackStack();
             }
         });
+
+        view.findViewById(R.id.editButton).setVisibility(View.INVISIBLE);
 
     }
 
@@ -143,6 +151,8 @@ public class AttendeeEvent extends Fragment {
 
         if (event.getAttendees() != null && event.getAttendees().contains(currentUserHandler.getCurrentUserId())) {
             register.setText("Unregister");
+        } else {
+            register.setText("Register");
         }
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.CANADA);
@@ -161,12 +171,22 @@ public class AttendeeEvent extends Fragment {
             eventStartTime.setText(startTime + " - " + endTime);
         }
 
-        eventTitle.setText(event.getName());
+        if (event.getActive() == null || !event.getActive()) {
+            eventTitle.setText(event.getName() + " (Ended)");
+        } else {
+            eventTitle.setText(event.getName());
+        }
         Log.d("AttendeeEvent", "EventMSG" + event.getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
-        eventAttendees.setText("Attendees: " + event.getAttendees().size());
         imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
         imageViewHandler.setEventImage(event, eventImage);
+
+        if (event.getAttendees() != null) {
+            eventAttendees.setText("Attending: " + event.getAttendees().size());
+        } else {
+            eventAttendees.setText("Attending: 0");
+        }
+
     }
 }

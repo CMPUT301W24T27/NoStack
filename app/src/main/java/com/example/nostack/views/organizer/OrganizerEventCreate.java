@@ -32,8 +32,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
 import com.example.nostack.viewmodels.EventViewModel;
+import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -46,6 +48,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,15 +81,16 @@ public class OrganizerEventCreate extends Fragment {
     private TextInputEditText eventLimitEditText;
     private TextInputEditText eventDescEditText;
     private Button createButton;
-    private boolean isUnlimited;
     private CheckBox eventReuseQrCheckBox;
     private ImageView eventImageView;
     private SharedPreferences preferences;
     private SwitchCompat unlimitedButton;
-    private String userUUID;
     private ActivityResultLauncher<String> imagePickerLauncher;
     private EventViewModel eventViewModel;
+    private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
+    private Boolean isEditing;
+    private Boolean isUnlimited;
 
     public OrganizerEventCreate() {
         // Required empty public constructor
@@ -118,6 +123,7 @@ public class OrganizerEventCreate extends Fragment {
         }
 
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
+        qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageUploader = new ImageUploader();
         currentUserHandler = CurrentUserHandler.getSingleton();
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
@@ -127,6 +133,9 @@ public class OrganizerEventCreate extends Fragment {
                 eventImageView.setImageURI(o);
             }
         });
+
+        // Prefetch reusable QR codes
+        qrCodeViewModel.fetchInactiveQrCodes();
     }
 
     @Override
@@ -171,6 +180,26 @@ public class OrganizerEventCreate extends Fragment {
                         && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)) {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
                 } else {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d hh:mm");
+                    try {
+                        Date startDate = formatter.parse(eventStartEditText.getText().toString());
+                        Date endDate = formatter.parse(eventEndEditText.getText().toString());
+                        Date currentTime = new Date();
+
+                        if (endDate.before(startDate)) {
+                            eventEndEditText.setError("Event end date/time must be after start date/time");
+                            return;
+                        } else if (endDate.before(currentTime)) {
+                            eventEndEditText.setError("Event end date/time must be in the future");
+                            return;
+                        }
+
+                    } catch (ParseException e){
+                        eventStartEditText.setError("Invalid date/time format");
+                        eventEndEditText.setError("Invalid date/time format");
+                        return;
+                    }
+
                     Event event = createEvent();
                     Uri eventBannerUri;
                     try {
@@ -194,8 +223,18 @@ public class OrganizerEventCreate extends Fragment {
                         }
                     });
 
-                    eventViewModel.addEvent(event, compressedImageUri);
-                    NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                    if (isEditing) {
+                        eventViewModel.updateEvent(event, compressedImageUri);
+                    } else {
+                        Boolean reuse = eventReuseQrCheckBox.isChecked();
+                        if (reuse) {
+                            eventViewModel.setEventWithReuse(event, compressedImageUri);
+                            NavHostFragment.findNavController(OrganizerEventCreate.this).navigate(R.id.action_organizerEventCreate_to_organizerReuseQr);
+                        } else {
+                            eventViewModel.addEvent(event, false, compressedImageUri);
+                            NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                        }
+                    }
                 }
             }
         });
@@ -264,6 +303,7 @@ public class OrganizerEventCreate extends Fragment {
         Event newEvent = null;
         try {
             if(event != null){
+                isEditing = true;
                 newEvent = event;
                 newEvent.setName(eventTitleEditText.getText().toString());
                 newEvent.setLocation(eventLocationEditText.getText().toString());
@@ -272,14 +312,17 @@ public class OrganizerEventCreate extends Fragment {
                 newEvent.setEndDate(formatter.parse(endDateString));
             }
             else {
-                newEvent = new Event(
-                        eventTitleEditText.getText().toString(),
-                        eventLocationEditText.getText().toString(),
-                        eventDescEditText.getText().toString(),
-                        formatter.parse(startDateString),
-                        formatter.parse(endDateString),
-                        currentUserHandler.getCurrentUserId()
-                );
+                isEditing = false;
+                newEvent = new Event();
+                newEvent.setId(UUID.randomUUID().toString());
+                newEvent.setName(eventTitleEditText.getText().toString());
+                newEvent.setLocation(eventLocationEditText.getText().toString());
+                newEvent.setDescription(eventDescEditText.getText().toString());
+                newEvent.setStartDate(formatter.parse(startDateString));
+                newEvent.setEndDate(formatter.parse(endDateString));
+                newEvent.setOrganizerId(currentUserHandler.getCurrentUserId());
+                newEvent.setCurrentCapacity(0);
+                newEvent.setActive(true);
             }
 
             if (eventLimitEditText.getText() != null && !eventLimitEditText.getText().toString().isEmpty()) {
@@ -288,7 +331,6 @@ public class OrganizerEventCreate extends Fragment {
             } else {
                 newEvent.setCapacity(-1);
             }
-
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -340,7 +382,7 @@ public class OrganizerEventCreate extends Fragment {
                 eventLimitEditText.setText(String.valueOf(event.getCapacity()));
                 unlimitedButton.setTextColor(Color.GRAY);
             }
-
+            eventReuseQrCheckBox.setVisibility(View.GONE);
             eventCreationTitle.setText("Edit Event");
             createButton.setText("Update Event");
         }

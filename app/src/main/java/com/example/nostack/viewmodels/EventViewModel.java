@@ -3,6 +3,7 @@ package com.example.nostack.viewmodels;
 import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -11,23 +12,29 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.controllers.ImageController;
+import com.example.nostack.controllers.QrCodeController;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 
 public class EventViewModel extends ViewModel {
     private final MutableLiveData<List<Event>> allEventsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Event>> attendeeEventsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Event>> organizerEventsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Pair<Event, Uri>> eventWithReuse = new MutableLiveData<>();
     private final MutableLiveData<Event> eventLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final EventController eventController = EventController.getInstance();
     private final ImageController imageController = ImageController.getInstance();
+    private final QrCodeController qrCodeController = QrCodeController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
     public LiveData<String> getErrorLiveData() {
@@ -119,8 +126,43 @@ public class EventViewModel extends ViewModel {
         return organizerEventsLiveData;
     }
 
-    public void addEvent(Event event, @Nullable Uri imageUri) {
+    public void addEvent(Event event, Boolean reuseQr, @Nullable Uri imageUri) {
+        event.setCreatedDate(new Date());
+        Runnable addEventRunnable = () -> {
+            if (!reuseQr) {
+                QrCode qrCode = new QrCode(event.getId());
+                qrCodeController.addQrCode(qrCode)
+                        .addOnSuccessListener(aVoid -> {
+                          event.setCheckInQr(qrCode.getId());
+                            addEventToFirestore(event);
+                        }).addOnFailureListener(e -> {
+                            Log.e("EventViewModel", "Error adding qr code", e);
+                            errorLiveData.postValue(e.getMessage());
+                        });
+            } else {
+                addEventToFirestore(event);
+            }
+        };
 
+        if (imageUri != null) {
+            String storagePath = "event/banner";
+            imageController.addImage(storagePath, imageUri)
+                    .addOnSuccessListener(imageUrl -> {
+                        event.setEventBannerImgUrl(imageUrl);
+                        addEventRunnable.run();
+                    }).addOnFailureListener(e -> {
+                        Log.e("EventViewModel", "Error uploading image", e);
+                        errorLiveData.postValue(e.getMessage());
+                    });
+        } else {
+            addEventRunnable.run();
+        }
+        setEventWithReuse(null, null);
+        fetchEvent(event.getId());
+    }
+
+    public void updateEvent(Event event, @Nullable Uri imageUri) {
+        event.setCreatedDate(new Date());
         Runnable addEventRunnable = () -> eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
@@ -145,18 +187,8 @@ public class EventViewModel extends ViewModel {
         } else {
             addEventRunnable.run();
         }
-    }
 
-    public void updateEvent(Event event) {
-        eventController.updateEvent(event)
-                .addOnSuccessListener(a -> {
-                    String userId = currentUserHandler.getCurrentUserId();
-                    fetchAllEvents();
-                    fetchOrganizerEvents(userId);
-                }).addOnFailureListener( e-> {
-                    Log.e("EventViewModel", "Error updating event", e);
-                    errorLiveData.postValue(e.getMessage());
-                });
+        fetchEvent(event.getId());
     }
 
     public void deleteEvent(String eventId) {
@@ -167,37 +199,75 @@ public class EventViewModel extends ViewModel {
                 });
     }
 
-    public void registerToEvent(String userId, String eventId) {
-        eventController.registerToEvent(eventId, userId)
+    public Task<Void> registerToEvent(String userId, String eventId) {
+        return eventController.registerToEvent(eventId, userId);
+    }
+
+    public Task<Void> unregisterToEvent(String userId, String eventId) {
+        return eventController.unregisterToEvent(eventId, userId);
+    }
+
+    public Task<Void> eventCheckIn(String userId, String eventId, @Nullable Location location) {
+        return eventController.eventCheckIn(userId, eventId, location);
+    }
+
+    public void endEvent(String eventId, String userId) {
+        eventController.endEvent(eventId)
                 .addOnSuccessListener(aVoid -> {
-                    fetchAttendeeEvents(userId);
                     fetchEvent(eventId);
+                    fetchOrganizerEvents(userId);
+                    qrCodeController.deactivateQrCodeByEventId(eventId)
+                            .addOnSuccessListener(a -> {
+                                Log.d("EventViewModel", "Successfully deactivated qr code");
+                            }).addOnFailureListener(e -> {
+                                Log.e("EventViewModel", "Error deactivating qr code", e);
+                                errorLiveData.postValue(e.getMessage());
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("EventViewModel", "Error registering to event", e);
+                    Log.e("EventViewModel", "Error ending event", e);
                     errorLiveData.postValue(e.getMessage());
                 });
     }
 
-    public void unregisterToEvent(String userId, String eventId) {
-        eventController.unregisterToEvent(eventId, userId)
-                .addOnSuccessListener(aVoid -> {
-                    fetchAttendeeEvents(userId);
-                    fetchEvent(eventId);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("EventViewModel", "Error unregistering to event", e);
+    public void setEventWithReuse(Event event, @Nullable Uri uri) {
+        Pair<Event, Uri> pair = new Pair<>(event, uri);
+        eventWithReuse.postValue(pair);
+    }
+
+    public LiveData<Pair<Event, Uri>> getEventWithReuse() {
+        return eventWithReuse;
+    }
+
+    public void addEventWithReuse() {
+        addEvent(eventWithReuse.getValue().first, true, eventWithReuse.getValue().second);
+        qrCodeController.reuseQrCode(eventWithReuse.getValue().first.getId(), eventWithReuse.getValue().first.getCheckInQrId())
+                .addOnSuccessListener(a -> {
+                    Log.d("EventViewModel", "Successfully reused qr code");
+                }).addOnFailureListener(e -> {
+                    Log.e("EventViewModel", "Error reusing qr code", e);
                     errorLiveData.postValue(e.getMessage());
                 });
     }
 
-    public void eventCheckIn(String userId, String eventId, @Nullable Location location) {
-        eventController.eventCheckIn(userId, eventId, location)
-                .addOnSuccessListener(aVoid -> {
-                    fetchAttendeeEvents(userId);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("EventViewModel", "Error checking in to event", e);
+    public void updateEventWithReuse(String qrCodeId) {
+        Pair<Event, Uri> currentPair = eventWithReuse.getValue();
+        if (currentPair != null) {
+            Event currentEvent = currentPair.first;
+            currentEvent.setCheckInQr(qrCodeId);
+            Pair<Event, Uri> updatedPair = new Pair<>(currentEvent, currentPair.second);
+            eventWithReuse.postValue(updatedPair);
+        }
+    }
+
+    private void addEventToFirestore(Event event) {
+        eventController.addEvent(event)
+                .addOnSuccessListener(a -> {
+                    String userId = currentUserHandler.getCurrentUserId();
+                    fetchAllEvents();
+                    fetchOrganizerEvents(userId);
+                }).addOnFailureListener( e-> {
+                    Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());
                 });
     }
