@@ -73,6 +73,9 @@
         <action
             android:id="@+id/action_organizerEventCreate_to_organizerHome"
             app:destination="@id/organizerHome" />
+        <action
+            android:id="@+id/action_organizerEventCreate_to_organizerReuseQr"
+            app:destination="@id/organizerReuseQr" />
     </fragment>
     <fragment
         android:id="@+id/organizerViewEvent"
@@ -154,6 +157,11 @@
         android:name="com.example.nostack.views.organizer.OrganizerEventPageQRCode"
         android:label="fragment_organizer_event_page_q_r_code"
         tools:layout="@layout/fragment_organizer_event_page_q_r_code" />
+    <fragment
+        android:id="@+id/organizerReuseQr"
+        android:name="com.example.nostack.views.organizer.OrganizerReuseQr"
+        android:label="fragment_organizer_reuse_qr"
+        tools:layout="@layout/fragment_organizer_reuse_qr" />
 
 
 </navigation>
