@@ -3,15 +3,18 @@ package com.example.nostack.viewmodels;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.nostack.controllers.ImageController;
 import com.example.nostack.models.Image;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -88,29 +91,38 @@ public class ImageViewModel extends ViewModel {
                         @Override
                         public void onSuccess(Uri uri) {
                             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(String.valueOf(uri));
-                            Image image = new Image();
-                            image.setUrl(String.valueOf(storageRef));
-                            image.setPath(String.valueOf(storageRef));
-                            image.setId(String.valueOf((storageRef)));
-                            images.add(image);
-                            //images.add(uri.toString());
-                            Log.d("ImageViewModel - get Images", String.valueOf(uri));
-                            Log.d("ImageViewModel - Image", String.valueOf(image));
-                            Log.d("ImageViewModel - Image", String.valueOf(images.size()));
+                            storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                @Override
+                                public void onSuccess(StorageMetadata storageMetadata) {
+                                    // TODO: get the metadata for when image was created
+                                    Image image = new Image();
+                                    image.setUrl(String.valueOf(storageRef));
+                                    image.setPath(String.valueOf(storageRef));
+                                    image.setId(String.valueOf((storageRef)));
+                                    image.setSize(String.valueOf(storageMetadata.getSizeBytes()));
+                                    image.setType(storageMetadata.getContentType());
+                                    //image.setCreated(String.valueOf(storageMetadata.getReference()));
+                                    images.add(image);
+                                    //images.add(uri.toString());
+                                    Log.d("ImageViewModel - get Images", String.valueOf(uri));
+                                    Log.d("ImageViewModel - Image", String.valueOf(image));
+                                    Log.d("ImageViewModel - Image", String.valueOf(images.size()));
 
-                            // Check if all images are fetched, then update LiveData
-                            if (images.size() == listResult.getItems().size()) {
-                                allImagesLiveData.postValue(images);
-                                Log.d("ImageViewModel - LiveData", String.valueOf(allImagesLiveData.getValue()));
-                            }
+                                    // Check if all images are fetched, then update LiveData
+                                    if (images.size() == listResult.getItems().size()) {
+                                        allImagesLiveData.postValue(images);
+                                        Log.d("ImageViewModel - LiveData", String.valueOf(allImagesLiveData.getValue()));
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Uh-oh, an error occurred!
+                                }
+                            });
                         }
-                        //allImagesLiveData.postValue(images);
                     });
-//                  allImagesLiveData.postValue(images);
-//                  Log.d("ImageViewModel - Livedata", String.valueOf(allImagesLiveData.getValue()));
                 }
-//                allImagesLiveData.postValue(images);
-//                Log.d("ImageViewModel - Livedata", String.valueOf(allImagesLiveData.getValue()));
             }
         });
 //                } -> {

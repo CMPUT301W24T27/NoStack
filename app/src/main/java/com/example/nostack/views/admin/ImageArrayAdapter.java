@@ -68,13 +68,16 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
         Log.d("ImageArrayAdapter - Image", String.valueOf(image));
 
         TextView imageName = view.findViewById(R.id.ImageListContentNameText);
-//        TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
-//        TextView imageCreated = view.findViewById(R.id.ImageListContentCreatedText);
-//        TextView imageType = view.findViewById(R.id.ImageListContentTypeText);
+        TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
+        TextView imageCreated = view.findViewById(R.id.ImageListContentCreatedText);
+        TextView imageType = view.findViewById(R.id.ImageListContentTypeText);
 
         if (image != null) {
 
             imageName.setText(image.getId());
+            imageSize.setText(image.getSize() + "bytes");
+            imageType.setText(image.getType());
+            //imageCreated.setText(image.getCreated()); TODO: Metadata for when image was created is not set
             Log.d("ImageArrayAdapter - ImageId", String.valueOf(image.getId()));
 //            profileEmail.setText(user.getEmailAddress());
 //            profilePhoneNumber.setText(user.getPhoneNumber());
