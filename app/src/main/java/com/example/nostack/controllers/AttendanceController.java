@@ -5,11 +5,9 @@ import android.location.Location;
 import androidx.annotation.Nullable;
 
 import com.example.nostack.handlers.CurrentUserHandler;
-import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.GeoLocation;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -73,5 +71,11 @@ public class AttendanceController {
 
     public Task<Void> deleteAttendance(String attendanceId) {
         return attendanceCollectionReference.document(attendanceId).delete();
+    }
+
+    public Task<QuerySnapshot> getPresentAttendance(String eventId) {
+        return attendanceCollectionReference
+                .whereEqualTo("eventId", eventId).whereGreaterThan("numCheckIn", 0)
+                .get();
     }
 }

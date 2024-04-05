@@ -18,6 +18,7 @@ import java.util.List;
 
 public class AttendanceViewModel extends ViewModel {
     private final MutableLiveData<List<Attendance>> attendanceByEventLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Attendance>> presentAttLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final EventController eventController = EventController.getInstance();
     private final AttendanceController attendanceController = AttendanceController.getInstance();
@@ -45,8 +46,27 @@ public class AttendanceViewModel extends ViewModel {
                     errorLiveData.postValue(e.getMessage());
                 });
     }
-
     public LiveData<List<Attendance>> getAttendanceByEvent() {
         return attendanceByEventLiveData;
+    }
+
+    public void fetchPresentAttByEvent(String eventId) {
+        attendanceController.getPresentAttendance(eventId)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Attendance> attendances = new ArrayList<>();
+                for (DocumentSnapshot document:queryDocumentSnapshots) {
+                    Attendance attendance = document.toObject(Attendance.class);
+                    attendances.add(attendance);
+                    Log.d("AttendanceViewModel", document.toObject(Attendance.class).getEventId());
+                }
+                presentAttLiveData.postValue(attendances);
+            }).addOnFailureListener(e -> {
+                Log.e("AttendanceViewModel", "Error fetching events", e);
+                errorLiveData.postValue(e.getMessage());
+            });
+    }
+
+    public LiveData<List<Attendance>> getPresentAttByEvent() {
+        return presentAttLiveData;
     }
 }

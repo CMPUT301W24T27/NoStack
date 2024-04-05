@@ -18,6 +18,7 @@ public class User {
     private String role;
     private String uuid;
     private String profileImageUrl;
+    private String fcmToken;
 
     /**
      * Get the role of the user
@@ -175,6 +176,24 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
         Log.d("User", "Profile image URL: " + profileImageUrl);
+    }
+
+    /**
+    * Returns the Firebase Cloud Messaging (FCM) token for this user.
+    *
+    * @return The FCM token for this user.
+    */
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    /**`
+    * Sets the Firebase Cloud Messaging (FCM) token for this user.
+    *
+    * @param fcmToken The FCM token to set for this user.
+    */
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     /**

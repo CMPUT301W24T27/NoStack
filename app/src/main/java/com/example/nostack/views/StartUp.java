@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Profile;
 import com.example.nostack.models.User;
@@ -42,6 +43,7 @@ public class StartUp extends Fragment {
 
     private Profile profile;
     private AlertDialog dialog;
+    private CurrentUserHandler currentUserHandler;
 
     public StartUp() {
         // Required empty public constructor

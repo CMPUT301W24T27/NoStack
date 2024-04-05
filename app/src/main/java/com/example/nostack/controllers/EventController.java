@@ -111,7 +111,6 @@ public class EventController {
                 Exception e = task.getException();
                 String errorMessage = e != null ? e.getMessage() : "Unknown error";
                 throw new RuntimeException("(Failed to create attendance) " + errorMessage);
-
             }
         }).addOnSuccessListener(aVOid -> {
             Log.d("Event Controller", "Successfully registered user.");
@@ -174,7 +173,9 @@ public class EventController {
                 // registers them.
                 return registerToEvent(eventId, userId).continueWithTask(registerTask -> {
                     if (!registerTask.isSuccessful()) {
-                        throw new RuntimeException("Failed to register for the event before checking in.");
+                        Exception e = task.getException();
+                        String errorMessage = e != null ? e.getMessage() : "Unknown error";
+                        throw new RuntimeException(errorMessage);
                     }
                     return attendanceController.attendanceCheckIn(Attendance.buildAttendanceId(eventId, userId), location);
                 });
