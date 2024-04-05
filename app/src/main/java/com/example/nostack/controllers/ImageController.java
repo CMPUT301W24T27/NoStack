@@ -34,11 +34,10 @@ public class ImageController {
     public ImageController() {
     }
 
-    public Task<ListResult> getAllImages() {
+    public Task<ListResult> getAllImages(String path) {
 
-        String eventStoragePath = "event/banner";
-        String userStoragePath = "user/profile";
-        StorageReference storageRef = storage.getReference(eventStoragePath);
+        String storagePath = path;
+        StorageReference storageRef = storage.getReference(storagePath);
         Log.d("ImageController - get all Images", storageRef.listAll().toString());
         return storageRef.listAll();
     }

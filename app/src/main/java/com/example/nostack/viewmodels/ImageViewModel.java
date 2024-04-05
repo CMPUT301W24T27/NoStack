@@ -18,6 +18,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -81,65 +82,53 @@ public class ImageViewModel extends ViewModel {
 //    }
 
     public void fetchAllImages(){
-        imageController.getAllImages().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            List<Image> images = new ArrayList<>();
-            @Override
-            public void onSuccess(ListResult listResult) {
-                Log.d("ImageViewModel - get from listResult", listResult.toString());
-                for (StorageReference fileRef : listResult.getItems()) {
-                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(String.valueOf(uri));
-                            storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                                @Override
-                                public void onSuccess(StorageMetadata storageMetadata) {
-                                    // TODO: get the metadata for when image was created
-                                    Image image = new Image();
-                                    image.setUrl(String.valueOf(storageRef));
-                                    image.setPath(String.valueOf(storageRef));
-                                    image.setId(String.valueOf((storageRef)));
-                                    image.setSize(String.valueOf(storageMetadata.getSizeBytes()));
-                                    image.setType(storageMetadata.getContentType());
-                                    //image.setCreated(String.valueOf(storageMetadata.getReference()));
-                                    images.add(image);
-                                    //images.add(uri.toString());
-                                    Log.d("ImageViewModel - get Images", String.valueOf(uri));
-                                    Log.d("ImageViewModel - Image", String.valueOf(image));
-                                    Log.d("ImageViewModel - Image", String.valueOf(images.size()));
+        List<String> paths = Arrays.asList("event/banner","user/profile");
+        List<Image> images = new ArrayList<>();
+        for (String path : paths){
+            imageController.getAllImages(path).addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                @Override
+                public void onSuccess(ListResult listResult) {
+                    Log.d("ImageViewModel - get from listResult", listResult.toString());
+                    for (StorageReference fileRef : listResult.getItems()) {
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(String.valueOf(uri));
+                                storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                    @Override
+                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                        // TODO: get the metadata for when image was created
+                                        Image image = new Image();
+                                        image.setUrl(String.valueOf(storageRef));
+                                        image.setPath(String.valueOf(storageRef));
+                                        image.setSize(String.valueOf(storageMetadata.getSizeBytes()));
+                                        image.setType(storageMetadata.getContentType());
+                                        image.setId(storageMetadata.getName());
+                                        //image.setCreated(String.valueOf(storageMetadata.getReference()));
+                                        images.add(image);
+                                        //images.add(uri.toString());
+                                        Log.d("ImageViewModel - get Images", String.valueOf(uri));
+                                        Log.d("ImageViewModel - Image", String.valueOf(image));
+                                        Log.d("ImageViewModel - Image", String.valueOf(images.size()));
 
-                                    // Check if all images are fetched, then update LiveData
-                                    if (images.size() == listResult.getItems().size()) {
-                                        allImagesLiveData.postValue(images);
-                                        Log.d("ImageViewModel - LiveData", String.valueOf(allImagesLiveData.getValue()));
+                                        // Check if all images are fetched, then update LiveData
+                                        if (images.size() == listResult.getItems().size()) {
+                                            allImagesLiveData.postValue(images);
+                                            Log.d("ImageViewModel - LiveData", String.valueOf(allImagesLiveData.getValue()));
+                                        }
                                     }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Uh-oh, an error occurred!
-                                }
-                            });
-                        }
-                    });
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
-            }
-        });
-//                } -> {
-//                    List<Image> images = new ArrayList<>();
-//                    for (ListResult listResult:ListResult) {
-//                        Image image = document.toObject(Image.class);
-//                        Log.d("ImageViewModel - get Images", image.getId());
-//                        if (image != null){
-//                            Log.d("ImageVM", "Image not null, added");
-//                            images.add(image);
-//                        }
-//                    }
-//                    allImagesLiveData.postValue(images);
-//                }).addOnFailureListener(e -> {
-//                    Log.e("ImageVM", "Error fetching image", e);
-//                    errorLiveData.postValue(e.getMessage());
-//                });
+            });
+        }
     }
     public LiveData<List<Image>> getAllImages() {
         return allImagesLiveData;
