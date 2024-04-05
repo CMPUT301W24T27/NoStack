@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -66,15 +67,16 @@ public class ImageViewHandler {
      */
     public void setEventImage(Event event, ImageView eventBanner) {
         String uri_eventBanner = event.getEventBannerImgUrl();
-
+        eventBanner.setVisibility(View.INVISIBLE);
         if (uri_eventBanner != null) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri_eventBanner);
             final long ONE_MEGABYTE = 1024 * 1024;
-
             storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(ownerActivity.getResources(), bmp);
                 eventBanner.setImageDrawable(d);
+                eventBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                eventBanner.setVisibility(View.VISIBLE);
             }).addOnFailureListener(exception -> {
                 Log.w("Event Image", "Error getting event image, removing reference", exception);
                 EventController eventController = EventController.getInstance();
@@ -84,6 +86,8 @@ public class ImageViewHandler {
 
             });
         }
+        eventBanner.setVisibility(View.VISIBLE);
+        eventBanner.setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 
     /**
