@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.Image;
 import com.example.nostack.models.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +38,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
         super(context, 0,User);
         currFragment = currfragment;
         ourUsers = User;
+    }
+    public User getUser(int position) {
+        return ourUsers.get(position);
     }
 
     public boolean containsUser(User user) {
@@ -80,7 +84,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
                 profileEmail.setText("Email Address: N/A");
             }
             if (user.getPhoneNumber() != null){
-                profilePhoneNumber.setText(user.getPhoneNumber());
+                profilePhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
             } else {
                 profilePhoneNumber.setText("Phone Number: N/A");
             }
