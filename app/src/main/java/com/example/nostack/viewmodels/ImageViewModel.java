@@ -82,6 +82,7 @@ public class ImageViewModel extends ViewModel {
             List<Image> images = new ArrayList<>();
             @Override
             public void onSuccess(ListResult listResult) {
+                Log.d("ImageViewModel - get from listResult", listResult.toString());
                 for (StorageReference fileRef : listResult.getItems()) {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override

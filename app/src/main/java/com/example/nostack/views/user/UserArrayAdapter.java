@@ -67,30 +67,22 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
         TextView profileName = view.findViewById(R.id.ProfileListContentNameText);
         TextView profileEmail = view.findViewById(R.id.ProfileListContentEmailText);
         TextView profilePhoneNumber = view.findViewById(R.id.ProfileListContentPhoneNumberText);
-        ImageView profileImage = view.findViewById(R.id.ProfileListContentPosterImage);
 
         if (user != null) {
-
-            profileName.setText(user.getUsername());
-            profileEmail.setText(user.getEmailAddress());
-            profilePhoneNumber.setText(user.getPhoneNumber());
-
-            String uri = user.getProfileImageUrl();
-
-            if (uri != null) {
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(50f);
-                    profileImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("User Profile", "Error getting profile image", exception);
-                });
+            if (user.getUsername() != null){
+                profileName.setText(user.getUsername().trim());
+            } else {
+                profileName.setText("User Name: N/A");
+            }
+            if (user.getEmailAddress() != null){
+                profileEmail.setText(user.getEmailAddress());
+            } else {
+                profileEmail.setText("Email Address: N/A");
+            }
+            if (user.getPhoneNumber() != null){
+                profilePhoneNumber.setText(user.getPhoneNumber());
+            } else {
+                profilePhoneNumber.setText("Phone Number: N/A");
             }
         }
         return view;

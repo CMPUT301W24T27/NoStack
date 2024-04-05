@@ -7,8 +7,8 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="416dp"
+        android:layout_height="97dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/sign_in_up_background"
         android:backgroundTint="@color/SignUpInMenuColor"
@@ -18,57 +18,68 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ProfileListContentPosterImage"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="-16dp"
+            android:id="@+id/admin_EventListContentLocationImage"
+            android:layout_width="36dp"
+            android:layout_height="35dp"
+            android:tint="@color/yellow"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.013"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ProfileListContentNameText"
-            app:srcCompat="@drawable/baseline_camera_alt_24" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.08"
+            app:srcCompat="@drawable/baseline_account_circle_24" />
 
         <TextView
             android:id="@+id/ProfileListContentNameText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="334dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="40dp"
             android:text="Profile Name"
+            android:textAlignment="center"
             android:textColor="@color/SignInUpTextColor"
             android:textStyle="bold"
-            android:layout_marginLeft="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/ProfileListContentEmailText"
+            app:layout_constraintHorizontal_bias="0.553"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/ProfileListContentEmailText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="336dp"
+            android:layout_height="17dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="40dp"
+            android:textAlignment="center"
             android:text="Email"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/ProfileListContentPhoneNumberText"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ProfileListContentNameText" />
 
         <TextView
             android:id="@+id/ProfileListContentPhoneNumberText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="339dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="15dp"
             android:text="Phone Number"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ProfileListContentPosterImage"
+            app:layout_constraintHorizontal_bias="0.486"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ProfileListContentEmailText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

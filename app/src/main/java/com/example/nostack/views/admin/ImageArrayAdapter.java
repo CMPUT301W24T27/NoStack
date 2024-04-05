@@ -71,31 +71,31 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
 //        TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
 //        TextView imageCreated = view.findViewById(R.id.ImageListContentCreatedText);
 //        TextView imageType = view.findViewById(R.id.ImageListContentTypeText);
-        ImageView posterImage = view.findViewById(R.id.ImageListContentPosterImage);
 
         if (image != null) {
 
-            imageName.setText(image.getReferenceId());
+            imageName.setText(image.getId());
+            Log.d("ImageArrayAdapter - ImageId", String.valueOf(image.getId()));
 //            profileEmail.setText(user.getEmailAddress());
 //            profilePhoneNumber.setText(user.getPhoneNumber());
 
-            String uri = image.getUrl();
-
-            if (uri != null) {
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
-
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-                    d.setCornerRadius(50f);
-                    posterImage.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("Image Profile", "Error getting Image banner", exception);
-                });
-            }
+//            String uri = image.getUrl();
+//
+//            if (uri != null) {
+//                // Get image from firebase storage
+//                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+//                final long ONE_MEGABYTE = 1024 * 1024;
+//
+//                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+//                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+//                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
+//                    d.setCornerRadius(50f);
+//                    posterImage.setImageDrawable(d);
+//                }).addOnFailureListener(exception -> {
+//                    Log.w("Image Profile", "Error getting Image banner", exception);
+//                });
+//            }
         }
         return view;
     }

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/eventListView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/sign_in_up_background"
+        android:backgroundTint="@color/SignUpInMenuColor"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/admin_EventListContentCapacityImage"
+            android:layout_width="30dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="212dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginRight="70dp"
+            android:tint="@color/yellow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_EventListContentCreatedText"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/person" />
+
+        <TextView
+            android:id="@+id/admin_EventListContentNameText"
+            android:layout_width="293dp"
+            android:layout_height="19dp"
+            android:text="Event Title"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="40dp"
+            android:textAlignment="center"
+            android:textColor="@color/SignInUpTextColor"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.203"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/admin_EventListContentDateText"
+            android:layout_width="302dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="40dp"
+            android:text="Event Date"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.357"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_EventListContentNameText" />
+
+        <TextView
+            android:id="@+id/admin_EventListContentCreatedText"
+            android:layout_width="305dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginRight="40dp"
+            android:text="Created"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.188"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_EventListContentNameText" />
+
+        <TextView
+            android:id="@+id/admin_EventListContentLocationText"
+            android:layout_width="111dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="Location"
+            android:layout_marginLeft="70dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/admin_EventListContentLocationImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/admin_EventListContentLocationImage"
+            app:layout_constraintTop_toTopOf="@+id/admin_EventListContentLocationImage"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/admin_EventListContentCapacityText"
+            android:layout_width="111dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="8dp"
+            android:text="Capacity"
+            android:layout_marginRight="60dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/admin_EventListContentCapacityImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.141"
+            app:layout_constraintStart_toEndOf="@+id/admin_EventListContentCapacityImage"
+            app:layout_constraintTop_toTopOf="@+id/admin_EventListContentCapacityImage" />
+
+        <ImageView
+            android:id="@+id/admin_EventListContentLocationImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="60dp"
+            android:tint="@color/yellow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_EventListContentCreatedText"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/baseline_location_on_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
