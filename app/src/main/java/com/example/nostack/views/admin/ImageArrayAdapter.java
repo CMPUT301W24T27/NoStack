@@ -48,6 +48,10 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
         return contained;
     }
 
+    public Image getImage(int position) {
+        return ourImages.get(position);
+    }
+
     public void addImage(Image image) {
         Log.d("ImageArray Adapter - set Images", "Adding image to array adapter");
         if (!containsImage(image)) {
@@ -79,8 +83,6 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
             imageType.setText(image.getType());
             //imageCreated.setText(image.getCreated()); TODO: Metadata for when image was created is not set
             Log.d("ImageArrayAdapter - ImageId", String.valueOf(image.getId()));
-//            profileEmail.setText(user.getEmailAddress());
-//            profilePhoneNumber.setText(user.getPhoneNumber());
 
 //            String uri = image.getUrl();
 //

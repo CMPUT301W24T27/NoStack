@@ -1,5 +1,8 @@
 package com.example.nostack.views.admin;
 
+import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,9 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,6 +31,9 @@ import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.ImageViewModel;
 import com.example.nostack.views.attendee.AttendeeBrowse;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
+import com.example.nostack.views.organizer.OrganizerHome;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -97,5 +107,45 @@ public class AdminBrowseImages extends Fragment {
             imageArrayAdapter.notifyDataSetChanged();
         });
 
+        imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                showDialog(imageArrayAdapter.getImage(position));
+                Toast.makeText(getActivity(), "the item was at position: " + position , Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void showDialog(Image image){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.fragment_admin_images_dialog);
+        dialog.show();
+
+        ImageView imageBanner = dialog.findViewById(R.id.admin_imageDialog);
+        TextView imageTitle = dialog.findViewById(R.id.admin_imageDialogTitle);
+        TextView imageSize = dialog.findViewById(R.id.admin_imageDialogSize);
+        TextView imageCreated = dialog.findViewById(R.id.admin_imageDialogCreated);
+        TextView imageType = dialog.findViewById(R.id.admin_imageDialogType);
+
+        imageTitle.setText(image.getId());
+        imageSize.setText(image.getSize() + "bytes");
+        imageType.setText(image.getType());
+
+            String uri = image.getUrl();
+
+            if (uri != null) {
+                // Get image from firebase storage
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+                final long ONE_MEGABYTE = 1024 * 1024;
+
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
+                    d.setCornerRadius(50f);
+                    imageBanner.setImageDrawable(d);
+                }).addOnFailureListener(exception -> {
+                    Log.w("Image Profile", "Error getting Image banner", exception);
+                });
+            }
     }
 }

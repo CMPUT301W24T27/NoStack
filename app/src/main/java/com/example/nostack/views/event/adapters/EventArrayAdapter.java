@@ -62,6 +62,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             add(event);
         }
     }
+    public Event getEvent(int position) {
+        return ourEvents.get(position);
+    }
 
     /**
      * Get the view of the event
@@ -101,7 +104,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             String capacity = String.valueOf(event.getCapacity());
 
             if (!startDate.equals(endDate)) {
-                eventStartEndDateTitle.setText(startDate + "to" + endDate);
+                eventStartEndDateTitle.setText(startDate + " to " + endDate);
             } else {
                 eventStartEndDateTitle.setText(startDate);
             }
