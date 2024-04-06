@@ -19,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
@@ -49,6 +50,7 @@ public class OrganizerEvent extends Fragment {
     private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
+    private NotificationHandler notificationHandler;
 
 
     public OrganizerEvent() {
@@ -89,6 +91,7 @@ public class OrganizerEvent extends Fragment {
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        notificationHandler = NotificationHandler.getSingleton();
     }
 
     /**
@@ -172,6 +175,14 @@ public class OrganizerEvent extends Fragment {
                 bundle.putSerializable("eventData", event);
                 NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
+            }
+        });
+
+        // Test notifications
+        view.findViewById(R.id.AttendeeEventTitleText).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationHandler.sendEventNotification(event, "This is a test notification");
             }
         });
 

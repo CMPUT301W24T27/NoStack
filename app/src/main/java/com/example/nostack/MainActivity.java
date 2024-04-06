@@ -1,17 +1,24 @@
 package com.example.nostack;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.handlers.LocationHandler;
 
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +30,21 @@ public class MainActivity extends AppCompatActivity {
 
         ImageViewHandler.setOwnerActivity(this);
         ImageViewHandler.setSingleton();
+
+
+        // Register receiver for notifications
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String title = intent.getStringExtra("title");
+                String message = intent.getStringExtra("message");
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+            }
+        }, new IntentFilter("Notification"));
     }
 
     @Override

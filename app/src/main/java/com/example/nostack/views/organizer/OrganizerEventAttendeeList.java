@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -51,6 +53,7 @@ public class OrganizerEventAttendeeList extends Fragment {
     private AttendanceViewModel attendanceViewModel;
     private EventAttendeesArrayAdapter attendeesArrayAdapter;
     private ArrayList<Attendance> dataList;
+    private ArrayList<Attendance> presentAttendees;
     private ImageViewHandler imageViewHandler;
     private ListView attendeeList;
 
@@ -87,6 +90,7 @@ public class OrganizerEventAttendeeList extends Fragment {
             event = (Event) getArguments().getSerializable("eventData");
         }
         dataList = new ArrayList<>();
+        presentAttendees = new ArrayList<>();
         attendanceViewModel = new ViewModelProvider(requireActivity()).get(AttendanceViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
     }
@@ -130,6 +134,24 @@ public class OrganizerEventAttendeeList extends Fragment {
             }
             attendeesArrayAdapter.notifyDataSetChanged();
 
+        });
+
+        attendanceViewModel.fetchPresentAttByEvent(event.getId());
+        attendanceViewModel.getPresentAttByEvent().observe(getViewLifecycleOwner(), attendances -> {
+            presentAttendees = new ArrayList<>();
+            for (Attendance attendance : attendances) {
+                presentAttendees.add(attendance);
+            }
+            ProgressBar pb = view.findViewById(R.id.progress_attendee_bar);
+            TextView mileStoneText = view.findViewById(R.id.progress_attendee_milestone);
+            if (event.getCapacity() != -1) {
+                int progress = (int) ((presentAttendees.size() * 100) / event.getCapacity());
+                pb.setProgress(progress);
+                mileStoneText.setText(presentAttendees.size() + "/" + event.getCapacity() + " Present Attendees!");
+            } else {
+                pb.setProgress(presentAttendees.size());
+                mileStoneText.setText(presentAttendees.size() + "/" + 100 + " Present Attendees!");
+            }
         });
 
         updateScreenInformation(view);

@@ -13,12 +13,17 @@ import androidx.lifecycle.ViewModel;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.controllers.ImageController;
 import com.example.nostack.controllers.QrCodeController;
+import com.example.nostack.controllers.UserController;
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.auth.User;
+
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -35,7 +40,9 @@ public class EventViewModel extends ViewModel {
     private final EventController eventController = EventController.getInstance();
     private final ImageController imageController = ImageController.getInstance();
     private final QrCodeController qrCodeController = QrCodeController.getInstance();
+    private final UserController userController = UserController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
+    private final NotificationHandler notificationHandler = NotificationHandler.getSingleton();
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
@@ -208,7 +215,35 @@ public class EventViewModel extends ViewModel {
     }
 
     public Task<Void> eventCheckIn(String userId, String eventId, @Nullable Location location) {
-        return eventController.eventCheckIn(userId, eventId, location);
+        return eventController.eventCheckIn(userId, eventId, location)
+            .addOnSuccessListener(aVoid -> {
+                eventController.getEvent(eventId)
+                    .addOnCompleteListener(eventTask -> {
+                        if (eventTask.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = eventTask.getResult();
+                            Event event;
+                            if (documentSnapshot != null) {
+                                event = documentSnapshot.toObject(Event.class);
+                            } else {
+                                event = null;
+                            }
+                            String organizerId = event.getOrganizerId();
+
+                            userController.getUserFcmToken(organizerId)
+                                .addOnCompleteListener(tokenTask -> {
+                                    if (tokenTask.isSuccessful()) {
+                                        String fcmToken = tokenTask.getResult();
+                                        Log.d("EventViewModel", "Successfully retrieved organizer FCM token");
+                                        notificationHandler.sendEventMilestoneNotification(fcmToken, event, userId);
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("EventViewModel", "Error sending notification", e);
+                                    errorLiveData.postValue(e.getMessage());
+                                });
+                        }
+                    });
+            });
     }
 
     public void endEvent(String eventId, String userId) {
