@@ -142,18 +142,23 @@ public class AdminBrowseProfiles extends Fragment {
         imageViewHandler.setUserProfileImage(user, userBanner,getResources(), null);
 
         deleteUserButton.setOnClickListener(v -> {
-            deleteProfile(user);
-
-            // Update view after deleting user
-            dataList.remove(user);
-            UserArrayAdapter.notifyDataSetChanged();
-
-            // Close dialog
-            dialog.dismiss();
+            if(deleteProfile(user)){
+                // Update view after deleting user
+                dataList.remove(user);
+                UserArrayAdapter.notifyDataSetChanged();
+                // Close dialog
+                dialog.dismiss();
+                Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void deleteProfile(User user){
+    /**
+     * Delete user profile
+     * @param user
+     * @return true if user is deleted, false otherwise
+     */
+    private boolean deleteProfile(User user){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference users = db.collection("users");
         Query query = users.whereEqualTo("uuid", user.getUuid());
@@ -161,7 +166,7 @@ public class AdminBrowseProfiles extends Fragment {
         // Check if it is the current user
         if (user.getUuid().equals(userViewModel.getUser().getValue().getUuid())) {
             Toast.makeText(getContext(), "Cannot delete yourself.", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         query.get().addOnCompleteListener(task -> {
@@ -193,5 +198,7 @@ public class AdminBrowseProfiles extends Fragment {
                 Log.d("Delete User", "Error getting documents: ", task.getException());
             }
         });
+
+        return true;
     }
 }
