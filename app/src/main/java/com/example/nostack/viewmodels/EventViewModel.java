@@ -168,6 +168,7 @@ public class EventViewModel extends ViewModel {
                     String userId = currentUserHandler.getCurrentUserId();
                     fetchAllEvents();
                     fetchOrganizerEvents(userId);
+
                 }).addOnFailureListener( e-> {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());

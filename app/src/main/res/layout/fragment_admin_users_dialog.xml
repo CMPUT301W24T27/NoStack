@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="430dp"
+        android:layout_height="449dp"
+        android:background="@drawable/sign_in_up_background"
+        android:backgroundTint="@color/SignUpInMenuColor"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/admin_userDialog"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/admin_userDialogPhoneNumber"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle"
+            app:layout_constraintVertical_bias="0.041"
+            app:srcCompat="@drawable/baseline_camera_alt_24" />
+
+        <TextView
+            android:id="@+id/admin_userDialogTitle"
+            android:layout_width="310dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="40dp"
+            android:text="Username"
+            android:textAlignment="center"
+            android:textColor="@color/SignInUpTextColor"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.394"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/admin_userDialogEmail"
+            android:layout_width="257dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="20dp"
+            android:text="Email"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.918"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/admin_userDialogPhoneNumber"
+            android:layout_width="230dp"
+            android:layout_height="57dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="40dp"
+            android:text="Phone Number"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogEmail"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/admin_userDialogGender"
+            android:layout_width="187dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="68dp"
+            android:text="gender"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.934"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogFirstName"
+            app:layout_constraintVertical_bias="0.111" />
+
+        <TextView
+            android:id="@+id/admin_userDialogUUID"
+            android:layout_width="381dp"
+            android:layout_height="59dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="52dp"
+            android:text="UUID"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogRole" />
+
+        <TextView
+            android:id="@+id/admin_userDialogFirstName"
+            android:layout_width="189dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="116dp"
+            android:text="FirstName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialog"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/admin_userDialogLastName"
+            android:layout_width="189dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
+            android:text="LastName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.954"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialog"
+            app:layout_constraintVertical_bias="0.04" />
+
+        <TextView
+            android:id="@+id/admin_userDialogRole"
+            android:layout_width="187dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="124dp"
+            android:text="Role"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogFirstName" />
+
+        <Button
+            android:id="@+id/admin_amkeAdminUserButton"
+            android:layout_width="191dp"
+            android:layout_height="63dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/lightBlue"
+            android:text="Make Admin"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialogUUID"
+            app:layout_constraintVertical_bias="0.428" />
+
+        <Button
+            android:id="@+id/admin_deleteImageButton"
+            android:layout_width="191dp"
+            android:layout_height="63dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/red"
+            android:text="Delete"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/admin_deleteUserButton"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

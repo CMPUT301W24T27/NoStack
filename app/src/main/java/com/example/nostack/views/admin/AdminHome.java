@@ -6,18 +6,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.organizer.OrganizerHome;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +44,11 @@ public class AdminHome extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ViewPager2 viewPager;
+    private DotsIndicator dotsIndicator;
+    private ImageViewHandler imageViewHandler;
+    private CurrentUserHandler currentUserHandler;
+    private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class, AdminBrowseImages.class};
 
     public AdminHome() {
         // Required empty public constructor
@@ -66,7 +79,8 @@ public class AdminHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        imageViewHandler = ImageViewHandler.getSingleton();
+        currentUserHandler = CurrentUserHandler.getSingleton();
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
     }
 
@@ -75,14 +89,14 @@ public class AdminHome extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
+        viewPager = view.findViewById(R.id.admin_viewPager2);
+        viewPager.setAdapter(new MyFragmentAdapter(this));
+        dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
+        dotsIndicator.attachTo(viewPager);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Log.d("AdminHome", "User logged in: " + user.getUsername());
                 userWelcome.setText(user.getUsername());
-
-            } else {
-                Log.d("AdminHome", "User is null");
             }
         });
 
@@ -94,7 +108,38 @@ public class AdminHome extends Fragment {
             }
         });
 
+        ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
+
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private static class MyFragmentAdapter extends FragmentStateAdapter {
+
+        public MyFragmentAdapter(Fragment fragment) {
+            super(fragment);
+        }
+
+        /**
+         * This method is called when the fragment is being created and then sets up the view for the fragment
+         *
+         * @param position The position of the fragment
+         * @return a null fragment if there is an exception
+         */
+        @Override
+        public Fragment createFragment(int position) {
+            try {
+                return (Fragment) fragments[position].newInstance();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return fragments.length;
+        }
     }
 }

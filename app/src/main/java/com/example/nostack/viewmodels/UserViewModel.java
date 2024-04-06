@@ -6,16 +6,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+
 import com.example.nostack.models.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 /*
  *  UserViewModel is a ViewModel class that is used to store and manage state for UI components that require user data
  * */
 public class UserViewModel extends ViewModel {
     private final MutableLiveData<User> user = new MutableLiveData<>();
-
     /**
      * Set the user object to be stored in the ViewModel state
      *
