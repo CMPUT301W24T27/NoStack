@@ -12,7 +12,6 @@ import com.example.nostack.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 /*
  *  UserViewModel is a ViewModel class that is used to store and manage state for UI components that require user data
  * */

@@ -13,70 +13,120 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/eventInfo"
-            android:layout_width="368dp"
-            android:layout_height="434dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/eventDateTime"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/AttendeeEventRegisterButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/AttendeeEventImage">
+            app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText">
 
             <TextView
+                android:id="@+id/AttendeeEventTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Event Start Time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/AttendeeEventLocationIcon"
+                app:layout_constraintEnd_toEndOf="@+id/AttendeeEventLocationText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/AttendeeEventLocationIcon" />
 
-                android:id="@+id/AttendeeEventTitleText"
-                android:layout_width="302dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="8dp"
-                android:text="Event Title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/SignInUpTextColor"
-                android:textSize="24sp"
+            <TextView
+                android:id="@+id/AttendeeEventDateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Event Start Date"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.045"
+                app:layout_constraintBottom_toTopOf="@+id/AttendeeEventTimeText"
+                app:layout_constraintEnd_toEndOf="@+id/AttendeeEventLocationText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/AttendeeEventTimeText" />
+
+            <ImageView
+                android:id="@+id/AttendeeEventLocationIcon"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/baseline_location_on_24"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tint="@color/yellow" />
+
+            <TextView
+                android:id="@+id/AttendeeEventLocationText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="Event Location"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/AttendeeEventLocationIcon"
+                app:layout_constraintEnd_toStartOf="@+id/UsersGoing"
+                app:layout_constraintStart_toEndOf="@+id/AttendeeEventLocationIcon"
+                app:layout_constraintTop_toTopOf="@+id/AttendeeEventLocationIcon" />
+
+            <ImageView
+                android:id="@+id/AttendeeEventUserImage"
+                android:layout_width="58dp"
+                android:layout_height="47dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/baseline_account_circle_24"
+                app:layout_constraintBottom_toTopOf="@+id/UsersGoing"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/UsersGoing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attending"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/AttendeeEventDescriptionText"
-                android:layout_width="362dp"
-                android:layout_height="401dp"
-                android:layout_marginTop="37dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="Full Event Description Goes Here..."
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/AttendeeEventDateText"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.409"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTitleText"
-                app:layout_constraintVertical_bias="0.666" />
+                app:layout_constraintTop_toBottomOf="@+id/eventDateTime" />
 
-            <Button
-                android:id="@+id/AttendeeEventShareButton"
-                android:layout_width="27dp"
-                android:layout_height="28dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/share_icon"
-                app:layout_constraintBottom_toTopOf="@+id/AttendeeEventDescriptionText"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/eventDateTime"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/AttendeeEventTitleText"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.555"
-                app:layout_constraintStart_toEndOf="@+id/AttendeeEventTitleText"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.666"
-                android:contentDescription="Share Button"
-
-                />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/AttendeeEventImage"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/baseline_add_a_photo_24"
+            android:layout_height="175dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/baseline_camera_alt_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,6 +159,7 @@
             android:clickable="true"
             android:focusable="true"
             android:importantForAccessibility="no"
+            android:scaleType="fitXY"
             app:borderWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -136,88 +187,33 @@
             app:srcCompat="@drawable/outline_edit_24"
             app:tint="@color/yellow" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/eventDateTime"
-            android:layout_width="376dp"
-            android:layout_height="96dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/backgroundGradiant"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/transparent_gradiant_background"
+            app:layout_constraintBottom_toBottomOf="@+id/AttendeeEventImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.47"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.862">
+            app:layout_constraintStart_toStartOf="@+id/AttendeeEventImage"
+            app:layout_constraintTop_toTopOf="@+id/AttendeeEventImage" />
 
-            <TextView
-                android:id="@+id/AttendeeEventTimeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Event Start Time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.041"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventDateText" />
+        <TextView
 
-            <TextView
-                android:id="@+id/AttendeeEventDateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Start Date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.04"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/AttendeeEventLocationIcon"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/baseline_location_on_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTimeText"
-                app:tint="@color/yellow" />
-
-            <TextView
-                android:id="@+id/AttendeeEventLocationText"
-                android:layout_width="244dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:text="Event Location"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/UsersGoing"
-                app:layout_constraintStart_toEndOf="@+id/AttendeeEventLocationIcon"
-                app:layout_constraintTop_toBottomOf="@+id/AttendeeEventTimeText" />
-
-
-            <ImageView
-                android:id="@+id/AttendeeEventUserImage"
-                android:layout_width="58dp"
-                android:layout_height="47dp"
-                android:src="@drawable/baseline_account_circle_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/UsersGoing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Attending"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:id="@+id/AttendeeEventTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="-10dp"
+            android:text="Event Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/AttendeeEventImage"
+            app:layout_constraintEnd_toEndOf="@+id/eventInfo"
+            app:layout_constraintStart_toStartOf="@+id/eventInfo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
