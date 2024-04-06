@@ -14,7 +14,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
         Log.d("MyFirebaseMessagingService", "From: " + remoteMessage.getFrom());
         Log.d("MyFirebaseMessagingService", "Notification Title: " + remoteMessage.getNotification().getTitle());
         Log.d("MyFirebaseMessagingService", "Notification Message Body: " + remoteMessage.getNotification().getBody());
