@@ -145,8 +145,8 @@ public class AdminBrowseProfiles extends Fragment {
         userEmail.setText("Email: " + user.getEmailAddress());
         userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
         userRole.setText("Role: " + user.getRole());
-        userFirstName.setText("First Name: " + user.getFirstName());
-        userLastName.setText("Last Name: " + user.getLastName());
+        userFirstName.setText(user.getFirstName());
+        userLastName.setText(user.getLastName());
         userUUID.setText("Uuid: " + user.getUuid());
         userGender.setText("Gender: " + user.getGender());
 
