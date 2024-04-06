@@ -1,6 +1,7 @@
 package com.example.nostack.viewmodels;
 
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,10 +24,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.security.auth.callback.Callback;
+
 /*
  *  ImageViewModel is a ViewModel class that is used to store and manage state for UI components that require Image data
  * */
 public class ImageViewModel extends ViewModel {
+    /**
+     * Delete image callback
+     */
+    public interface DeleteImageCallback {
+        void onImageDeleted();
+        void onImageDeleteFailed();
+    }
+
     private final MutableLiveData<Image> image = new MutableLiveData<>();
     private final MutableLiveData<Image> imageLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Image>> allImagesLiveData = new MutableLiveData<>();
@@ -57,32 +68,11 @@ public class ImageViewModel extends ViewModel {
         return image;
     }
 
-//    /**
-//     * Updates the image object stored in Firestore
-//     *
-//     * @param user new user object to be stored
-//     */
-//    public void updateUser(User user) {
-//        final FirebaseFirestore db;
-//        final CollectionReference userRef;
-//        // Update user object in firestore
-//
-//        db = FirebaseFirestore.getInstance();
-//        userRef = db.collection("users");
-//        userRef.document(user.getUuid()).set(user);
-//    }
-
-//    public void fetchImage(String id) {
-//        imageController.getImage(id)
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    Image image = documentSnapshot.toObject(Image.class);
-//                    imageLiveData.postValue(image);
-//                }).addOnFailureListener(e -> {
-//                    Log.e("imageViewModel", "Error fetching image", e);
-//                    errorLiveData.postValue(e.getMessage());
-//                });
-//    }
-
+    /**
+     * Get all images
+     *
+     * @return void
+     */
     public void fetchAllImages(){
         List<String> paths = Arrays.asList("event/banner","user/profile");
         List<Image> images = new ArrayList<>();
@@ -133,7 +123,40 @@ public class ImageViewModel extends ViewModel {
             });
         }
     }
+
+    /**
+     * returns the LiveData object containing all images
+     * @return LiveData<List<Image>>
+     */
     public LiveData<List<Image>> getAllImages() {
         return allImagesLiveData;
     }
+
+
+
+    /**
+     * Delete image
+     * @param image
+     * @return void
+     *
+     */
+    public void deleteImage(Image image, DeleteImageCallback callback){
+        imageController.deleteImage(image).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if (callback != null) {
+                    callback.onImageDeleted();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                errorLiveData.setValue("Image deletion failed");
+                if (callback != null) {
+                    callback.onImageDeleteFailed();
+                }
+            }
+        });
+    }
+
 }

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.models.Image;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -65,15 +66,18 @@ public class ImageController {
                 });
     }
 
-    public Task<Void> removeReference(String imageId) {
+    public Task<Void> removeReference(Image image) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("referenceId", null);
         updates.put("path", null);
-        return imageCollectionReference.document(imageId).update(updates);
+        return imageCollectionReference.document(image.getId()).update(updates);
     }
 
     // TODO: Deleting an Image, may be a little too nuanced, will be done later on.
-    public Task<Void> deleteImage(String imageId) {
-        return Tasks.whenAll();
+    public Task<Void> deleteImage(Image image) {
+        StorageReference storageRef = storage.getReferenceFromUrl(image.getUrl());
+        Task<Void> deleteImage = storageRef.delete();
+        Task<Void> deleteDocument = imageCollectionReference.document(image.getId()).delete();
+        return Tasks.whenAll(deleteImage, deleteDocument);
     }
 }

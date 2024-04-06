@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nostack.R;
@@ -27,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
@@ -101,6 +103,12 @@ public class AdminBrowseImages extends Fragment {
             }
         });
     }
+
+    /**
+     * Show the dialog for the image
+     * @param image
+     * @return void
+     */
     private void showDialog(Image image){
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.fragment_admin_images_dialog);
@@ -117,22 +125,48 @@ public class AdminBrowseImages extends Fragment {
         imageType.setText(image.getType());
         imageCreated.setText((image.getCreated()));
 
-            String uri = image.getUrl();
+        String uri = image.getUrl();
 
-            if (uri != null) {
-                // Get image from firebase storage
-                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-                final long ONE_MEGABYTE = 1024 * 1024;
+        if (uri != null) {
+            // Get image from firebase storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+            final long ONE_MEGABYTE = 1024 * 1024;
 
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
-                    d.setCornerRadius(50f);
-                    imageBanner.setImageDrawable(d);
-                }).addOnFailureListener(exception -> {
-                    Log.w("Image Profile", "Error getting Image banner", exception);
-                });
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
+                d.setCornerRadius(50f);
+                imageBanner.setImageDrawable(d);
+            }).addOnFailureListener(exception -> {
+                Log.w("Image Profile", "Error getting Image banner", exception);
+            });
+        }
+
+        dialog.findViewById(R.id.admin_deleteImageButton).setOnClickListener(v -> {
+            deleteImage(image);
+            dialog.dismiss();
+        });
+    }
+
+    /**
+     * Delete an image
+     * @param image
+     * @return void
+     */
+    private void deleteImage(Image image) {
+        imageViewModel.deleteImage(image, new ImageViewModel.DeleteImageCallback() {
+            @Override
+            public void onImageDeleted() {
+                Toast.makeText(getContext(), "Image deleted.", Toast.LENGTH_SHORT).show();
+                imageArrayAdapter.remove(image);
+                imageArrayAdapter.notifyDataSetChanged();
             }
+
+            @Override
+            public void onImageDeleteFailed() {
+                Toast.makeText(getContext(), "Image failed to delete.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
