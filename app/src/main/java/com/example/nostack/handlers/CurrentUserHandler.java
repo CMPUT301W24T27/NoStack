@@ -89,4 +89,12 @@ public class CurrentUserHandler {
             .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
             .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
     }
+
+    /**
+     * Update the user object stored in the ViewModel state
+     * @param user
+     */
+    public void updateUser(User user) {
+        userViewModel.updateUser(user);
+    }
 }

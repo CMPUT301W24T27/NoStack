@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Image;
+import com.example.nostack.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -78,6 +79,20 @@ public class ImageController {
         StorageReference storageRef = storage.getReferenceFromUrl(image.getUrl());
         Task<Void> deleteImage = storageRef.delete();
         Task<Void> deleteDocument = imageCollectionReference.document(image.getId()).delete();
+
+        if(image.getReferenceId() != null) {
+            removeReference(image);
+        }
+
+        Log.d("ImageController", currentUserHandler.getCurrentUser().getProfileImageUrl());
+        Log.d("ImageController", image.getUrl());
+        if(currentUserHandler.getCurrentUser().getProfileImageUrl().contains(image.getId())) {
+            Log.d("ImageController", "Deleting user profile image.");
+            User user = currentUserHandler.getCurrentUser();
+            user.setProfileImageUrl(null);
+            currentUserHandler.updateUser(user);
+        }
+
         return Tasks.whenAll(deleteImage, deleteDocument);
     }
 }
