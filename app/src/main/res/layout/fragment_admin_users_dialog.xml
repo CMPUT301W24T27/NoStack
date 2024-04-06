@@ -171,7 +171,7 @@
                 app:layout_constraintVertical_bias="0.95" />
 
             <Button
-                android:id="@+id/admin_deleteImageButton"
+                android:id="@+id/admin_deleteUserButton"
                 android:layout_width="146dp"
                 android:layout_height="60dp"
                 android:backgroundTint="@color/red"

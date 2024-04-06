@@ -248,8 +248,57 @@ public class EventController {
     }
 
 
-    // TODO: Deleting an event, may be a little too nuanced, will be done later on.
+    /**
+     * Delete an event and unregister all attendees.
+     * @param eventId
+     * @return
+     */
     public Task<Void> deleteEvent(String eventId) {
-        return Tasks.whenAll();
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        return eventRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) {
+                Log.d("EventController", "(deleteEvent) Failed to get event details.");
+                throw new RuntimeException("Failed to get event details.");
+            }
+            DocumentSnapshot eventSnapshot = task.getResult();
+
+            // Unregister attendees
+            List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+            if (attendees != null) {
+                List<Task<Void>> tasks = new ArrayList<>();
+                for (String userId : attendees) {
+                    tasks.add(unregisterToEvent(eventId, userId));
+                }
+                return Tasks.whenAll(tasks);
+            }
+            return null;
+        }).continueWithTask(task -> {
+            if (task.isSuccessful()) {
+                return eventRef.delete();
+            } else {
+                Log.d("EventController", "(deleteEvent) Failed to unregister attendees.");
+                throw new RuntimeException("Failed to unregister attendees.");
+            }
+        });
+    }
+
+    /**
+     * Delete all events created by a user.
+     * @param userId
+     * @return
+     */
+    public Task<Void> deleteEventsByUser(String userId) {
+        return getOrganizerEvents(userId).continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                Log.d("EventController", "(deleteEventsByUser) Failed to get events.");
+                throw new RuntimeException("Failed to get events.");
+            }
+            List<Task<Void>> tasks = new ArrayList<>();
+            for (DocumentSnapshot eventSnapshot : task.getResult().getDocuments()) {
+                String eventId = eventSnapshot.getId();
+                tasks.add(deleteEvent(eventId));
+            }
+            return Tasks.whenAll(tasks);
+        });
     }
 }

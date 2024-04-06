@@ -139,7 +139,7 @@
             app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogLocation" />
 
         <Button
-            android:id="@+id/admin_deleteUserButton"
+            android:id="@+id/admin_deleteEventButton"
             android:layout_width="191dp"
             android:layout_height="63dp"
             android:layout_marginBottom="8dp"
