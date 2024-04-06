@@ -19,6 +19,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +206,47 @@ public class EventController {
         updates.put("active", false);
         return eventRef.update(updates);
     };
+
+    public Task<List<String>> getEventAttendeesFcmTokens(String eventId) {
+        UserController userController = UserController.getInstance();
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        return eventRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) {
+                Log.d("EventController", "(getEventAttendeesFcmTokens) Failed to get event details.");
+                throw new RuntimeException("Failed to get event details.");
+            }
+            DocumentSnapshot eventSnapshot = task.getResult();
+            List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+            if (attendees == null) {
+                Log.d("EventController", "(getEventAttendeesFcmTokens) No attendees for this event.");
+                throw new RuntimeException("No attendees for this event.");
+            }
+            List<Task<String>> tasks = new ArrayList<>();
+            for (String userId : attendees) {
+                tasks.add(userController.getUserFcmToken(userId));
+            }
+            return Tasks.whenAllSuccess(tasks);
+        }).continueWith(task -> {
+            if (!task.isSuccessful()) {
+                Log.d("EventController", "(getEventAttendeesFcmTokens) Failed to get user details.");
+                throw new RuntimeException("Failed to get user details.");
+            }
+            List<?> result = task.getResult();
+            if (result == null) {
+                return new ArrayList<String>();
+            }
+            List<String> fcmTokens = new ArrayList<>();
+            for (Object object : result) {
+                if (object instanceof String) {
+                    fcmTokens.add((String) object);
+                } else {
+                    Log.d("EventController", "(getEventAttendeesFcmTokens) Expected a string.");
+                }
+            }
+            return fcmTokens;
+        });
+    }
+
 
     // TODO: Deleting an event, may be a little too nuanced, will be done later on.
     public Task<Void> deleteEvent(String eventId) {

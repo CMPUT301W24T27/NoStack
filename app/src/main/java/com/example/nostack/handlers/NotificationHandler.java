@@ -2,6 +2,7 @@ package com.example.nostack.handlers;
 import android.util.Log;
 
 import com.example.nostack.controllers.AttendanceController;
+import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,11 +19,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class NotificationHandler {
     private static NotificationHandler singleInstance = null;
     private static final AttendanceController attendanceController = AttendanceController.getInstance();
+    private static final EventController eventController = EventController.getInstance();
     public static NotificationHandler getSingleton() {
         if (singleInstance == null) {
             singleInstance = new NotificationHandler();
@@ -66,6 +69,25 @@ public class NotificationHandler {
             }
         }).addOnFailureListener(e -> {
             Log.d("NotificationHandler", "Error getting attendance: Incomplete ", e);
+        });
+    }
+
+    public void sendEventNotification(Event event, String message) {
+        String title = "Event Update for " + event.getName();
+        eventController.getEventAttendeesFcmTokens(event.getId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<String> fcmTokens = task.getResult();
+                for (int i = 0; i < fcmTokens.size(); i++) {
+                    String token = fcmTokens.get(i);
+                    Log.d("NotificationHandler", "Sending notification to: " + token);
+                    sendNotification(token, message, title);
+                }
+            } else {
+                Log.d("NotificationHandler", "Error getting attendees FCM tokens: ", task.getException());
+            }
+        }).addOnFailureListener(e -> {
+            Log.d("NotificationHandler", "Error getting attendees: Incomplete ", e);
+            throw new RuntimeException(e.getMessage());
         });
     }
 

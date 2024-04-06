@@ -61,23 +61,29 @@ public class CurrentUserHandler {
                 if (task.isSuccessful()) {
                     String fcmToken = task.getResult();
                     Log.d("CurrentUserHandler", "User FCM token: " + fcmToken);
-                    if (fcmToken == null || fcmToken.isEmpty()) {
-                        FirebaseMessaging.getInstance().getToken()
-                            .addOnCompleteListener(tokenTask -> {
-                                if (tokenTask.isSuccessful()) {
-                                    String newFcmToken = tokenTask.getResult();
-                                    userController.setUserFcmToken(userId, newFcmToken)
-                                        .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
-                                        .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
-                                } else {
-                                    Log.e("UserController", "Failed to generate new FCM token.", tokenTask.getException());
-                                }
-                            });
-                    }
+                    FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(tokenTask -> {
+                            if (tokenTask.isSuccessful()) {
+                                String newFcmToken = tokenTask.getResult();
+                                Log.d("CurrentUserHandler", "Retrieved Fcm Token: " + newFcmToken);
+                                userController.setUserFcmToken(userId, newFcmToken)
+                                    .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
+                                    .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
+                            } else {
+                                Log.e("UserController", "Failed to generate new FCM token.", tokenTask.getException());
+                            }
+                        });
                 } else {
                     // The task failed
                     Log.e("UserController", "Failed to get FCM token.", task.getException());
                 }
             });
+    }
+
+    public void updateUserFcmTokenOnRefresh(String token) {
+        String userId = getCurrentUserId();
+        userController.setUserFcmToken(userId, token)
+            .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
+            .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
     }
 }

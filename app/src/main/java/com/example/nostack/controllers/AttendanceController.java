@@ -78,4 +78,6 @@ public class AttendanceController {
                 .whereEqualTo("eventId", eventId).whereGreaterThan("numCheckIn", 0)
                 .get();
     }
+
+
 }
