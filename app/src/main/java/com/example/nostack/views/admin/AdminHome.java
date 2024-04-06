@@ -13,11 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.ImageDimension;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.organizer.OrganizerHome;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -42,6 +46,8 @@ public class AdminHome extends Fragment {
     private String mParam2;
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
+    private ImageViewHandler imageViewHandler;
+    private CurrentUserHandler currentUserHandler;
     private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class, AdminBrowseImages.class};
 
     public AdminHome() {
@@ -73,7 +79,8 @@ public class AdminHome extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        imageViewHandler = ImageViewHandler.getSingleton();
+        currentUserHandler = CurrentUserHandler.getSingleton();
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
     }
 
@@ -83,18 +90,13 @@ public class AdminHome extends Fragment {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
         TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
         viewPager = view.findViewById(R.id.admin_viewPager2);
-        Log.d("AdminHome", "viewPager:"+ viewPager);
         viewPager.setAdapter(new MyFragmentAdapter(this));
         dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
         dotsIndicator.attachTo(viewPager);
 
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Log.d("AdminHome", "User logged in: " + user.getUsername());
                 userWelcome.setText(user.getUsername());
-
-            } else {
-                Log.d("AdminHome", "User is null");
             }
         });
 
@@ -106,10 +108,14 @@ public class AdminHome extends Fragment {
             }
         });
 
+        ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
+        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
+
 
         // Inflate the layout for this fragment
         return view;
     }
+
     private static class MyFragmentAdapter extends FragmentStateAdapter {
 
         public MyFragmentAdapter(Fragment fragment) {

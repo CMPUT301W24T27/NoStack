@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,24 +17,15 @@ import android.widget.Toast;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
-import com.example.nostack.models.Event;
 import com.example.nostack.models.Image;
-import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.ImageViewModel;
-import com.example.nostack.views.attendee.AttendeeBrowse;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
-import com.example.nostack.views.organizer.OrganizerHome;
+import com.example.nostack.views.admin.adapters.ImageArrayAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -97,11 +87,8 @@ public class AdminBrowseImages extends Fragment {
         // Fetch and get Images
         imageViewModel.fetchAllImages();
         imageViewModel.getAllImages().observe(getViewLifecycleOwner(), images -> {
-            Log.d("AdminBrowseImages - size of returned list", String.valueOf(images.size()));
             imageArrayAdapter.clear();
             for (Image image : images) {
-                Log.d("AdminBrowseImages", "IN LOOP");
-                Log.d("AdminBrowseImages", image.getId());
                 imageArrayAdapter.addImage(image);
             }
             imageArrayAdapter.notifyDataSetChanged();
@@ -111,7 +98,6 @@ public class AdminBrowseImages extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 showDialog(imageArrayAdapter.getImage(position));
-                Toast.makeText(getActivity(), "the item was at position: " + position , Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -25,6 +25,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.Image;
 import com.example.nostack.models.User;
@@ -47,9 +48,11 @@ import java.util.ArrayList;
  */
 public class AdminBrowseProfiles extends Fragment {
     private UserArrayAdapter UserArrayAdapter;
+    private AllUsers allUsers;
     private ListView userList;
     private ArrayList<User> dataList;
     private UserViewModel userViewModel;
+    private ImageViewHandler imageViewHandler;
     public AdminBrowseProfiles() {
     }
 
@@ -62,8 +65,9 @@ public class AdminBrowseProfiles extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        allUsers = new AllUsers();
         dataList = new ArrayList<>();
-
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**
@@ -92,16 +96,16 @@ public class AdminBrowseProfiles extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Watch for errors
-        userViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+        allUsers.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                userViewModel.clearErrorLiveData();
+                allUsers.clearErrorLiveData();
             }
         });
 
         // Fetch and get users
-        userViewModel.fetchAllUsers();
-        userViewModel.getAllUsers().observe(getViewLifecycleOwner(), users -> {
+        allUsers.fetchAllUsers();
+        allUsers.getAllUsers().observe(getViewLifecycleOwner(), users -> {
             UserArrayAdapter.clear();
             for (User user : users) {
                 UserArrayAdapter.addUser(user);
@@ -113,7 +117,6 @@ public class AdminBrowseProfiles extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 showDialog(UserArrayAdapter.getUser(position));
-                Toast.makeText(getActivity(), "the item was at position: " + position , Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -147,24 +150,7 @@ public class AdminBrowseProfiles extends Fragment {
         userUUID.setText("Uuid: " + user.getUuid());
         userGender.setText("Gender: " + user.getGender());
 
-        String uri = user.getProfileImageUrl();
-
-        if (uri != null) {
-            Log.w("User Profile - uri not null", uri);
-            // Get image from firebase storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-            final long ONE_MEGABYTE = 1024 * 1024;
-
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
-                d.setCornerRadius(50f);
-                userBanner.setImageDrawable(d);
-            }).addOnFailureListener(exception -> {
-                Log.w("User Profile", "Error getting User banner", exception);
-            });
-        }
+        imageViewHandler.setUserProfileImage(user, userBanner,getResources(), null);
     }
 
 }

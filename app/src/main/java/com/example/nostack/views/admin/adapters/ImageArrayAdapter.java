@@ -1,4 +1,4 @@
-package com.example.nostack.views.admin;
+package com.example.nostack.views.admin.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -53,7 +53,6 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
     }
 
     public void addImage(Image image) {
-        Log.d("ImageArray Adapter - set Images", "Adding image to array adapter");
         if (!containsImage(image)) {
             add(image);
         }
@@ -69,7 +68,6 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
         }
 
         Image image = getItem(position);
-        Log.d("ImageArrayAdapter - Image", String.valueOf(image));
 
         TextView imageName = view.findViewById(R.id.ImageListContentNameText);
         TextView imageSize = view.findViewById(R.id.ImageListContentSizeText);
@@ -77,30 +75,10 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
         TextView imageType = view.findViewById(R.id.ImageListContentTypeText);
 
         if (image != null) {
-
             imageName.setText(image.getId());
             imageSize.setText(image.getSize() + "bytes");
             imageType.setText(image.getType());
             imageCreated.setText(image.getCreated());
-            Log.d("ImageArrayAdapter - ImageId", String.valueOf(image.getId()));
-
-//            String uri = image.getUrl();
-//
-//            if (uri != null) {
-//                // Get image from firebase storage
-//                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-//                final long ONE_MEGABYTE = 1024 * 1024;
-//
-//                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-//                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                    Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-//                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
-//                    d.setCornerRadius(50f);
-//                    posterImage.setImageDrawable(d);
-//                }).addOnFailureListener(exception -> {
-//                    Log.w("Image Profile", "Error getting Image banner", exception);
-//                });
-//            }
         }
         return view;
     }

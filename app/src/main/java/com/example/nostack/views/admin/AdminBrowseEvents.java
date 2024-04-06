@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.User;
 import com.example.nostack.viewmodels.EventViewModel;
@@ -38,6 +39,7 @@ public class AdminBrowseEvents extends Fragment {
     private ListView eventList;
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
+    private ImageViewHandler imageViewHandler;
 
     public AdminBrowseEvents() {
     }
@@ -52,6 +54,7 @@ public class AdminBrowseEvents extends Fragment {
         super.onCreate(savedInstanceState);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         dataList = new ArrayList<>();
+        imageViewHandler = ImageViewHandler.getSingleton();
     }
 
     /**
@@ -100,7 +103,6 @@ public class AdminBrowseEvents extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 showDialog(EventArrayAdapter.getEvent(position));
-                Toast.makeText(getActivity(), "the item was at position: " + position , Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -133,23 +135,6 @@ public class AdminBrowseEvents extends Fragment {
         }
         eventDescription.setText("Description: " + event.getDescription());
 
-        String uri = event.getEventBannerImgUrl();
-
-        if (uri != null) {
-            Log.w("User Profile - uri not null", uri);
-            // Get image from firebase storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-            final long ONE_MEGABYTE = 1024 * 1024;
-
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
-                d.setCornerRadius(50f);
-                eventBanner.setImageDrawable(d);
-            }).addOnFailureListener(exception -> {
-                Log.w("User Profile", "Error getting User banner", exception);
-            });
-        }
+        imageViewHandler.setEventImage(event, eventBanner);
     }
 }
