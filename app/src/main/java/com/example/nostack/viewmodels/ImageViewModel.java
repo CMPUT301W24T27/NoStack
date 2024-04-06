@@ -100,9 +100,9 @@ public class ImageViewModel extends ViewModel {
                                         image.setCreated(String.valueOf(date));
                                         images.add(image);
                                         //images.add(uri.toString());
-                                        Log.d("ImageViewModel - get Images", String.valueOf(uri));
-                                        Log.d("ImageViewModel - Image", String.valueOf(image));
-                                        Log.d("ImageViewModel - Image", String.valueOf(images.size()));
+//                                        Log.d("ImageViewModel - get Images", String.valueOf(uri));
+//                                        Log.d("ImageViewModel - Image", String.valueOf(image));
+//                                        Log.d("ImageViewModel - Image", String.valueOf(images.size()));
 
                                         // Check if all images are fetched, then update LiveData
                                         if (images.size() == listResult.getItems().size()) {

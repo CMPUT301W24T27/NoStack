@@ -74,7 +74,11 @@ public class ImageController {
         return imageCollectionReference.document(image.getId()).update(updates);
     }
 
-    // TODO: Deleting an Image, may be a little too nuanced, will be done later on.
+    /**
+     * Delete image from storage and database
+     * @param image
+     * @return
+     */
     public Task<Void> deleteImage(Image image) {
         StorageReference storageRef = storage.getReferenceFromUrl(image.getUrl());
         Task<Void> deleteImage = storageRef.delete();
@@ -84,8 +88,7 @@ public class ImageController {
             removeReference(image);
         }
 
-        Log.d("ImageController", currentUserHandler.getCurrentUser().getProfileImageUrl());
-        Log.d("ImageController", image.getUrl());
+        // If its the user's own profile picture
         if(currentUserHandler.getCurrentUser().getProfileImageUrl().contains(image.getId())) {
             Log.d("ImageController", "Deleting user profile image.");
             User user = currentUserHandler.getCurrentUser();
