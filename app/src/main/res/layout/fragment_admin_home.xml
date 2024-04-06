@@ -16,12 +16,11 @@
             android:layout_width="381dp"
             android:layout_height="630dp"
             android:layout_marginTop="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/admin_dots_indicator"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.297" />
+            app:layout_constraintVertical_bias="0.64" />
 
         <GridLayout
             android:id="@+id/gridlayout_welcomeUser"
@@ -42,19 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_row="0"
                 android:layout_column="0"
-                android:text="Welcome back, "
+                android:text="Admin Dashboard"
                 android:textColor="@color/white"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/text_userWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:layout_marginStart="5dp"
-                android:text="User"
-                android:textColor="@color/yellow"
                 android:textSize="17sp" />
 
         </GridLayout>
@@ -63,7 +51,6 @@
             android:id="@+id/admin_dots_indicator"
             android:layout_width="65dp"
             android:layout_height="20dp"
-            android:layout_marginBottom="100dp"
             app:dotsColor="@color/white"
             app:dotsCornerRadius="8dp"
             app:dotsSize="10dp"
@@ -73,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.932"
+            app:layout_constraintVertical_bias="0.915"
             app:progressMode="true"
             app:selectedDotColor="@color/lightBlue" />
 
