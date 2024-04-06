@@ -29,6 +29,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         Log.d("FCM", "New token: " + token);
-        currentUserHandler.updateUserFcmTokenOnRefresh(token);
+        if (currentUserHandler.getCurrentUserId() != null) {
+            currentUserHandler.updateUserFcmTokenOnRefresh(token);
+        }
     }
 }

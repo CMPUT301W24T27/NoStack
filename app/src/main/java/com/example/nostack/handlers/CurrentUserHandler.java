@@ -82,6 +82,9 @@ public class CurrentUserHandler {
 
     public void updateUserFcmTokenOnRefresh(String token) {
         String userId = getCurrentUserId();
+        if (userId == null) {
+            return;
+        }
         userController.setUserFcmToken(userId, token)
             .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
             .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
