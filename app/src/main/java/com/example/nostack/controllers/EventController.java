@@ -271,7 +271,11 @@ public class EventController {
                 }
                 return Tasks.whenAll(tasks);
             }
-            return null;
+            else{
+                Log.d("EventController", "(deleteEvent) No attendees to unregister.");
+            }
+
+            return Tasks.whenAll(new ArrayList<Task<Void>>());
         }).continueWithTask(task -> {
             if (task.isSuccessful()) {
                 return eventRef.delete();

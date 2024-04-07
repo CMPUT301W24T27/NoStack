@@ -22,6 +22,8 @@ import com.example.nostack.services.ImageUploader;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.N;
 
@@ -215,10 +217,30 @@ public class EventViewModel extends ViewModel {
         eventController.deleteEvent(event.getId())
             .addOnSuccessListener(aVoid -> {
                 getAllEvents();
-                callback.onEventDeleted();
+
+                // Delete event banners
+                if (event.getEventBannerImgUrl() != null) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl(event.getEventBannerImgUrl());
+
+                    storageRef.delete()
+                        .addOnSuccessListener(a -> {
+                            callback.onEventDeleted();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d("EventViewModel", "Error deleting event banner, image", e);
+                            callback.onEventDeleteFailed();
+                        });
+                }
+                else{
+                    callback.onEventDeleted();
+                }
+
             })
             .addOnFailureListener(e -> {
                 // Handle failure
+                Log.d("EventViewModel", "Error deleting event banner, event", e);
+
                 callback.onEventDeleteFailed();
             });
     }
