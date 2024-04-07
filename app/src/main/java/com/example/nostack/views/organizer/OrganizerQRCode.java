@@ -112,13 +112,6 @@ public class OrganizerQRCode extends Fragment {
             }
         });
 
-//        eventViewModel.getEvent().observe(getViewLifecycleOwner(), e -> {
-//            if (e != null) {
-//                event = e;
-//                qrCodeViewModel.fetchQrCode(e.getCheckInQrId());
-//            }
-//        });
-
         qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), qr -> {
             if (qr != null) {
                 qrCode = qr;
@@ -132,6 +125,7 @@ public class OrganizerQRCode extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                qrCodeViewModel.clearQrCodeLiveData();
                 NavHostFragment.findNavController(OrganizerQRCode.this).popBackStack();
             }
         });
