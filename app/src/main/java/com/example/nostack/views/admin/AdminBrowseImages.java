@@ -21,6 +21,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
@@ -84,13 +85,8 @@ public class AdminBrowseImages extends Fragment {
             }
         });
 
-
         imageList.setAdapter(imageRecycleViewAdapter);
-        return rootView;
-    }
-
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        imageList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Watch for errors
         imageViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
@@ -109,13 +105,7 @@ public class AdminBrowseImages extends Fragment {
             }
             imageRecycleViewAdapter.notifyDataSetChanged();
         });
-
-//        imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-//                showDialog(imageArrayAdapter.getImage(position));
-//            }
-//        });
+        return rootView;
     }
 
     /**
