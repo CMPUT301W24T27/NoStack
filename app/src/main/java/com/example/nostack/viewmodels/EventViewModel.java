@@ -44,6 +44,14 @@ public class EventViewModel extends ViewModel {
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
     private final NotificationHandler notificationHandler = NotificationHandler.getSingleton();
 
+    /**
+     * Delete event callback
+     */
+    public interface DeleteEventCallback {
+        void onEventDeleted();
+        void onEventDeleteFailed();
+    }
+
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
     }
@@ -198,12 +206,21 @@ public class EventViewModel extends ViewModel {
         fetchEvent(event.getId());
     }
 
-    public void deleteEvent(String eventId) {
-        eventController.deleteEvent(eventId)
-                .addOnSuccessListener(aVoid -> getAllEvents())
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                });
+    /**
+     * Delete an event
+     * @param event event to delete
+     * @param callback callback to handle success or failure
+     */
+    public void deleteEvent(Event event, DeleteEventCallback callback) {
+        eventController.deleteEvent(event.getId())
+            .addOnSuccessListener(aVoid -> {
+                getAllEvents();
+                callback.onEventDeleted();
+            })
+            .addOnFailureListener(e -> {
+                // Handle failure
+                callback.onEventDeleteFailed();
+            });
     }
 
     public Task<Void> registerToEvent(String userId, String eventId) {

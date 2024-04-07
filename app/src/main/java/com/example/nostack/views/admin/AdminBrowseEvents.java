@@ -132,5 +132,34 @@ public class AdminBrowseEvents extends Fragment {
         eventDescription.setText(event.getDescription() == null ? "No description" : event.getDescription());
 
         imageViewHandler.setEventImage(event, eventBanner);
+
+        dialog.findViewById(R.id.admin_deleteEventButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteEvent(event);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * Delete an event
+     * @param event
+     * @return void
+     */
+    public void deleteEvent(Event event) {
+        eventViewModel.deleteEvent(event, new EventViewModel.DeleteEventCallback() {
+            @Override
+            public void onEventDeleted() {
+                dataList.remove(event);
+                eventArrayAdapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onEventDeleteFailed() {
+                Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
