@@ -140,23 +140,9 @@ public class AdminBrowseImages extends Fragment {
         imageType.setText(image.getType());
         imageCreated.setText((image.getCreated()));
 
-        String uri = image.getUrl();
-
-        if (uri != null) {
-            // Get image from firebase storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
-            final long ONE_MEGABYTE = 1024 * 1024;
-
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
-                RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getActivity().getResources(), scaledBmp);
-                d.setCornerRadius(50f);
-                imageBanner.setImageDrawable(d);
-            }).addOnFailureListener(exception -> {
-                Log.w("Image Profile", "Error getting Image banner", exception);
-            });
-        }
+        image.getImage(getContext()).addOnSuccessListener(drawable -> {
+            imageBanner.setImageDrawable(drawable);
+        });
 
         dialog.findViewById(R.id.admin_deleteImageButton).setOnClickListener(v -> {
             deleteImage(image);

@@ -53,9 +53,10 @@ public class ImageRecycleViewAdapter extends RecyclerView.Adapter<ImageViewHolde
         holder.imageSize.setText(images.get(position).getSize());
         holder.imageType.setText(images.get(position).getType());
 
-        Task<RoundedBitmapDrawable> drawableTask = images.get(position).getImage(context);
-        drawableTask.addOnSuccessListener(drawable -> {
+        images.get(position).getImage(context).addOnSuccessListener(drawable -> {
             holder.imageIcon.setImageDrawable(drawable);
+        }).addOnFailureListener(e -> {
+            Log.d("ImageRecycleViewAdapter", "Failed to get image: " + e.getMessage());
         });
     }
 
