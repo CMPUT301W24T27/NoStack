@@ -75,8 +75,8 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
-        eventList = rootView.findViewById(R.id.listView_yourEvents);
+        View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
+        eventList = rootView.findViewById(R.id.listView_upcomingEvents);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));

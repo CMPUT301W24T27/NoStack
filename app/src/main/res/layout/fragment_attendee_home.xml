@@ -15,12 +15,12 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/event_tab_navigation"
             android:layout_width="379dp"
-            android:layout_height="564dp"
+            android:layout_height="600dp"
             app:layout_constraintBottom_toTopOf="@+id/dots_indicator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gridLayout1"
-            app:layout_constraintVertical_bias="0.443" />
+            app:layout_constraintVertical_bias="0.45999998" />
 
         <GridLayout
             android:id="@+id/gridLayout1"
@@ -37,24 +37,24 @@
 
             <TextView
                 android:id="@+id/text_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_row="0"
                 android:layout_column="0"
                 android:text="Welcome, "
-                android:textSize="17sp"
                 android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/text_userWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_row="0"
                 android:layout_column="1"
-                android:text="User"
-                android:textSize="17sp"
-                android:textColor="@color/yellow"
                 android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:text="User"
+                android:textColor="@color/SignInUpTextColor"
+                android:textSize="17sp" />
 
         </GridLayout>
 
@@ -63,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.906"
@@ -75,7 +76,7 @@
             android:id="@+id/dots_indicator"
             android:layout_width="65dp"
             android:layout_height="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="21dp"
             app:dotsColor="@color/white"
             app:dotsCornerRadius="8dp"
@@ -99,12 +100,13 @@
             android:text="Scan QR Code"
             android:textColor="@color/black"
             android:textSize="20sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.50"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toBottomOf="@+id/dots_indicator"
-            
             app:layout_constraintVertical_bias="0.98" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
