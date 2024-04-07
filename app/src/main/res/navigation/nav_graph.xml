@@ -76,6 +76,9 @@
         <action
             android:id="@+id/action_organizerEventCreate_to_organizerReuseQr"
             app:destination="@id/organizerReuseQr" />
+        <action
+            android:id="@+id/action_organizerEventCreate_self"
+            app:destination="@id/organizerEventCreate" />
     </fragment>
     <fragment
         android:id="@+id/organizerViewEvent"
