@@ -97,6 +97,16 @@ public class NavbarConfig {
     public void setAdmin(Resources resources) {
         // Set common actions
         setCommonActions(resources);
+
+        // Currently disable hero button for admin
+        scanQRButton.setVisibility(scanQRButton.INVISIBLE);
+
+        // Home button re-enable hero button
+        homeButton.setOnClickListener(v -> {
+            scanQRButton.setVisibility(scanQRButton.VISIBLE);
+            navHostFragment.getNavController().navigate(R.id.startUp);
+            setInvisible();
+        });
     }
 
     /**
