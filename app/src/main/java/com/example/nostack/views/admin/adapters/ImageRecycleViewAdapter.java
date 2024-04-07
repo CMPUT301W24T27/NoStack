@@ -1,6 +1,8 @@
 package com.example.nostack.views.admin.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +11,19 @@ import android.widget.ImageView;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Image;
 import com.example.nostack.views.event.adapters.MyViewHolder;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 public class ImageRecycleViewAdapter extends RecyclerView.Adapter<ImageViewHolder>{
@@ -44,6 +52,11 @@ public class ImageRecycleViewAdapter extends RecyclerView.Adapter<ImageViewHolde
         holder.imageDate.setText(images.get(position).getCreated());
         holder.imageSize.setText(images.get(position).getSize());
         holder.imageType.setText(images.get(position).getType());
+
+        Task<RoundedBitmapDrawable> drawableTask = images.get(position).getImage(context);
+        drawableTask.addOnSuccessListener(drawable -> {
+            holder.imageIcon.setImageDrawable(drawable);
+        });
     }
 
     @Override

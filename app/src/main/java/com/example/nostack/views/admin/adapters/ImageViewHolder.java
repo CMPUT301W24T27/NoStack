@@ -1,6 +1,7 @@
 package com.example.nostack.views.admin.adapters;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import com.example.nostack.R;
 
 public class ImageViewHolder extends RecyclerView.ViewHolder{
     public TextView imageName, imageDate, imageSize, imageType;
+    public ImageView imageIcon;
 
     public ImageViewHolder(@NonNull View itemView, ImageArrayRecycleViewInterface imageArrayRecycleViewInterface) {
         super(itemView);
@@ -17,6 +19,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder{
         imageDate = itemView.findViewById(R.id.ImageListContentCreatedText);
         imageSize = itemView.findViewById(R.id.ImageListContentSizeText);
         imageType = itemView.findViewById(R.id.ImageListContentTypeText);
+        imageIcon = itemView.findViewById(R.id.admin_EventListContentLocationImage);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

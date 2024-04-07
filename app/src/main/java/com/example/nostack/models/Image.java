@@ -1,5 +1,17 @@
 package com.example.nostack.models;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 public class Image {
     private String url;
     private String path;
@@ -62,5 +74,26 @@ public class Image {
 
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
+    }
+
+    public Task<RoundedBitmapDrawable> getImage(Context context){
+        if(url == null) {
+            Log.d("Image", "URL is null");
+            return null;
+        }
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        return storageRef.getBytes(ONE_MEGABYTE).continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            byte[] bytes = task.getResult();
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), scaledBmp);
+            d.setCornerRadius(50f);
+            return d;
+        });
     }
 }

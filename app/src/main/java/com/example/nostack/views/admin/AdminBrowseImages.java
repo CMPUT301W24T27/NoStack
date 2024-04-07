@@ -89,6 +89,7 @@ public class AdminBrowseImages extends Fragment {
             }
         });
         imageList.setAdapter(imageRecycleViewAdapter);
+        imageList.setItemViewCacheSize(100); // Sets cached items, prevents the reloading of images
         imageList.setLayoutManager(new LinearLayoutManager(getContext()));
         skeleton = SkeletonProvider.getSingleton().adminImageSkeleton(imageList);
         skeleton.showSkeleton();
