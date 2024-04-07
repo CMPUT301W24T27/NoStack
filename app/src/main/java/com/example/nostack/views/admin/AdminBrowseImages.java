@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
@@ -84,10 +85,15 @@ public class AdminBrowseImages extends Fragment {
                 showDialog(dataList.get(position));
             }
         });
-
         imageList.setAdapter(imageRecycleViewAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         // Watch for errors
         imageViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
@@ -105,7 +111,6 @@ public class AdminBrowseImages extends Fragment {
             }
             imageRecycleViewAdapter.notifyDataSetChanged();
         });
-        return rootView;
     }
 
     /**
