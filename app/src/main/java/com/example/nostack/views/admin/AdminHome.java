@@ -88,17 +88,10 @@ public class AdminHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
-//        TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
         viewPager = view.findViewById(R.id.admin_viewPager2);
         viewPager.setAdapter(new MyFragmentAdapter(this));
         dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
         dotsIndicator.attachTo(viewPager);
-
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-//            if (user != null) {
-//                userWelcome.setText(user.getUsername());
-//            }
-        });
 
         view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +103,6 @@ public class AdminHome extends Fragment {
 
         ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
         imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
-
 
         // Inflate the layout for this fragment
         return view;
