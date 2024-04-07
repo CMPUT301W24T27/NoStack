@@ -26,6 +26,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -45,6 +46,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -207,12 +209,15 @@ public class OrganizerEventCreate extends Fragment {
                     } catch (Exception e) {
                         eventBannerUri = Uri.parse((String) eventImageView.getTag());
                     }
+
                     Uri compressedImageUri = null;
-                    try {
-                        compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
-                    } catch (Exception e) {
-                        Log.w("Event creation", "Image compression failed:", e);
-                        compressedImageUri = null;
+                    if(eventBannerUri != null){
+                        try {
+                            compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
+                        } catch (Exception e) {
+                            Log.w("Event creation", "Image compression failed:", e);
+                            compressedImageUri = null;
+                        }
                     }
 
                     // Watch for errors
@@ -224,8 +229,26 @@ public class OrganizerEventCreate extends Fragment {
                     });
 
                     if (isEditing) {
-                        eventViewModel.updateEvent(event, compressedImageUri);
-                    } else {
+                        eventViewModel.updateEvent(event, compressedImageUri, new EventViewModel.UpdateImageCallback() {
+                            @Override
+                            public void onImageUpdated(Uri uri) {
+                                if(uri == null){
+                                    return;
+                                }
+                                eventImageView.setTag(uri);
+                                eventImageView.setImageURI(Uri.parse(uri.toString()));
+                                Log.d("URI", uri.toString());
+                            }
+
+                            @Override
+                            public void onImageUpdateFailed() {
+                                Toast.makeText(getContext(), "Failed to update image", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                    }
+                    else {
                         Boolean reuse = eventReuseQrCheckBox.isChecked();
                         if (reuse) {
                             eventViewModel.setEventWithReuse(event, compressedImageUri);

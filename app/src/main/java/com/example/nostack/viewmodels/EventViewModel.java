@@ -27,6 +27,8 @@ import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.N;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
@@ -178,14 +180,18 @@ public class EventViewModel extends ViewModel {
         fetchEvent(event.getId());
     }
 
-    public void updateEvent(Event event, @Nullable Uri imageUri) {
+    public interface UpdateImageCallback {
+        void onImageUpdated(Uri imageUrl);
+        void onImageUpdateFailed();
+    }
+
+    public void updateEvent(Event event, @Nullable Uri imageUri, @Nullable UpdateImageCallback callback) {
         event.setCreatedDate(new Date());
         Runnable addEventRunnable = () -> eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
                     fetchAllEvents();
                     fetchOrganizerEvents(userId);
-
                 }).addOnFailureListener( e-> {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());
@@ -197,9 +203,13 @@ public class EventViewModel extends ViewModel {
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
                         addEventRunnable.run();
+
+                        Uri imageURI = Uri.parse(imageUrl);
+                        callback.onImageUpdated(imageURI);
                     }).addOnFailureListener(e -> {
                         Log.e("EventViewModel", "Error uploading image", e);
                         errorLiveData.postValue(e.getMessage());
+                        callback.onImageUpdateFailed();
                     });
         } else {
             addEventRunnable.run();

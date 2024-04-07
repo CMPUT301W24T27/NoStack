@@ -63,10 +63,17 @@ public class ImageController {
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
+
+                    Log.d("ImageController", task.getResult().toString());
                     return task.getResult().toString();
                 });
     }
 
+    /**
+     * Remove image from database reference
+     * @param image
+     * @return
+     */
     public Task<Void> removeReference(Image image) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("referenceId", null);
