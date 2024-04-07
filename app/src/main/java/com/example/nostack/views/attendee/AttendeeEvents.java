@@ -20,10 +20,12 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +45,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
     private NavbarConfig navbarConfig;
+    private Skeleton skeleton;
 
     public AttendeeEvents() {
     }
@@ -80,6 +83,10 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Skeleton
+        skeleton = SkeletonProvider.getSingleton().eventListSkeleton(eventList);
+        skeleton.showSkeleton();
+
         return rootView;
     }
 
@@ -111,7 +118,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
                 eventArrayAdapter.addEvent(event);
             }
             eventArrayAdapter.notifyDataSetChanged();
-
+            skeleton.showOriginal();
         });
     }
 }

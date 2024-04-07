@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -19,10 +20,13 @@ import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
 import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
+import com.faltenreich.skeletonlayout.Skeleton;
+import com.faltenreich.skeletonlayout.SkeletonLayoutUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -39,6 +43,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
     private NavbarConfig navbarConfig;
+    private Skeleton skeleton;
     public AttendeeBrowse() {
     }
 
@@ -73,6 +78,11 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         navbarConfig = NavbarConfig.getSingleton();
+
+        // Skeleton
+        skeleton = SkeletonProvider.getSingleton().eventListSkeleton(eventList);
+        skeleton.showSkeleton();
+
         return rootView;
     }
 
@@ -95,6 +105,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
                 eventArrayAdapter.addEvent(event);
             }
             eventArrayAdapter.notifyDataSetChanged();
+            skeleton.showOriginal();
         });
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
     }

@@ -19,6 +19,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         // Register NavbarConfig
         NavbarConfig.setOwnerActivity(this);
         NavbarConfig.setSingleton();
+
+        // Register SkeletonProvider
+        SkeletonProvider.setOwnerActivity(this);
+        SkeletonProvider.setSingleton();
 
 
         // Register receiver for notifications
