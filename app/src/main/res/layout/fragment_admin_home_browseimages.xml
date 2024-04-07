@@ -39,8 +39,8 @@
 
     </GridLayout>
 
-    <ListView
-        android:id="@+id/admin_viewPager2"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/admin_imageView"
         android:layout_width="369dp"
         android:layout_height="554dp"
         app:layout_constraintBottom_toBottomOf="parent"

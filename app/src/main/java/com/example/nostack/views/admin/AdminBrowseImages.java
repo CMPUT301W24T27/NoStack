@@ -8,22 +8,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Image;
 import com.example.nostack.viewmodels.ImageViewModel;
 import com.example.nostack.views.admin.adapters.ImageArrayAdapter;
+import com.example.nostack.views.admin.adapters.ImageArrayRecycleViewInterface;
+import com.example.nostack.views.admin.adapters.ImageRecycleViewAdapter;
+import com.faltenreich.skeletonlayout.recyclerview.SkeletonRecyclerViewAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -35,7 +41,8 @@ import java.util.List;
  */
 public class AdminBrowseImages extends Fragment {
     private ImageArrayAdapter imageArrayAdapter;
-    private ListView imageList;
+    private ImageRecycleViewAdapter imageRecycleViewAdapter;
+    private RecyclerView imageList;
     private ArrayList<Image> dataList;
     private ImageViewModel imageViewModel;
 
@@ -69,9 +76,16 @@ public class AdminBrowseImages extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_admin_home_browseimages, container, false);
-        imageList = rootView.findViewById(R.id.admin_viewPager2);
-        imageArrayAdapter = new ImageArrayAdapter(getContext(), dataList, this);
-        imageList.setAdapter(imageArrayAdapter);
+        imageList = rootView.findViewById(R.id.admin_imageView);
+        imageRecycleViewAdapter = new ImageRecycleViewAdapter(getContext(), dataList, this, new ImageArrayRecycleViewInterface() {
+            @Override
+            public void onImageClick(int position) {
+                showDialog(dataList.get(position));
+            }
+        });
+
+
+        imageList.setAdapter(imageRecycleViewAdapter);
         return rootView;
     }
 
@@ -89,19 +103,19 @@ public class AdminBrowseImages extends Fragment {
         // Fetch and get Images
         imageViewModel.fetchAllImages();
         imageViewModel.getAllImages().observe(getViewLifecycleOwner(), images -> {
-            imageArrayAdapter.clear();
+            imageRecycleViewAdapter.clear();
             for (Image image : images) {
-                imageArrayAdapter.addImage(image);
+                imageRecycleViewAdapter.addImage(image);
             }
-            imageArrayAdapter.notifyDataSetChanged();
+            imageRecycleViewAdapter.notifyDataSetChanged();
         });
 
-        imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                showDialog(imageArrayAdapter.getImage(position));
-            }
-        });
+//        imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+//                showDialog(imageArrayAdapter.getImage(position));
+//            }
+//        });
     }
 
     /**
@@ -159,8 +173,8 @@ public class AdminBrowseImages extends Fragment {
             @Override
             public void onImageDeleted() {
                 Toast.makeText(getContext(), "Image deleted.", Toast.LENGTH_SHORT).show();
-                imageArrayAdapter.remove(image);
-                imageArrayAdapter.notifyDataSetChanged();
+                imageRecycleViewAdapter.remove(image);
+                imageRecycleViewAdapter.notifyDataSetChanged();
             }
 
             @Override
