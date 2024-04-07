@@ -45,8 +45,15 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation ("androidx.gridlayout:gridlayout:1.0.0")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation("androidx.test:rules:1.5.0")
+    implementation("androidx.test.espresso:espresso-contrib:3.5.1"){
+        exclude(module = "proto-google-common-protos")
+        exclude(module = "protolite-well-known-types")
+        exclude(module = "protobuf-lite")
+    }
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.tbuonomo:dotsindicator:5.0")
