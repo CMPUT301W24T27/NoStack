@@ -125,15 +125,11 @@ public class AdminBrowseEvents extends Fragment {
         } else {
             eventTitle.setText("Event Name: N/A");
         }
-        eventStartDate.setText("StartDate: " + event.getStartDate());
+        eventStartDate.setText("Start Date: " + event.getStartDate());
         eventEndDate.setText("End Date: " + event.getEndDate());
         eventLocation.setText("Location: " + event.getLocation());
-        if (event.getCapacity() > 0){
-            eventCapacity.setText("Capacity: " + event.getCapacity());
-        } else {
-            eventCapacity.setText("Capacity: N/A");
-        }
-        eventDescription.setText("Description: " + event.getDescription());
+        eventCapacity.setText("Capacity: " + (event.getCapacity() <= 0 ? "Unlimited" : event.getCapacity()));
+        eventDescription.setText(event.getDescription() == null ? "No description" : event.getDescription());
 
         imageViewHandler.setEventImage(event, eventBanner);
     }
