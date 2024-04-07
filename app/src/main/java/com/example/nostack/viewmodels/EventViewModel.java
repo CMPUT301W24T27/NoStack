@@ -22,6 +22,8 @@ import com.example.nostack.services.ImageUploader;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.N;
 
@@ -43,6 +45,14 @@ public class EventViewModel extends ViewModel {
     private final UserController userController = UserController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
     private final NotificationHandler notificationHandler = NotificationHandler.getSingleton();
+
+    /**
+     * Delete event callback
+     */
+    public interface DeleteEventCallback {
+        void onEventDeleted();
+        void onEventDeleteFailed();
+    }
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
@@ -152,7 +162,7 @@ public class EventViewModel extends ViewModel {
         };
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
@@ -182,7 +192,7 @@ public class EventViewModel extends ViewModel {
                 });
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
@@ -198,12 +208,41 @@ public class EventViewModel extends ViewModel {
         fetchEvent(event.getId());
     }
 
-    public void deleteEvent(String eventId) {
-        eventController.deleteEvent(eventId)
-                .addOnSuccessListener(aVoid -> getAllEvents())
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                });
+    /**
+     * Delete an event
+     * @param event event to delete
+     * @param callback callback to handle success or failure
+     */
+    public void deleteEvent(Event event, DeleteEventCallback callback) {
+        eventController.deleteEvent(event.getId())
+            .addOnSuccessListener(aVoid -> {
+                getAllEvents();
+
+                // Delete event banners
+                if (event.getEventBannerImgUrl() != null) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl(event.getEventBannerImgUrl());
+
+                    storageRef.delete()
+                        .addOnSuccessListener(a -> {
+                            callback.onEventDeleted();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d("EventViewModel", "Error deleting event banner, image", e);
+                            callback.onEventDeleteFailed();
+                        });
+                }
+                else{
+                    callback.onEventDeleted();
+                }
+
+            })
+            .addOnFailureListener(e -> {
+                // Handle failure
+                Log.d("EventViewModel", "Error deleting event banner, event", e);
+
+                callback.onEventDeleteFailed();
+            });
     }
 
     public Task<Void> registerToEvent(String userId, String eventId) {

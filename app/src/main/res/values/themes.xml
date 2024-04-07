@@ -4,6 +4,7 @@
         font-family: 'Poppins';
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 
     <style name="Theme.NoStack" parent="Base.Theme.NoStack" />

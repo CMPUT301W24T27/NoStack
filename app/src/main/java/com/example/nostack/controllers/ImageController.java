@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.models.Image;
+import com.example.nostack.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
@@ -65,15 +67,35 @@ public class ImageController {
                 });
     }
 
-    public Task<Void> removeReference(String imageId) {
+    public Task<Void> removeReference(Image image) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("referenceId", null);
         updates.put("path", null);
-        return imageCollectionReference.document(imageId).update(updates);
+        return imageCollectionReference.document(image.getId()).update(updates);
     }
 
-    // TODO: Deleting an Image, may be a little too nuanced, will be done later on.
-    public Task<Void> deleteImage(String imageId) {
-        return Tasks.whenAll();
+    /**
+     * Delete image from storage and database
+     * @param image
+     * @return
+     */
+    public Task<Void> deleteImage(Image image) {
+        StorageReference storageRef = storage.getReferenceFromUrl(image.getUrl());
+        Task<Void> deleteImage = storageRef.delete();
+        Task<Void> deleteDocument = imageCollectionReference.document(image.getId()).delete();
+
+        if(image.getReferenceId() != null) {
+            removeReference(image);
+        }
+
+        // If its the user's own profile picture
+        if(currentUserHandler.getCurrentUser().getProfileImageUrl().contains(image.getId())) {
+            Log.d("ImageController", "Deleting user profile image.");
+            User user = currentUserHandler.getCurrentUser();
+            user.setProfileImageUrl(null);
+            currentUserHandler.updateUser(user);
+        }
+
+        return Tasks.whenAll(deleteImage, deleteDocument);
     }
 }

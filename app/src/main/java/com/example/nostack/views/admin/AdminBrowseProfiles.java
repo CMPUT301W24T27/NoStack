@@ -1,43 +1,31 @@
 package com.example.nostack.views.admin;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.handlers.ImageViewHandler;
-import com.example.nostack.models.Event;
-import com.example.nostack.models.Image;
 import com.example.nostack.models.User;
-import com.example.nostack.views.event.adapters.EventArrayAdapter;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.user.UserArrayAdapter;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -135,6 +123,7 @@ public class AdminBrowseProfiles extends Fragment {
         TextView userLastName = dialog.findViewById(R.id.admin_userDialogLastName);
         TextView userUUID = dialog.findViewById(R.id.admin_userDialogUUID);
         TextView userGender = dialog.findViewById(R.id.admin_userDialogGender);
+        Button deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
 
 
         if (user.getUsername() != null){
@@ -145,12 +134,71 @@ public class AdminBrowseProfiles extends Fragment {
         userEmail.setText("Email: " + user.getEmailAddress());
         userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
         userRole.setText("Role: " + user.getRole());
-        userFirstName.setText("First Name: " + user.getFirstName());
-        userLastName.setText("Last Name: " + user.getLastName());
+        userFirstName.setText(user.getFirstName());
+        userLastName.setText(user.getLastName());
         userUUID.setText("Uuid: " + user.getUuid());
         userGender.setText("Gender: " + user.getGender());
 
         imageViewHandler.setUserProfileImage(user, userBanner,getResources(), null);
+
+        deleteUserButton.setOnClickListener(v -> {
+            if(deleteProfile(user)){
+                // Update view after deleting user
+                dataList.remove(user);
+                UserArrayAdapter.notifyDataSetChanged();
+                // Close dialog
+                dialog.dismiss();
+                Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    /**
+     * Delete user profile
+     * @param user
+     * @return true if user is deleted, false otherwise
+     */
+    private boolean deleteProfile(User user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("users");
+        Query query = users.whereEqualTo("uuid", user.getUuid());
+
+        // Check if it is the current user
+        if (user.getUuid().equals(userViewModel.getUser().getValue().getUuid())) {
+            Toast.makeText(getContext(), "Cannot delete yourself.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Delete user events
+                EventController eventController = EventController.getInstance();
+                eventController.deleteEventsByUser(user.getUuid()).addOnSuccessListener(aVoid -> {
+                    Log.d("Delete User", "User events successfully deleted.");
+                }).addOnFailureListener(e -> {
+                    Log.e("Delete User", "Failed to delete user events.", e);
+                });
+
+                // Delete user
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().delete();
+                }
+
+                // Delete user profile image
+                if(user.getProfileImageUrl() != null) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl(user.getProfileImageUrl());
+                    storageRef.delete().addOnSuccessListener(aVoid -> {
+                        Log.d("Delete User", "User profile image successfully deleted.");
+                    }).addOnFailureListener(e -> {
+                        Log.e("Delete User", "Failed to delete user profile image.", e);
+                    });
+                }
+            } else {
+                Log.d("Delete User", "Error getting documents: ", task.getException());
+            }
+        });
+
+        return true;
+    }
 }

@@ -104,7 +104,7 @@ public class Profile extends User {
                         updateUserFields(user);
                         UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
                         userViewModel.setUser(this);
-                        Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getFirstName(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getFirstName(), Snackbar.LENGTH_SHORT).show();
                         res.complete(true);
                     } else {
                         Log.w("Profile class", "Retrieved user data is null");
