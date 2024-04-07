@@ -51,6 +51,7 @@ public class OrganizerEventAttendeeList extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private AttendanceViewModel attendanceViewModel;
+    private EventViewModel eventViewModel;
     private EventAttendeesArrayAdapter attendeesArrayAdapter;
     private ArrayList<Attendance> dataList;
     private ArrayList<Attendance> presentAttendees;
@@ -86,12 +87,10 @@ public class OrganizerEventAttendeeList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("eventData");
-        }
         dataList = new ArrayList<>();
         presentAttendees = new ArrayList<>();
         attendanceViewModel = new ViewModelProvider(requireActivity()).get(AttendanceViewModel.class);
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
     }
 
@@ -125,18 +124,22 @@ public class OrganizerEventAttendeeList extends Fragment {
             }
         });
 
-        // Fetch and get events
-        attendanceViewModel.fetchAttendanceByEvent(event.getId());
+        // Fetch and get attendance, present attendance, and event details
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+            this.event = event;
+            attendanceViewModel.fetchAttendanceByEvent(event.getId());
+            attendanceViewModel.fetchPresentAttByEvent(event.getId());
+        });
+
         attendanceViewModel.getAttendanceByEvent().observe(getViewLifecycleOwner(), attendances -> {
             attendeesArrayAdapter.clear();
             for (Attendance attendance : attendances) {
                 attendeesArrayAdapter.addAttendance(attendance);
             }
             attendeesArrayAdapter.notifyDataSetChanged();
-
+            updateScreenInformation(view);
         });
 
-        attendanceViewModel.fetchPresentAttByEvent(event.getId());
         attendanceViewModel.getPresentAttByEvent().observe(getViewLifecycleOwner(), attendances -> {
             presentAttendees = new ArrayList<>();
             for (Attendance attendance : attendances) {
@@ -153,8 +156,6 @@ public class OrganizerEventAttendeeList extends Fragment {
                 mileStoneText.setText(presentAttendees.size() + "/" + 100 + " Present Attendees!");
             }
         });
-
-        updateScreenInformation(view);
         return view;
     }
 
@@ -165,9 +166,7 @@ public class OrganizerEventAttendeeList extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
+                eventViewModel.fetchEvent(event.getId());
                 NavHostFragment.findNavController(OrganizerEventAttendeeList.this).popBackStack();
             }
         });

@@ -100,10 +100,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
     public void OnItemClick(int position) {
         Event event = eventArrayAdapter.getEvent(position);
         eventViewModel.fetchEvent(event.getId());
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event", event);
-
         NavHostFragment.findNavController(AttendeeBrowse.this)
-            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+            .navigate(R.id.action_attendeeHome_to_attendeeEvent);
     };
 }

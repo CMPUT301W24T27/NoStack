@@ -63,6 +63,7 @@ public class AttendeeHome extends Fragment {
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
     private LocationHandler locationHandler;
+    private Boolean processingQr = true;
 
 
     public AttendeeHome() {
@@ -197,6 +198,7 @@ public class AttendeeHome extends Fragment {
         view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processingQr = false;
                 scanCode();
             }
         });
@@ -243,7 +245,7 @@ public class AttendeeHome extends Fragment {
     }
 
     public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
-        if (result.getContents() != null) {
+        if (result.getContents() != null && !processingQr) {
             if (result.getContents().charAt(0) == '0') {
                 handleCheckInQR(result.getContents().substring(2));
             } else if (result.getContents().charAt(0) == '1') {
@@ -257,11 +259,11 @@ public class AttendeeHome extends Fragment {
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
-                if (event != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("event", event);
+                if (event != null && !processingQr) {
+                    processingQr = true;
+                    eventViewModel.fetchEvent(eventUID);
                     NavHostFragment.findNavController(AttendeeHome.this)
-                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent);
                 }
             }
         });
@@ -280,9 +282,8 @@ public class AttendeeHome extends Fragment {
                     eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
                         @Override
                         public void onChanged(Event event) {
-                            if (event != null) {
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("event", event);
+                            if (event != null && !processingQr) {
+                                processingQr = true;
                                 Location location = locationHandler.getLocation();
                                 eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location)
                                         .addOnSuccessListener(aVoid -> {
@@ -293,8 +294,13 @@ public class AttendeeHome extends Fragment {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     dialogInterface.dismiss();
-                                                    NavHostFragment.findNavController(AttendeeHome.this)
-                                                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                                                    eventViewModel.fetchEvent(eventUID);
+                                                    try {
+                                                        processingQr = false;
+                                                        NavHostFragment.findNavController(AttendeeHome.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
+                                                    } catch (Exception e){
+                                                        Log.e("AttendeeHome", "Error navigating to AttendeeEvent");
+                                                    }
                                                 }
                                             }).show();
                                         })
