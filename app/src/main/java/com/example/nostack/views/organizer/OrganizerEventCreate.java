@@ -225,6 +225,7 @@ public class OrganizerEventCreate extends Fragment {
 
                     if (isEditing) {
                         eventViewModel.updateEvent(event, compressedImageUri);
+                        NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                     } else {
                         Boolean reuse = eventReuseQrCheckBox.isChecked();
                         if (reuse) {
