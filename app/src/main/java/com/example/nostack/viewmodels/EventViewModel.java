@@ -152,7 +152,7 @@ public class EventViewModel extends ViewModel {
         };
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
@@ -182,7 +182,7 @@ public class EventViewModel extends ViewModel {
                 });
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
