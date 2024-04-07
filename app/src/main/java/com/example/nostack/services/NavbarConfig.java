@@ -79,6 +79,8 @@ public class NavbarConfig {
      */
     public void setAttendee(Resources resources){
         setCommonActions(resources);
+        scanQRButton.setVisibility(scanQRButton.VISIBLE);
+
     }
 
     /**
@@ -88,6 +90,8 @@ public class NavbarConfig {
     public void setOrganizer(Resources resources){
         // Set common actions
         setCommonActions(resources);
+        scanQRButton.setVisibility(scanQRButton.VISIBLE);
+
     }
 
     /**
@@ -100,13 +104,6 @@ public class NavbarConfig {
 
         // Currently disable hero button for admin
         scanQRButton.setVisibility(scanQRButton.INVISIBLE);
-
-        // Home button re-enable hero button
-        homeButton.setOnClickListener(v -> {
-            scanQRButton.setVisibility(scanQRButton.VISIBLE);
-            navHostFragment.getNavController().navigate(R.id.startUp);
-            setInvisible();
-        });
     }
 
     /**
@@ -123,7 +120,6 @@ public class NavbarConfig {
         // Set home button action
         homeButton.setOnClickListener(v -> {
             navHostFragment.getNavController().navigate(R.id.startUp);
-            setInvisible();
         });
 
         // Set profile button action

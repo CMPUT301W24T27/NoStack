@@ -76,6 +76,11 @@ public class Image {
         this.referenceId = referenceId;
     }
 
+    /**
+     * Get the image from the storage
+     * @param context The context of the activity
+     * @return  An image in the form of a RoundedBitmapDrawable
+     */
     public Task<RoundedBitmapDrawable> getImage(Context context){
         if(url == null) {
             Log.d("Image", "URL is null");

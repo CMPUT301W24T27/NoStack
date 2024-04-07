@@ -20,6 +20,7 @@ import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Profile;
 import com.example.nostack.models.User;
 import com.example.nostack.services.GenerateName;
+import com.example.nostack.services.NavbarConfig;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class StartUp extends Fragment {
     private Profile profile;
     private AlertDialog dialog;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
 
     public StartUp() {
         // Required empty public constructor
@@ -105,6 +107,8 @@ public class StartUp extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_start_up, container, false);
         String uuid = profile.getUuid();
+        navbarConfig = NavbarConfig.getSingleton();
+        navbarConfig.setInvisible();
 
         if (!profile.exists()) {
             try {
