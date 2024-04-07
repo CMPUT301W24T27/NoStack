@@ -28,6 +28,7 @@ import com.example.nostack.models.Event;
 import com.example.nostack.models.Image;
 import com.example.nostack.models.ImageDimension;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
@@ -62,6 +63,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
     private EventViewModel eventViewModel;
     private EventArrayAdapterRecycleView eventArrayAdapter;
     private ImageViewHandler imageViewHandler;
+    private NavbarConfig navbarConfig;
 
 
     public OrganizerHome() {
@@ -103,6 +105,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
         imageViewHandler = ImageViewHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         dataList = new ArrayList<>();
     }
 
@@ -156,6 +159,15 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             }
         });
 
+        // Navbar config
+        navbarConfig.setOrganizer(getResources());
+        navbarConfig.setHeroAction(() -> {
+            AppCompatActivity ownerActivity = navbarConfig.getOwnerActivity();
+            NavHostFragment navHostFragment = (NavHostFragment) ownerActivity.getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+            navHostFragment.getNavController().navigate(R.id.action_organizerHome_to_organizerEvent);
+            navbarConfig.setInvisible();
+        });
+
         return view;
     }
 
@@ -181,5 +193,6 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         bundle.putSerializable("event", event);
         NavHostFragment.findNavController(OrganizerHome.this)
                 .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
+        navbarConfig.setInvisible();
     }
 }

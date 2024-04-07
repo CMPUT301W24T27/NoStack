@@ -35,6 +35,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -91,6 +92,7 @@ public class OrganizerEventCreate extends Fragment {
     private EventViewModel eventViewModel;
     private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
     private Boolean isEditing;
     private Boolean isUnlimited;
 
@@ -128,6 +130,7 @@ public class OrganizerEventCreate extends Fragment {
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageUploader = new ImageUploader();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri o) {

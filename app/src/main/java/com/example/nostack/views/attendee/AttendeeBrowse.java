@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.models.Event;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
@@ -37,6 +38,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
     private RecyclerView eventList;
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
+    private NavbarConfig navbarConfig;
     public AttendeeBrowse() {
     }
 
@@ -70,6 +72,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
         eventList = rootView.findViewById(R.id.listView_yourEvents);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
+        navbarConfig = NavbarConfig.getSingleton();
         return rootView;
     }
 
@@ -105,5 +108,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
 
         NavHostFragment.findNavController(AttendeeBrowse.this)
             .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+
+        navbarConfig.setInvisible();
     };
 }

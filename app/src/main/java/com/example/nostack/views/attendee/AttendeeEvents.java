@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
@@ -41,6 +42,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
 
     public AttendeeEvents() {
     }
@@ -55,6 +57,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
         super.onCreate(savedInstanceState);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         dataList = new ArrayList<>();
     }
 
@@ -86,7 +89,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
         Bundle bundle = new Bundle();
         bundle.putSerializable("event", event);
         NavHostFragment.findNavController(AttendeeEvents.this).navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-        return;
+        navbarConfig.setInvisible();
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {

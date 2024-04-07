@@ -66,6 +66,14 @@ public class NavbarConfig {
     }
 
     /**
+     * Get the owner activity of NavbarConfig
+     * @return AppCompatActivity
+     */
+    public static AppCompatActivity getOwnerActivity() {
+        return ownerActivity;
+    }
+
+    /**
      * Set the navbar for the attendee
      * @param resources
      */
@@ -105,18 +113,33 @@ public class NavbarConfig {
         // Set home button action
         homeButton.setOnClickListener(v -> {
             navHostFragment.getNavController().navigate(R.id.startUp);
-            navbar.setVisibility(navbar.INVISIBLE);
+            setInvisible();
         });
 
         // Set profile button action
         profileButton.setOnClickListener(v -> {
             navHostFragment.getNavController().navigate(R.id.userProfile);
+            setInvisible();
         });
 
         // Set profile picture
         imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileButton, resources, new ImageDimension(100, 100));
 
         // Set visibility of navbar
+        setVisible();
+    }
+
+    /**
+     * Set the visibility of the navbar
+     */
+    public void setVisible(){
         navbar.setVisibility(navbar.VISIBLE);
+    }
+
+    /**
+     * Set the invisibility of the navbar
+     */
+    public void setInvisible(){
+        navbar.setVisibility(navbar.INVISIBLE);
     }
 }
