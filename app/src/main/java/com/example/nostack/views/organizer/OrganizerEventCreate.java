@@ -229,13 +229,12 @@ public class OrganizerEventCreate extends Fragment {
                     });
 
                     if (isEditing) {
-                        Uri finalCompressedImageUri = compressedImageUri;
-                        Log.d("Event creation", eventBannerUri.toString());
-                        Log.d("Event creation", compressedImageUri.toString());
-                        Log.d("Event creation", event.getEventBannerImgUrl());
                         eventViewModel.updateEvent(event, compressedImageUri, new EventViewModel.UpdateImageCallback() {
                             @Override
                             public void onImageUpdated(Uri uri) {
+                                if(uri == null){
+                                    return;
+                                }
                                 eventImageView.setTag(uri);
                                 eventImageView.setImageURI(Uri.parse(uri.toString()));
                                 Log.d("URI", uri.toString());
