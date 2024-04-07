@@ -168,7 +168,8 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
                         .navigate(R.id.action_organizerHome_to_userProfile);
             }
         });
-
+        TextView userWelcome = view.findViewById(R.id.text_userWelcome);
+        userWelcome.setText(currentUserHandler.getCurrentUser().getUsername());
         ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
         imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
     }
