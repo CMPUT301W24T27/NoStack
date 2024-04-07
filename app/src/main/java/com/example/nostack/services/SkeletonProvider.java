@@ -43,4 +43,13 @@ public class SkeletonProvider {
 
         return skeleton;
     }
+
+    public Skeleton adminImageSkeleton(RecyclerView imageList){
+        skeleton = SkeletonLayoutUtils.applySkeleton(imageList, R.layout.imagelistcontent, 5);
+        skeleton.setMaskColor(ContextCompat.getColor(ownerActivity.getApplicationContext(), R.color.grey));
+        skeleton.setMaskCornerRadius(50);
+        skeleton.setShimmerDurationInMillis(500);
+
+        return skeleton;
+    }
 }

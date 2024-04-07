@@ -27,10 +27,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Image;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.ImageViewModel;
 import com.example.nostack.views.admin.adapters.ImageArrayAdapter;
 import com.example.nostack.views.admin.adapters.ImageArrayRecycleViewInterface;
 import com.example.nostack.views.admin.adapters.ImageRecycleViewAdapter;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.faltenreich.skeletonlayout.recyclerview.SkeletonRecyclerViewAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +49,7 @@ public class AdminBrowseImages extends Fragment {
     private RecyclerView imageList;
     private ArrayList<Image> dataList;
     private ImageViewModel imageViewModel;
+    private Skeleton skeleton;
 
     public AdminBrowseImages() {
     }
@@ -87,7 +90,8 @@ public class AdminBrowseImages extends Fragment {
         });
         imageList.setAdapter(imageRecycleViewAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        skeleton = SkeletonProvider.getSingleton().adminImageSkeleton(imageList);
+        skeleton.showSkeleton();
         return rootView;
     }
 
@@ -110,6 +114,7 @@ public class AdminBrowseImages extends Fragment {
                 imageRecycleViewAdapter.addImage(image);
             }
             imageRecycleViewAdapter.notifyDataSetChanged();
+            skeleton.showOriginal();
         });
     }
 
