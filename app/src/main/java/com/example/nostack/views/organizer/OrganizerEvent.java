@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -31,6 +33,7 @@ import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -144,9 +147,17 @@ public class OrganizerEvent extends Fragment {
         view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerQRCode);
+                // If event is not ended
+                if(event.getActive() == null || event.getActive()) {
+                    qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
+                    NavHostFragment.findNavController(OrganizerEvent.this)
+                            .navigate(R.id.action_organizer_event_to_organizerQRCode);
+                } else {
+                    FloatingActionButton button = view.findViewById(R.id.OrganizerEventQRCodeButton);
+                    button.setImageResource(R.drawable.baseline_qr_code_24);
+                    eventViewModel.reactivateEvent(event.getId(), currentUserHandler.getCurrentUserId());
+                    Toast.makeText(getContext(), "Event has been reactivated.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -160,7 +171,7 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        Button endButton = view.findViewById(R.id.button_end_event);
+        FloatingActionButton endButton = view.findViewById(R.id.button_end_event);
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,14 +258,17 @@ public class OrganizerEvent extends Fragment {
 
             if (!event.getActive() || event.getActive() == null) {
                 eventTitle.setText(event.getName() + " (Ended)");
-                Button button = view.findViewById(R.id.button_end_event);
-                button.setText("Delete Event");
-                view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
-                view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
+                FloatingActionButton button = view.findViewById(R.id.button_end_event);
+                FloatingActionButton qrButton = view.findViewById(R.id.OrganizerEventQRCodeButton);
+                qrButton.setImageResource(R.drawable.baseline_autorenew_24);
+                button.setImageResource(R.drawable.baseline_delete_forever_24);
+
+//                view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
+//                view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
-                Button button = view.findViewById(R.id.button_end_event);
-                button.setText("End Event");
+                FloatingActionButton button = view.findViewById(R.id.button_end_event);
+                button.setImageResource(R.drawable.baseline_block_24);
                 view.findViewById(R.id.button_end_event).setClickable(true);
                 view.findViewById(R.id.button_end_event).setAlpha(1f);
             }

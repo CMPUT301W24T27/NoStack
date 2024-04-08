@@ -200,6 +200,23 @@ public class EventController {
                 .addOnFailureListener(e -> Log.e("EventController", "Failed to remove event image.", e));
     }
 
+    /**
+     * Reactivate an event that has ended.
+     * @param eventId
+     * @return void
+     */
+    public Task<Void> reactivateEvent(String eventId) {
+        DocumentReference eventRef = eventCollectionReference.document(eventId);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", true);
+        return eventRef.update(updates);
+    }
+
+    /**
+     * End an event.
+     * @param eventId
+     * @return void
+     */
     public Task<Void> endEvent(String eventId) {
         DocumentReference eventRef = eventCollectionReference.document(eventId);
         Map<String, Object> updates = new HashMap<>();
