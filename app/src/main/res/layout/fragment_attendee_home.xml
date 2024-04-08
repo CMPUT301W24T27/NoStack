@@ -72,6 +72,20 @@
             app:layout_constraintVertical_bias="0.037"
             app:srcCompat="@drawable/baseline_account_circle_24" />
 
+        <ImageButton
+            android:id="@+id/announcementHistoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.906"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.037"
+            app:srcCompat="@drawable/baseline_notifications_attendee_home_24" />
+
         <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
             android:id="@+id/dots_indicator"
             android:layout_width="65dp"

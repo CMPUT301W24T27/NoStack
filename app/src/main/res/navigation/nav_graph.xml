@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_attendeeHome_to_userProfile"
             app:destination="@id/userProfile" />
+        <action
+            android:id="@+id/action_attendeeHome_to_announcementHistory"
+            app:destination="@id/announcementHistory" />
     </fragment>
     <fragment
         android:id="@+id/attendeeEvent"
@@ -165,6 +168,15 @@
         android:name="com.example.nostack.views.organizer.OrganizerReuseQr"
         android:label="fragment_organizer_reuse_qr"
         tools:layout="@layout/fragment_organizer_reuse_qr" />
+    <fragment
+        android:id="@+id/announcementHistory"
+        android:name="com.example.nostack.views.attendee.AnnouncementHistory"
+        android:label="fragment_announcement_history"
+        tools:layout="@layout/fragment_announcement_history" >
+        <action
+            android:id="@+id/action_announcementHistory_to_attendeeHome"
+            app:destination="@id/attendeeHome" />
+    </fragment>
 
 
 </navigation>
