@@ -269,6 +269,7 @@ public class OrganizerEventCreate extends Fragment {
                             NavHostFragment.findNavController(OrganizerEventCreate.this).navigate(R.id.action_organizerEventCreate_to_organizerReuseQr);
                         } else {
                             eventViewModel.addEvent(event, false, compressedImageUri);
+                            Toast.makeText(getContext(), "Event " + event.getName()+ " was created successfully", Toast.LENGTH_SHORT).show();
                             NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                         }
                     }

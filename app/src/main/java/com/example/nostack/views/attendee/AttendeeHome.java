@@ -249,7 +249,6 @@ public class AttendeeHome extends Fragment {
         scanOptions.setOrientationLocked(true);
         scanOptions.setCaptureActivity(ScanActivity.class);
         barLauncher.launch(scanOptions);
-
     }
 
     public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
@@ -258,6 +257,8 @@ public class AttendeeHome extends Fragment {
                 handleCheckInQR(result.getContents().substring(2));
             } else if (result.getContents().charAt(0) == '1') {
                 handleEventDescQR(result.getContents().substring(2));
+            } else {
+                handleCheckInQR(result.getContents());
             }
         }
     });
@@ -275,59 +276,64 @@ public class AttendeeHome extends Fragment {
                 }
             }
         });
-    }
+   }
 
     public void handleCheckInQR(String qrCodeId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         qrCodeViewModel.fetchQrCode(qrCodeId);
-        qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), new Observer<QrCode>() {
-            @Override
-            public void onChanged(QrCode qrCode) {
-                if (qrCode != null) {
-                    String eventUID = qrCode.getEventId();
-                    eventViewModel.fetchEvent(eventUID);
-                    eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
-                        @Override
-                        public void onChanged(Event event) {
-                            if (event != null && !processingQr) {
-                                processingQr = true;
-                                Location location = locationHandler.getLocation();
-                                eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location)
-                                        .addOnSuccessListener(aVoid -> {
-                                            eventViewModel.fetchAttendeeEvents(currentUserHandler.getCurrentUserId());
-                                            builder.setTitle("Check-in Successful!");
-                                            builder.setMessage("You have successfully checked in to " +event.getName()+"! Enjoy the event!");
-                                            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                    eventViewModel.fetchEvent(eventUID);
-                                                    try {
-                                                        processingQr = false;
-                                                        NavHostFragment.findNavController(AttendeeHome.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
-                                                    } catch (Exception e){
-                                                        Log.e("AttendeeHome", "Error navigating to AttendeeEvent");
+        try {
+            qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), new Observer<QrCode>() {
+                @Override
+                public void onChanged(QrCode qrCode) {
+                    if (qrCode != null) {
+                        String eventUID = qrCode.getEventId();
+                        eventViewModel.fetchEvent(eventUID);
+                        eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
+                            @Override
+                            public void onChanged(Event event) {
+                                if (event != null && !processingQr) {
+                                    processingQr = true;
+                                    Location location = locationHandler.getLocation();
+                                    eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location)
+                                            .addOnSuccessListener(aVoid -> {
+                                                eventViewModel.fetchAttendeeEvents(currentUserHandler.getCurrentUserId());
+                                                builder.setTitle("Check-in Successful!");
+                                                builder.setMessage("You have successfully checked in to " +event.getName()+"! Enjoy the event!");
+                                                builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        dialogInterface.dismiss();
+                                                        eventViewModel.fetchEvent(eventUID);
+                                                        try {
+                                                            processingQr = false;
+                                                            NavHostFragment.findNavController(AttendeeHome.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
+                                                        } catch (Exception e){
+                                                            Log.e("AttendeeHome", "Error navigating to AttendeeEvent");
+                                                        }
                                                     }
-                                                }
-                                            }).show();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            builder.setTitle("Check-in Failed!");
-                                            builder.setMessage(e.getMessage());
-                                            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                }
-                                            }).show();
-                                            Log.e("EventViewModel", "Error checking-in to event", e);
-                                        });
+                                                }).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                builder.setTitle("Check-in Failed!");
+                                                builder.setMessage(e.getMessage());
+                                                builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        dialogInterface.dismiss();
+                                                    }
+                                                }).show();
+                                                Log.e("EventViewModel", "Error checking-in to event", e);
+                                            });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            Log.e("AttendeeHome", "Invalid QR Code");
+            Toast.makeText(getContext(), "Invalid QR Code", Toast.LENGTH_LONG).show();
+        }
     }
 }
