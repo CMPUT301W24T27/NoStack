@@ -115,7 +115,7 @@ public class ImageUploader {
         // Convert to bitmap
         Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
         Log.d("ImageSize",String.format("%d bytes",imageBitmap.getByteCount()));
-        Toast.makeText(context, "Cannot upload as image size is too large.", Toast.LENGTH_SHORT).show();
+        if (imageBitmap.getByteCount() >=  150 * 1000 * 1000) {Toast.makeText(context, "Cannot upload as image size is too large.", Toast.LENGTH_SHORT).show();}
         assert (imageBitmap.getByteCount() < 150 * 1000 * 1000); // Image greater than ~ 35mb might crash app.
 
         // Create temporary file to cache compressed image
