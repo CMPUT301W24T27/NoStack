@@ -15,13 +15,19 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.controllers.EventController;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.User;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.UserViewModel;
+import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewAdapter;
+import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewInterface;
 import com.example.nostack.views.user.UserArrayAdapter;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -35,12 +41,13 @@ import java.util.ArrayList;
  * Creates the AdminBrowseProfiles fragment which is used to display all the users
  */
 public class AdminBrowseProfiles extends Fragment {
-    private UserArrayAdapter UserArrayAdapter;
+    private ProfileArrayRecycleViewAdapter UserArrayAdapter;
     private AllUsers allUsers;
-    private ListView userList;
+    private RecyclerView userList;
     private ArrayList<User> dataList;
     private UserViewModel userViewModel;
     private ImageViewHandler imageViewHandler;
+    private Skeleton skeleton;
     public AdminBrowseProfiles() {
     }
 
@@ -75,8 +82,18 @@ public class AdminBrowseProfiles extends Fragment {
         // Inflate the layout for this fragment only once
         View view = inflater.inflate(R.layout.fragment_admin_home_browseusers, container, false);
         userList = view.findViewById(R.id.admin_viewPager2);
-        UserArrayAdapter = new UserArrayAdapter(getContext(), dataList, this);
+        UserArrayAdapter = new ProfileArrayRecycleViewAdapter(getContext(), dataList, this, new ProfileArrayRecycleViewInterface() {
+            @Override
+            public void onProfileClick(int position) {
+                showDialog(UserArrayAdapter.getUser(position));
+            }
+        });
+        userList.setItemViewCacheSize(100);
+        userList.setLayoutManager(new LinearLayoutManager(getContext()));
         userList.setAdapter(UserArrayAdapter);
+
+        skeleton = SkeletonProvider.getSingleton().adminProfileSkeleton(userList);
+        skeleton.showSkeleton();
         return view;
     }
 
@@ -99,15 +116,8 @@ public class AdminBrowseProfiles extends Fragment {
                 UserArrayAdapter.addUser(user);
             }
             UserArrayAdapter.notifyDataSetChanged();
+            skeleton.showOriginal();
         });
-
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                showDialog(UserArrayAdapter.getUser(position));
-            }
-        });
-
     }
     private void showDialog(User user){
         Dialog dialog = new Dialog(getActivity());

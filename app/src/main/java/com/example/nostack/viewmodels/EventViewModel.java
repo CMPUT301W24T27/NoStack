@@ -68,10 +68,15 @@ public class EventViewModel extends ViewModel {
         eventController.getEvent(eventId)
                 .addOnSuccessListener(documentSnapshot -> {
                     Event event = documentSnapshot.toObject(Event.class);
-                    eventLiveData.postValue(event);
+                    if (event != null) {
+                        eventLiveData.postValue(event);
+                        return;
+                    }
+                    errorLiveData.postValue("Error fetching null event");
+                    eventLiveData.postValue(null);
                 }).addOnFailureListener(e -> {
                     Log.e("EventViewModel", "Error fetching event", e);
-                    errorLiveData.postValue(e.getMessage());
+                    errorLiveData.postValue("Error fetching event");
                 });
     }
 
@@ -309,6 +314,25 @@ public class EventViewModel extends ViewModel {
                 })
                 .addOnFailureListener(e -> {
                     Log.e("EventViewModel", "Error ending event", e);
+                    errorLiveData.postValue(e.getMessage());
+                });
+    }
+
+    public void reactivateEvent(String eventId, String userId) {
+        eventController.reactivateEvent(eventId)
+                .addOnSuccessListener(aVoid -> {
+                    fetchEvent(eventId);
+                    fetchOrganizerEvents(userId);
+                    qrCodeController.reactivateQrCodeByEventId(eventId)
+                            .addOnSuccessListener(a -> {
+                                Log.d("EventViewModel", "Successfully reactivated qr code");
+                            }).addOnFailureListener(e -> {
+                                Log.e("EventViewModel", "Error reactivating qr code", e);
+                                errorLiveData.postValue(e.getMessage());
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventViewModel", "Error reactivating event", e);
                     errorLiveData.postValue(e.getMessage());
                 });
     }

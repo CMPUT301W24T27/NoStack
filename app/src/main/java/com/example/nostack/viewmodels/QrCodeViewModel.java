@@ -14,6 +14,8 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Attendance;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -71,6 +73,28 @@ public class QrCodeViewModel extends ViewModel {
 
     public MutableLiveData<List<Pair<Event, QrCode>>> getInactiveQrCodes() {
         return inactiveQrEventList;
+    }
+
+    public Task<Void> createCustomQrCode(String eventId, String customCode) {
+        QrCode newQrCode = new QrCode(eventId);
+        newQrCode.setIsCustom(true);
+        newQrCode.setId(customCode);
+        return qrCodeController.getQrCode(newQrCode.getId()).continueWithTask(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                errorLiveData.postValue("QR code already exists");
+                Log.d("QrCodeViewModel", "QR Code already exists, tried to create a duplicate");
+                return Tasks.forException(new RuntimeException("QR code already exists"));
+            } else {
+                return qrCodeController.addQrCode(newQrCode).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        Log.d("QrCodeViewModel", "Custom QR Code uploaded");
+                    } else {
+                        errorLiveData.postValue("Error creating custom QR code");
+                        Log.d("QrCodeViewModel", "Error creating custom QR code");
+                    }
+                });
+            }
+        });
     }
 
     public void clearQrCodeLiveData() {

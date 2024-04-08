@@ -9,46 +9,44 @@
     tools:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="377dp"
-        android:layout_height="455dp"
+        android:layout_width="360dp"
+        android:layout_height="450dp"
         android:background="@color/SignUpInMenuColor"
         android:backgroundTint="@color/SignUpInMenuColor"
         android:orientation="vertical"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/admin__user__dialog__background"
-            android:layout_width="371dp"
-            android:layout_height="333dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@drawable/sign_in_up_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/admin_userDialog"
-            app:layout_constraintVertical_bias="0.981">
+            app:layout_constraintTop_toBottomOf="@+id/admin_userDialog"
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="31dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle"
-                app:layout_constraintVertical_bias="0.018">
+                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogTitle">
 
                 <TextView
                     android:id="@+id/admin_userDialogFirstName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="9dp"
                     android:text="FirstName"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                     android:textColor="@color/white"
@@ -59,7 +57,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="9dp"
                     android:text="LastName"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                     android:textColor="@color/white"
@@ -69,121 +66,109 @@
 
             <TextView
                 android:id="@+id/admin_userDialogTitle"
-                android:layout_width="310dp"
-                android:layout_height="35dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="Username"
                 android:textAlignment="center"
                 android:textColor="@color/SignInUpTextColor"
                 android:textSize="25dp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.192" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/admin_userDialogEmail"
                 android:layout_width="wrap_content"
-                android:layout_height="28dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Email"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.49"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.037" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
             <TextView
                 android:id="@+id/admin_userDialogPhoneNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Phone Number"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogEmail"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/admin_userDialogGender"
-                android:layout_width="wrap_content"
-                android:layout_height="17dp"
-                android:text="gender"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogUUID"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogEmail" />
 
             <TextView
                 android:id="@+id/admin_userDialogUUID"
                 android:layout_width="wrap_content"
-                android:layout_height="27dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="UUID"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.508"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogPhoneNumber"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogPhoneNumber" />
 
             <TextView
                 android:id="@+id/admin_userDialogRole"
                 android:layout_width="wrap_content"
-                android:layout_height="21dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Role"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogGender"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogGender" />
+
+            <TextView
+                android:id="@+id/admin_userDialogGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Gender"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/admin_userDialogUUID" />
 
             <Button
                 android:id="@+id/admin_amkeAdminUserButton"
-                android:layout_width="wrap_content"
-                android:layout_height="59dp"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/lightBlue"
                 android:text="Make Admin"
                 android:textColor="@color/black"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.054"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.95" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/admin_deleteUserButton"
-                android:layout_width="146dp"
+                android:layout_width="150dp"
                 android:layout_height="60dp"
+                android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/red"
                 android:text="Delete"
                 android:textColor="@color/black"
-                android:textSize="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.928"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.947" />
+                android:textSize="17dp"
+                app:layout_constraintBottom_toBottomOf="@+id/admin_amkeAdminUserButton"
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
@@ -202,6 +187,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/topGuideline"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_camera_alt_24" />
+            app:srcCompat="@drawable/baseline_image_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

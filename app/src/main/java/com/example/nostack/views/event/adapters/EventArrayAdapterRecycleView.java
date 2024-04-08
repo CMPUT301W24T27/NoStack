@@ -82,9 +82,22 @@ public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHol
             final long ONE_MEGABYTE = 1024 * 1024;
 
             storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                int width = 250;
+                int height = 250;
+                double error = 0.1;
+
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 250, 250, false);
+
+                // Preserve aspect ratio, do not adjust if within the margin of error
+                if (bmp.getWidth() > bmp.getHeight() && Math.abs((double) bmp.getWidth() / bmp.getHeight() - 1) > error) {
+                    height = (int) (width * ((double) bmp.getHeight() / bmp.getWidth()));
+                } else if (bmp.getHeight() > bmp.getWidth() && Math.abs((double) bmp.getHeight() / bmp.getWidth() - 1) > error) {
+                    width = (int) (height * ((double) bmp.getWidth() / bmp.getHeight()));
+                }
+
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, width, height, false);
                 RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(currFragment.getResources(), scaledBmp);
+
                 d.setCornerRadius(50f);
                 holder.eventImage.setImageDrawable(d);
                 Log.d("EventImageLoader","Loading Event Image: " + events.get(position).getName());

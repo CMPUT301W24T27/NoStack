@@ -9,12 +9,14 @@ public class QrCode {
     private String id;
     private String eventId;
     private boolean active;
+    private boolean isCustom;
 
     public QrCode() {}
     public QrCode(String eventId) {
         id = UUID.randomUUID().toString();
         this.eventId = eventId;
         this.active = true;
+        this.isCustom = false;
     }
 
     public String getId() {
@@ -39,5 +41,12 @@ public class QrCode {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean getIsCustom() {
+        return isCustom;
+    }
+    public void setIsCustom(boolean isCustom) {
+        this.isCustom = isCustom;
     }
 }
