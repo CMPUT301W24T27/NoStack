@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -234,21 +235,27 @@ public class UserProfile extends Fragment {
                 EditText userEmail = view.findViewById(R.id.userEmail);
                 EditText userPhoneNumber = view.findViewById(R.id.userPhoneNumber);
 
-                editProfileButton.setVisibility(View.VISIBLE);
-                saveProfileButton.setVisibility(View.GONE);
-                editProfilePictureButtons.setVisibility(View.GONE);
-                userFirstName.setEnabled(false);
-                userLastName.setEnabled(false);
-                userEmail.setEnabled(false);
-                userPhoneNumber.setEnabled(false);
+                if (userFirstName.getText().toString().isEmpty()) {
+                    String errorMsg = "First name cannot be blank";
+                    userFirstName.setError(errorMsg);
+                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    editProfileButton.setVisibility(View.VISIBLE);
+                    saveProfileButton.setVisibility(View.GONE);
+                    editProfilePictureButtons.setVisibility(View.GONE);
+                    userFirstName.setEnabled(false);
+                    userLastName.setEnabled(false);
+                    userEmail.setEnabled(false);
+                    userPhoneNumber.setEnabled(false);
 
-                userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-                    user.setFirstName(userFirstName.getText().toString());
-                    user.setLastName(userLastName.getText().toString());
-                    user.setEmailAddress(userEmail.getText().toString());
-                    user.setPhoneNumber(userPhoneNumber.getText().toString());
-                    userViewModel.updateUser(user);
-                });
+                    userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+                        user.setFirstName(userFirstName.getText().toString());
+                        user.setLastName(userLastName.getText().toString());
+                        user.setEmailAddress(userEmail.getText().toString());
+                        user.setPhoneNumber(userPhoneNumber.getText().toString());
+                        userViewModel.updateUser(user);
+                    });
+                }
             }
         });
 

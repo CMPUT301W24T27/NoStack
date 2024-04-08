@@ -175,18 +175,24 @@ public class OrganizerEventCreate extends Fragment {
             public void onClick(View v) {
                 if (eventTitleEditText.getText().toString().isEmpty()) {
                     eventTitleEditText.setError("Event name is required");
+                    showErrorMessage("Event name is required");
                 } else if (eventStartEditText.getText().toString().isEmpty()) {
                     eventStartEditText.setError("Event start date/time is required");
+                    showErrorMessage("Event start date/time is required");
                 } else if (eventEndEditText.getText().toString().isEmpty()) {
                     eventEndEditText.setError("Event end date/time is required");
+                    showErrorMessage("Event end date/time is required");
                 } else if (eventLocationEditText.getText().toString().isEmpty()) {
                     eventLocationEditText.setError("Event location is required");
+                    showErrorMessage("Event location is required");
                 } else if (eventDescEditText.getText().toString().isEmpty()) {
                     eventDescEditText.setError("Event description is required");
+                    showErrorMessage("Event description is required");
                 } else if (eventLimitEditText.getText() != null
                         && (!eventLimitEditText.getText().toString().isEmpty())
                         && (Integer.parseInt(eventLimitEditText.getText().toString()) < 1)) {
                     eventLimitEditText.setError("Event limit must be greater than 0.");
+                    showErrorMessage("Event limit must be greater than 0.");
                 } else {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d hh:mm");
                     try {
@@ -196,15 +202,18 @@ public class OrganizerEventCreate extends Fragment {
 
                         if (endDate.before(startDate)) {
                             eventEndEditText.setError("Event end date/time must be after start date/time");
+                            showErrorMessage("Event end date/time must be after start date/time");
                             return;
                         } else if (endDate.before(currentTime)) {
                             eventEndEditText.setError("Event end date/time must be in the future");
+                            showErrorMessage("Event end date/time must be in the future");
                             return;
                         }
 
                     } catch (ParseException e){
                         eventStartEditText.setError("Invalid date/time format");
                         eventEndEditText.setError("Invalid date/time format");
+                        showErrorMessage("Invalid date/time format");
                         return;
                     }
 
@@ -340,6 +349,7 @@ public class OrganizerEventCreate extends Fragment {
                 newEvent.setDescription(eventDescEditText.getText().toString());
                 newEvent.setStartDate(formatter.parse(startDateString));
                 newEvent.setEndDate(formatter.parse(endDateString));
+                newEvent.setActive(true);
             }
             else {
                 isEditing = false;
@@ -416,5 +426,9 @@ public class OrganizerEventCreate extends Fragment {
             eventCreationTitle.setText("Edit Event");
             createButton.setText("Update Event");
         }
+    }
+
+    private void showErrorMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
