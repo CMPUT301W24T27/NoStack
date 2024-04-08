@@ -148,4 +148,14 @@ public class NavbarConfig {
     public void setInvisible(){
         navbar.setVisibility(navbar.INVISIBLE);
     }
+
+    /**
+     * Set the icon of the navbar Floating Action Button to Camera
+     */
+    public void setIconCamera() {scanQRButton.setImageResource(R.drawable.navbarcamera);}
+
+    /**
+     * Set the icon of the navbar Floating Action Button to Add Icon
+     */
+    public void setIconEventAdd() {scanQRButton.setImageResource(R.drawable.navbar_edit_calendar);}
 }

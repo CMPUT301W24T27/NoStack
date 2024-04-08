@@ -144,6 +144,7 @@ public class AttendeeHome extends Fragment {
         // Navbar
         navbarConfig.setAttendee(getResources());
         navbarConfig.setHeroAction(() -> scanCode());
+        NavbarConfig.getSingleton().setIconCamera();
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {

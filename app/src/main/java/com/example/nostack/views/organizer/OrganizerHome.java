@@ -35,6 +35,7 @@ import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.faltenreich.skeletonlayout.Skeleton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -130,6 +131,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
 
         View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
 
+        NavbarConfig.getSingleton().setIconEventAdd();
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
