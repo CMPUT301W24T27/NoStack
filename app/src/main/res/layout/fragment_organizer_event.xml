@@ -201,7 +201,7 @@ tools:context=".views.attendee.AttendeeEvent">
             android:src="@drawable/baseline_qr_code_24"
             android:tint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_end_event"
+            app:layout_constraintEnd_toStartOf="@+id/SeeAnnouncements"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toEndOf="@+id/CreateNotificationButton"
             app:layout_constraintTop_toBottomOf="@+id/eventInfo"
@@ -219,6 +219,22 @@ tools:context=".views.attendee.AttendeeEvent">
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/OrganizerEventQRCodeButton"
             app:layout_constraintStart_toEndOf="@+id/button_see_attendees"
+            app:layout_constraintTop_toBottomOf="@+id/eventInfo"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/SeeAnnouncements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:backgroundTint="@color/yellow"
+            android:padding="20dp"
+            android:src="@drawable/baseline_announcement_24"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_end_event"
+            app:layout_constraintHorizontal_bias="0.341"
+            app:layout_constraintStart_toEndOf="@+id/OrganizerEventQRCodeButton"
             app:layout_constraintTop_toBottomOf="@+id/eventInfo"
             app:layout_constraintVertical_bias="1.0" />
 

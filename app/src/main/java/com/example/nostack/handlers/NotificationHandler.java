@@ -107,7 +107,6 @@ public class NotificationHandler {
             }
         }).addOnFailureListener(e -> {
             Log.d("NotificationHandler", "Error getting attendees: Incomplete ", e);
-            throw new RuntimeException(e.getMessage());
         });
     }
 
