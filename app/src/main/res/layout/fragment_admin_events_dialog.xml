@@ -29,90 +29,96 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="323dp"
-            android:layout_height="241dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.673">
+            app:layout_constraintTop_toBottomOf="@+id/admin_eventDialog"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/admin_eventDialogTitle"
-                android:layout_width="310dp"
-                android:layout_height="35dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="Event Name"
                 android:textAlignment="center"
                 android:textColor="@color/SignInUpTextColor"
                 android:textSize="30dp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.087" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/admin_eventDialogStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="124dp"
+                android:layout_marginBottom="8dp"
                 android:text="StartDate"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
+                app:layout_constraintBottom_toTopOf="@+id/admin_eventDialogEndDate"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogTitle" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/admin_eventDialogEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="156dp"
+                android:layout_marginBottom="4dp"
                 android:text="End Date"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogTitle" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/admin_eventDialogLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
                 android:text="Location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/admin_eventDialogCapacity"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogDescription" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/admin_eventDialogCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="Capacity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/admin_eventDialogStartDate"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogLocation" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/admin_eventDialogDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:maxLines="4"
                 android:text="Description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="17dp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toTopOf="@+id/admin_eventDialogLocation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/admin_eventDialogTitle" />
