@@ -349,6 +349,7 @@ public class OrganizerEventCreate extends Fragment {
                 newEvent.setDescription(eventDescEditText.getText().toString());
                 newEvent.setStartDate(formatter.parse(startDateString));
                 newEvent.setEndDate(formatter.parse(endDateString));
+                newEvent.setActive(true);
             }
             else {
                 isEditing = false;
