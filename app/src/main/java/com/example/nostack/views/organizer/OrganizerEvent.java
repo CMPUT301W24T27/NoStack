@@ -83,7 +83,6 @@ public class OrganizerEvent extends Fragment {
         return fragment;
     }
 
-
     /**
      * This method is called when the fragment is being created and checks to see if there are any arguments
      *
@@ -262,9 +261,6 @@ public class OrganizerEvent extends Fragment {
                 FloatingActionButton qrButton = view.findViewById(R.id.OrganizerEventQRCodeButton);
                 qrButton.setImageResource(R.drawable.baseline_autorenew_24);
                 button.setImageResource(R.drawable.baseline_delete_forever_24);
-
-//                view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
-//                view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
                 FloatingActionButton button = view.findViewById(R.id.button_end_event);
