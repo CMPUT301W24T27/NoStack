@@ -300,7 +300,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="Create Event"
-            android:textColor="@color/SignInUpTextColor"
+            android:textColor="@color/text"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/backButton"
             app:layout_constraintStart_toEndOf="@+id/backButton"

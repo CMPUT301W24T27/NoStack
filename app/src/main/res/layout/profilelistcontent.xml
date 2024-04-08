@@ -7,8 +7,8 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="416dp"
-        android:layout_height="97dp"
+        android:layout_width="409dp"
+        android:layout_height="93dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/sign_in_up_background"
         android:backgroundTint="@color/SignUpInMenuColor"
@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/admin_EventListContentLocationImage"
-            android:layout_width="60dp"
-            android:layout_height="51dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_marginLeft="30dp"
             android:tint="@color/text"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,52 +32,49 @@
 
         <TextView
             android:id="@+id/ProfileListContentNameText"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="40dp"
             android:text="Profile Name"
             android:textAlignment="textStart"
             android:textColor="@color/SignInUpTextColor"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.16"
-            app:layout_constraintStart_toEndOf="@+id/admin_EventListContentLocationImage"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/ProfileListContentEmailText"
-            android:layout_width="wrap_content"
-            android:layout_height="17dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="40dp"
-            android:text="Email"
-            android:textAlignment="textStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.129"
-            app:layout_constraintStart_toEndOf="@+id/admin_EventListContentLocationImage"
+            app:layout_constraintHorizontal_bias=".65"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/ProfileListContentPhoneNumberText"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginTop="56dp"
             android:text="Phone Number"
             android:textAlignment="textStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.167"
-            app:layout_constraintStart_toEndOf="@+id/admin_EventListContentLocationImage"
+            app:layout_constraintHorizontal_bias=".65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ProfileListContentEmailText"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="36dp"
+            android:text="Email"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".65"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

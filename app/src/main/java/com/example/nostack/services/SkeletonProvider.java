@@ -54,7 +54,7 @@ public class SkeletonProvider {
     }
 
     public Skeleton adminProfileSkeleton(RecyclerView userList){
-        skeleton = SkeletonLayoutUtils.applySkeleton(userList, R.layout.profilelistcontent, 5);
+        skeleton = SkeletonLayoutUtils.applySkeleton(userList, R.layout.profilelistcontent, 10);
         skeleton.setMaskColor(ContextCompat.getColor(ownerActivity.getApplicationContext(), R.color.grey));
         skeleton.setMaskCornerRadius(50);
         skeleton.setShimmerDurationInMillis(500);
