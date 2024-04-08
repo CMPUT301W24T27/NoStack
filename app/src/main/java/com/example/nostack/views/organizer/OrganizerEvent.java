@@ -2,6 +2,7 @@ package com.example.nostack.views.organizer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -71,6 +72,10 @@ public class OrganizerEvent extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
     private NotificationHandler notificationHandler;
+    public Dialog notificationDialog;
+    public AlertDialog.Builder notificationDialogBuilder;
+
+    public View notificationDialogView;
 
 
     public OrganizerEvent() {
@@ -240,6 +245,39 @@ public class OrganizerEvent extends Fragment {
                 NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2);
             }
+        });
+
+        notificationDialogView = inflater.inflate(R.layout.event_organizer_create_notification, null);
+
+        view.findViewById(R.id.CreateNotificationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (notificationDialogView.getParent() != null) {
+                    ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
+                }
+
+                notificationDialogBuilder = new AlertDialog.Builder(getContext());
+                notificationDialogBuilder.setView(notificationDialogView);
+                notificationDialog = notificationDialogBuilder.create();
+
+                if (!notificationDialog.isShowing()) {
+                    notificationDialog.show();
+                }
+            }
+        });
+
+        notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // create the announcement
+                String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
+
+                notificationHandler.sendEventNotification(event, announcementMessage);
+
+                notificationDialog.dismiss();
+            };
         });
 
         // Test notifications

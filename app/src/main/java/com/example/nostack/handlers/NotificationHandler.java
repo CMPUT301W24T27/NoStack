@@ -128,6 +128,7 @@ public class NotificationHandler {
             e.printStackTrace();
         }
 
+        sendPushNotif(fcmToken, title, message);
         callFCMApi(jsonObject);
     }
 
