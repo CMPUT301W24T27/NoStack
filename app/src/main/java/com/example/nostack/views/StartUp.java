@@ -3,6 +3,8 @@ package com.example.nostack.views;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.VideoView;
+
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -49,6 +53,7 @@ public class StartUp extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private NavbarConfig navbarConfig;
     private NotificationHandler notificationHandler;
+    private VideoView nostackAnimation;
 
     public StartUp() {
         // Required empty public constructor
@@ -116,6 +121,17 @@ public class StartUp extends Fragment {
         String uuid = profile.getUuid();
         navbarConfig = NavbarConfig.getSingleton();
         navbarConfig.setInvisible();
+
+        nostackAnimation = view.findViewById(R.id.nostackAnimationVideoView);
+        nostackAnimation.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.nostack_animation));
+        nostackAnimation.requestFocus();
+        nostackAnimation.start();
+        nostackAnimation.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
 
         if (!profile.exists()) {
             try {

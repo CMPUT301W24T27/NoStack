@@ -6,6 +6,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:statusBarColor">@color/black</item>
         <item name="colorAccent">@color/SignUpInMenuColor</item>
+        <item name="android:windowBackground">@color/SignInUpTextColor</item>
     </style>
 
     <style name="Theme.NoStack" parent="Base.Theme.NoStack" />
