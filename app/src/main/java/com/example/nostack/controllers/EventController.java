@@ -438,6 +438,12 @@ public class EventController {
         return taskCompletionSource.getTask();
     }
 
+    /**
+     * Add an announcement to an event
+     * @param eventId The event id
+     * @param announcement The announcement to add
+     * @return void
+     */
     public Task<Void> addAnnouncement(String eventId, HashMap<String, String> announcement) {
         return eventCollectionReference.document(eventId)
                 .update("announcements", FieldValue.arrayUnion(announcement));
