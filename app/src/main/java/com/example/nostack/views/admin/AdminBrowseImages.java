@@ -111,7 +111,9 @@ public class AdminBrowseImages extends Fragment {
         imageViewModel.fetchAllImages();
         imageViewModel.getAllImages().observe(getViewLifecycleOwner(), images -> {
             imageRecycleViewAdapter.clear();
+
             for (Image image : images) {
+                Log.d("AdminBrowseImages", "Adding image: " + image.getId());
                 imageRecycleViewAdapter.addImage(image);
             }
             imageRecycleViewAdapter.notifyDataSetChanged();
@@ -135,8 +137,10 @@ public class AdminBrowseImages extends Fragment {
         TextView imageCreated = dialog.findViewById(R.id.admin_imageDialogCreated);
         TextView imageType = dialog.findViewById(R.id.admin_imageDialogType);
 
+        Double size = (double) image.getSize() / (1024);
+        String formattedSize = String.format("%.2f", (size > 1024 ? size/1024 : size)) + (size > 1024 ? " MB" : " KB");
         imageTitle.setText(image.getId());
-        imageSize.setText(image.getSize() + "bytes");
+        imageSize.setText(formattedSize);
         imageType.setText(image.getType());
         imageCreated.setText((image.getCreated()));
 

@@ -48,9 +48,12 @@ public class ImageRecycleViewAdapter extends RecyclerView.Adapter<ImageViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+        Double size = (double) images.get(position).getSize() / (1024);
+        String formattedSize = String.format("%.2f", (size > 1024 ? size/1024 : size)) + (size > 1024 ? " MB" : " KB");
+
         holder.imageName.setText(images.get(position).getId());
         holder.imageDate.setText(images.get(position).getCreated());
-        holder.imageSize.setText(images.get(position).getSize());
+        holder.imageSize.setText(formattedSize);
         holder.imageType.setText(images.get(position).getType());
 
         images.get(position).getImage(context).addOnSuccessListener(drawable -> {

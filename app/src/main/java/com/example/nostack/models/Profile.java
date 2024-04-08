@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -77,8 +78,7 @@ public class Profile extends User {
                 .addOnSuccessListener(unused -> {
                     UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
                     userViewModel.setUser(user);
-                    Snackbar.make(activity.findViewById(android.R.id.content), "New user profile created.", Snackbar.LENGTH_LONG).show();
-
+                    Toast.makeText(activity, "New user profile created.", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> Log.w("Profile Class", "Error creating user profile", e));
     }
@@ -104,7 +104,7 @@ public class Profile extends User {
                         updateUserFields(user);
                         UserViewModel userViewModel = new ViewModelProvider((AppCompatActivity) activity).get(UserViewModel.class);
                         userViewModel.setUser(this);
-                        Snackbar.make(activity.findViewById(android.R.id.content), "Welcome, " + getFirstName(), Snackbar.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Welcome, " + getFirstName(), Toast.LENGTH_SHORT).show();
                         res.complete(true);
                     } else {
                         Log.w("Profile class", "Retrieved user data is null");

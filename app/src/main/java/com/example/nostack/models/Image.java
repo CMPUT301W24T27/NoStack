@@ -17,17 +17,27 @@ public class Image {
     private String path;
     private String referenceId;
     private String id;
-    private String size;
+    private long size;
     private String type;
     private String created;
     public Image() {
     }
 
-    public String getSize() {
+    public Image(String url, String path, String referenceId, String id, long size, String type, String created) {
+        this.url = url;
+        this.path = path;
+        this.referenceId = referenceId;
+        this.id = id;
+        this.size = size;
+        this.type = type;
+        this.created = created;
+    }
+
+    public long getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(long size) {
         this.size = size;
     }
     public String getType() {

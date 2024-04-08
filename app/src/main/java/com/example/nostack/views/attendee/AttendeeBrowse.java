@@ -77,6 +77,7 @@ public class AttendeeBrowse extends Fragment implements EventArrayRecycleViewInt
         eventList = rootView.findViewById(R.id.listView_yourEvents);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
+        eventList.setItemViewCacheSize(100);
         navbarConfig = NavbarConfig.getSingleton();
 
         // Skeleton
