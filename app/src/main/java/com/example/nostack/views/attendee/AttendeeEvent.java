@@ -20,6 +20,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.User;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,7 +37,7 @@ public class AttendeeEvent extends Fragment {
     private ImageViewHandler imageViewHandler;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
-
+    private NavbarConfig navbarConfig;
 
     public AttendeeEvent() {}
 
@@ -56,6 +57,7 @@ public class AttendeeEvent extends Fragment {
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
     }
 
     /**
@@ -73,6 +75,7 @@ public class AttendeeEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
+        navbarConfig.setInvisible();
         return view;
     }
 
