@@ -30,7 +30,7 @@
             app:layout_constraintHorizontal_bias="0.08"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/EventListContentNameText"
-            app:srcCompat="@drawable/baseline_camera_alt_24" />
+            app:srcCompat="@drawable/baseline_image_24" />
 
         <TextView
             android:id="@+id/EventListContentNameText"

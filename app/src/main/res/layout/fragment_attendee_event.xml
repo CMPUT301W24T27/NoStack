@@ -126,7 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="175dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/baseline_camera_alt_24"
+            android:src="@drawable/baseline_image_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
