@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -114,6 +115,7 @@ public class ImageUploader {
         // Convert to bitmap
         Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
         Log.d("ImageSize",String.format("%d bytes",imageBitmap.getByteCount()));
+        Toast.makeText(context, "Cannot upload as image size is too large.", Toast.LENGTH_SHORT).show();
         assert (imageBitmap.getByteCount() < 150 * 1000 * 1000); // Image greater than ~ 35mb might crash app.
 
         // Create temporary file to cache compressed image
