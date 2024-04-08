@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="430dp"
-        android:layout_height="449dp"
+        android:layout_height="470dp"
         android:background="@drawable/sign_in_up_background"
         android:backgroundTint="@color/SignUpInMenuColor"
         android:orientation="vertical"
@@ -127,15 +127,15 @@
 
         <Button
             android:id="@+id/admin_deleteEventButton"
-            android:layout_width="139dp"
-            android:layout_height="46dp"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
             android:backgroundTint="@color/red"
             android:text="Delete"
             android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
