@@ -3,9 +3,13 @@ package com.example.nostack.views.organizer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -28,6 +33,8 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
+import com.example.nostack.services.QrCodeImageGenerator;
 import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
@@ -37,6 +44,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -142,6 +152,26 @@ public class OrganizerEvent extends Fragment {
                 NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
             }
         });
+
+        // Share QR code
+        view.findViewById(R.id.organizerShare).setOnClickListener(v -> {
+            if (event != null) {
+                QrCode qrCode = new QrCode(event.getId());
+
+                Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCode.getId());
+                String qrCodeText = "1" + "." + event.getId();
+
+                bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
+                Uri imageUri = getImageUri(bmp);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                shareIntent.setType("image/png");
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }
+        });
+
 
         view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,5 +304,19 @@ public class OrganizerEvent extends Fragment {
             imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
             imageViewHandler.setEventImage(event, eventBanner);
         }
+    }
+
+    public Uri getImageUri(Bitmap bitmap) {
+        File cachePath = new File(getContext().getCacheDir(), "images");
+        cachePath.mkdirs();
+        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File imagePath = new File(getContext().getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        return FileProvider.getUriForFile(getContext(), "com.example.nostack.provider", newFile);
     }
 }

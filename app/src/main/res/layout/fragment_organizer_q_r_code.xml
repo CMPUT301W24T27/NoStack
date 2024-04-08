@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/outline_arrow_back_24"
-        app:tint="@color/yellow" />
+        app:tint="@color/SignInUpTextColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/shareButton"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/share_icon"
-        app:tint="@color/yellow" />
+        app:tint="@color/SignInUpTextColor" />
 
     <LinearLayout
         android:id="@+id/OrganizerQRBackground"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/baseline_qr_code_24" />
     </LinearLayout>
 
     <Button
