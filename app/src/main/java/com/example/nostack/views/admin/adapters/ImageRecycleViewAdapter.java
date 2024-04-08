@@ -7,23 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.nostack.R;
 import com.example.nostack.models.Image;
-import com.example.nostack.views.event.adapters.MyViewHolder;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.net.URI;
 import java.util.ArrayList;
 
 public class ImageRecycleViewAdapter extends RecyclerView.Adapter<ImageViewHolder>{

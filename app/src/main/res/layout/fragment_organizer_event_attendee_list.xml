@@ -12,12 +12,14 @@ tools:context=".views.organizer.OrganizerEventAttendeeList">
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginBottom="5dp">
+
         <ImageView
             android:id="@+id/event_attendee_list_event_banner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:src="@drawable/baseline_add_a_photo_24"/>
+            android:src="@drawable/baseline_image_24" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
@@ -26,7 +28,7 @@ tools:context=".views.organizer.OrganizerEventAttendeeList">
             android:clickable="true"
             android:focusable="true"
             app:srcCompat="@drawable/outline_arrow_back_24"
-            app:tint="@color/yellow" />
+            app:tint="@color/SignInUpTextColor" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,45 +41,47 @@ tools:context=".views.organizer.OrganizerEventAttendeeList">
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginVertical="5dp">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:tint="@color/yellow"
+            android:layout_marginEnd="5dp"
             app:srcCompat="@drawable/baseline_groups_24"
-            android:layout_marginEnd="5dp"/>
+            app:tint="@color/SignInUpTextColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attendance"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textColor="@color/yellow"
-            android:textSize="24sp"/>
+            android:textColor="@color/text"
+            android:textSize="24sp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_vertical">
+
         <ProgressBar
-            style="@android:style/Widget.ProgressBar.Horizontal"
             android:id="@+id/progress_attendee_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="50">
-        </ProgressBar>
+            android:progress="50"
+            android:progressTint="@color/SignInUpTextColor"></ProgressBar>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="5dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingEnd="10dp"
                 android:text="Milestone:"
-                android:textColor="@color/yellow">
-            </TextView>
+                android:textColor="@color/SignInUpTextColor"></TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

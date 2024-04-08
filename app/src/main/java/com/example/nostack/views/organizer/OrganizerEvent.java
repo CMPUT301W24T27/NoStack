@@ -1,18 +1,30 @@
 package com.example.nostack.views.organizer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -21,13 +33,23 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.QrCode;
+import com.example.nostack.services.QrCodeImageGenerator;
 import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
+import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -49,10 +71,6 @@ public class OrganizerEvent extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
     private NotificationHandler notificationHandler;
-    public Dialog notificationDialog;
-    public AlertDialog.Builder notificationDialogBuilder;
-
-    public View notificationDialogView;
 
 
     public OrganizerEvent() {
@@ -74,7 +92,6 @@ public class OrganizerEvent extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     /**
      * This method is called when the fragment is being created and checks to see if there are any arguments
@@ -136,12 +153,40 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+        // Share QR code
+        view.findViewById(R.id.organizerShare).setOnClickListener(v -> {
+            if (event != null) {
+                QrCode qrCode = new QrCode(event.getId());
+
+                Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCode.getId());
+                String qrCodeText = "1" + "." + event.getId();
+
+                bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
+                Uri imageUri = getImageUri(bmp);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                shareIntent.setType("image/png");
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }
+        });
+
+
+        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
-                NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerQRCode);
+                // If event is not ended
+                if(event.getActive() == null || event.getActive()) {
+                    qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
+                    NavHostFragment.findNavController(OrganizerEvent.this)
+                            .navigate(R.id.action_organizer_event_to_organizerQRCode);
+                } else {
+                    FloatingActionButton button = view.findViewById(R.id.OrganizerEventQRCodeButton);
+                    button.setImageResource(R.drawable.baseline_qr_code_24);
+                    eventViewModel.reactivateEvent(event.getId(), currentUserHandler.getCurrentUserId());
+                    Toast.makeText(getContext(), "Event has been reactivated.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -155,7 +200,7 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        Button endButton = view.findViewById(R.id.button_end_event);
+        FloatingActionButton endButton = view.findViewById(R.id.button_end_event);
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,39 +240,6 @@ public class OrganizerEvent extends Fragment {
                 NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2);
             }
-        });
-
-        notificationDialogView = inflater.inflate(R.layout.event_organizer_create_notification, null);
-
-        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (notificationDialogView.getParent() != null) {
-                    ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
-                }
-
-                notificationDialogBuilder = new AlertDialog.Builder(getContext());
-                notificationDialogBuilder.setView(notificationDialogView);
-                notificationDialog = notificationDialogBuilder.create();
-
-                if (!notificationDialog.isShowing()) {
-                    notificationDialog.show();
-                }
-            }
-        });
-
-        notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // create the announcement
-                String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
-
-                notificationHandler.sendEventNotification(event, announcementMessage);
-
-                notificationDialog.dismiss();
-            };
         });
 
         // Test notifications
@@ -275,14 +287,14 @@ public class OrganizerEvent extends Fragment {
 
             if (!event.getActive() || event.getActive() == null) {
                 eventTitle.setText(event.getName() + " (Ended)");
-                Button button = view.findViewById(R.id.button_end_event);
-                button.setText("Delete Event");
-                view.findViewById(R.id.SendAnnouncementButton).setClickable(false);
-                view.findViewById(R.id.SendAnnouncementButton).setAlpha(0.5f);
+                FloatingActionButton button = view.findViewById(R.id.button_end_event);
+                FloatingActionButton qrButton = view.findViewById(R.id.OrganizerEventQRCodeButton);
+                qrButton.setImageResource(R.drawable.baseline_autorenew_24);
+                button.setImageResource(R.drawable.baseline_delete_forever_24);
             } else {
                 eventTitle.setText(event.getName());
-                Button button = view.findViewById(R.id.button_end_event);
-                button.setText("End Event");
+                FloatingActionButton button = view.findViewById(R.id.button_end_event);
+                button.setImageResource(R.drawable.baseline_block_24);
                 view.findViewById(R.id.button_end_event).setClickable(true);
                 view.findViewById(R.id.button_end_event).setAlpha(1f);
             }
@@ -292,5 +304,19 @@ public class OrganizerEvent extends Fragment {
             imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
             imageViewHandler.setEventImage(event, eventBanner);
         }
+    }
+
+    public Uri getImageUri(Bitmap bitmap) {
+        File cachePath = new File(getContext().getCacheDir(), "images");
+        cachePath.mkdirs();
+        try (FileOutputStream stream = new FileOutputStream(cachePath + "/image.png")) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File imagePath = new File(getContext().getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        return FileProvider.getUriForFile(getContext(), "com.example.nostack.provider", newFile);
     }
 }

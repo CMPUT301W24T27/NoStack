@@ -66,12 +66,55 @@ public class QrCodeController {
         return qrCollectionReference.document(qrCodeId).update(updates);
     }
 
+    /**
+     * Deactivate a QR code
+     * @param qrCodeId
+     * @return
+     */
     public Task<Void> deactivateQrCode(String qrCodeId) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("active", false);
         return qrCollectionReference.document(qrCodeId).update(updates);
     }
 
+    /**
+     * Reactivate a QR code
+     * @param qrCodeId
+     * @return
+     */
+    public Task<Void> reactivateQrCode(String qrCodeId) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", true);
+        return qrCollectionReference.document(qrCodeId).update(updates);
+    }
+
+    /**
+     * Reactivate all QR codes by event ID
+     * @param eventId
+     * @return void
+     */
+    public Task<Void> reactivateQrCodeByEventId(String eventId) {
+        return qrCollectionReference
+                .whereEqualTo("eventId", eventId)
+                .get()
+                .onSuccessTask(queryDocumentSnapshots -> {
+                    List<DocumentSnapshot> qrCodes = queryDocumentSnapshots.getDocuments();
+                    Task<Void> task = Tasks.whenAll();
+                    for (DocumentSnapshot qrCode : qrCodes) {
+                        task = task.continueWithTask(task1 -> {
+                            return reactivateQrCode(qrCode.getId());
+                        });
+                    }
+                    return task;
+                });
+    }
+
+
+    /**
+     * Deactivate all QR codes by event ID
+     * @param eventId
+     * @return void
+     */
     public Task<Void> deactivateQrCodeByEventId(String eventId) {
         return qrCollectionReference
                 .whereEqualTo("eventId", eventId)

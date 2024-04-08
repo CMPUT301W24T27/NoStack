@@ -313,6 +313,25 @@ public class EventViewModel extends ViewModel {
                 });
     }
 
+    public void reactivateEvent(String eventId, String userId) {
+        eventController.reactivateEvent(eventId)
+                .addOnSuccessListener(aVoid -> {
+                    fetchEvent(eventId);
+                    fetchOrganizerEvents(userId);
+                    qrCodeController.reactivateQrCodeByEventId(eventId)
+                            .addOnSuccessListener(a -> {
+                                Log.d("EventViewModel", "Successfully reactivated qr code");
+                            }).addOnFailureListener(e -> {
+                                Log.e("EventViewModel", "Error reactivating qr code", e);
+                                errorLiveData.postValue(e.getMessage());
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventViewModel", "Error reactivating event", e);
+                    errorLiveData.postValue(e.getMessage());
+                });
+    }
+
     public void setEventWithReuse(Event event, @Nullable Uri uri) {
         Pair<Event, Uri> pair = new Pair<>(event, uri);
         eventWithReuse.postValue(pair);

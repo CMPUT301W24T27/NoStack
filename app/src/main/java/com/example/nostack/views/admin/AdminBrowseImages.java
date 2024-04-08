@@ -33,7 +33,6 @@ import com.example.nostack.views.admin.adapters.ImageArrayAdapter;
 import com.example.nostack.views.admin.adapters.ImageArrayRecycleViewInterface;
 import com.example.nostack.views.admin.adapters.ImageRecycleViewAdapter;
 import com.faltenreich.skeletonlayout.Skeleton;
-import com.faltenreich.skeletonlayout.recyclerview.SkeletonRecyclerViewAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 

@@ -19,8 +19,11 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.models.User;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +37,7 @@ public class AttendeeEvent extends Fragment {
     private ImageViewHandler imageViewHandler;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
-
+    private NavbarConfig navbarConfig;
 
     public AttendeeEvent() {}
 
@@ -54,6 +57,7 @@ public class AttendeeEvent extends Fragment {
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
     }
 
     /**
@@ -71,6 +75,7 @@ public class AttendeeEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendee_event, container, false);
+        navbarConfig.setInvisible();
         return view;
     }
 
@@ -169,14 +174,25 @@ public class AttendeeEvent extends Fragment {
         }
 
         if (event.getActive() == null || !event.getActive()) {
-            eventTitle.setText(event.getName() + " (Ended)");
-        } else {
-            eventTitle.setText(event.getName());
+            register.setText("Event has ended");
+            register.setEnabled(false);
+            register.setClickable(false);
+            register.setAlpha(0.7f);
         }
+
         Log.d("AttendeeEvent", "EventMSG" + event.getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation());
-        imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), eventProfileImage, getResources(), null);
+        eventTitle.setText(event.getName());
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(event.getOrganizerId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                User organizer = task.getResult().toObject(User.class);
+                imageViewHandler.setUserProfileImage(organizer, eventProfileImage, getResources(), null);
+            }
+        });
+
         imageViewHandler.setEventImage(event, eventImage);
 
         if (event.getAttendees() != null) {
