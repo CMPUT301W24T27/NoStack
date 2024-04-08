@@ -52,11 +52,18 @@ public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String
         String announcementTitleText = messageSplit[0];
         String announcementDescText = messageSplit[1];
 
+        // convert dateunix to date time
+        long date = Long.parseLong(dateunix);
+        java.util.Date time=new java.util.Date((long)date*1000);
+        String dateStr = time.toString();
+
         TextView announcementTitle = view.findViewById(R.id.AnnouncementTitle);
         TextView announcementDesc = view.findViewById(R.id.AnnouncementDescription);
+        TextView announcementDate = view.findViewById(R.id.AnnouncementTime);
 
         announcementTitle.setText(announcementTitleText);
         announcementDesc.setText(announcementDescText);
+        announcementDate.setText(dateStr);
 
         return view;
     }
