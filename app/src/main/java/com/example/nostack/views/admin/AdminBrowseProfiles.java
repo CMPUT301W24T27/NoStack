@@ -28,6 +28,7 @@ import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewAdapter;
 import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewInterface;
 import com.example.nostack.views.user.UserArrayAdapter;
 import com.faltenreich.skeletonlayout.Skeleton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -113,6 +114,7 @@ public class AdminBrowseProfiles extends Fragment {
         allUsers.getAllUsers().observe(getViewLifecycleOwner(), users -> {
             UserArrayAdapter.clear();
             for (User user : users) {
+                Log.d("AdminBrowseProfiles", user.getUuid() + " " + user.getRole());
                 UserArrayAdapter.addUser(user);
             }
             UserArrayAdapter.notifyDataSetChanged();
@@ -132,22 +134,29 @@ public class AdminBrowseProfiles extends Fragment {
         TextView userFirstName = dialog.findViewById(R.id.admin_userDialogFirstName);
         TextView userLastName = dialog.findViewById(R.id.admin_userDialogLastName);
         TextView userUUID = dialog.findViewById(R.id.admin_userDialogUUID);
-        TextView userGender = dialog.findViewById(R.id.admin_userDialogGender);
-        Button deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
-
+        FloatingActionButton deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
+        Button makeAdminButton = dialog.findViewById(R.id.admin_amkeAdminUserButton);
 
         if (user.getUsername() != null){
             userTitle.setText(user.getUsername());
         } else {
             userTitle.setText("Username: N/A");
         }
-        userEmail.setText("Email: " + user.getEmailAddress());
-        userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
-        userRole.setText("Role: " + user.getRole());
+        userEmail.setText("Email: " + user.getEmailAddress() == null ? "N/A" : user.getEmailAddress());
+        userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber() == null ? "N/A" : user.getPhoneNumber());
+        userRole.setText("Role: " + (user.getRole() == null ? "User" : user.getRole().substring(0, 1).toUpperCase() + user.getRole().substring(1)));
         userFirstName.setText(user.getFirstName());
         userLastName.setText(user.getLastName());
-        userUUID.setText("Uuid: " + user.getUuid());
-        userGender.setText("Gender: " + user.getGender());
+        userUUID.setText("UUID: " + user.getUuid());
+
+        boolean isAdmin = user.getRole() != null && user.getRole().contains( "admin");
+
+        if(isAdmin){
+            makeAdminButton.setText("Remove Admin");
+            userRole.setText("Role: Admin");
+        } else {
+            makeAdminButton.setText("Make Admin");
+        }
 
         imageViewHandler.setUserProfileImage(user, userBanner,getResources(), null);
 
@@ -159,6 +168,20 @@ public class AdminBrowseProfiles extends Fragment {
                 // Close dialog
                 dialog.dismiss();
                 Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        makeAdminButton.setOnClickListener(v -> {
+            if(user.getRole() == null){
+                makeAdmin(user);
+                userRole.setText("Role: Admin");
+                Toast.makeText(getContext(), "User is now an admin.", Toast.LENGTH_SHORT).show();
+                makeAdminButton.setText("Remove Admin");
+            } else {
+                removeAdmin(user);
+                userRole.setText("Role: User");
+                Toast.makeText(getContext(), "User is no longer an admin.", Toast.LENGTH_SHORT).show();
+                makeAdminButton.setText("Make Admin");
             }
         });
     }
@@ -210,5 +233,47 @@ public class AdminBrowseProfiles extends Fragment {
         });
 
         return true;
+    }
+
+    /**
+     * Make user an admin
+     * @param user
+     */
+    private void makeAdmin(User user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("users");
+        Query query = users.whereEqualTo("uuid", user.getUuid());
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().update("role", "admin");
+                    user.setRole("admin");
+                }
+            } else {
+                Log.d("Make Admin", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    /**
+     * Remove admin role from user
+     * @param user
+     */
+    private void removeAdmin(User user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("users");
+        Query query = users.whereEqualTo("uuid", user.getUuid());
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().update("role", null);
+                    user.setRole(null);
+                }
+            } else {
+                Log.d("Remove Admin", "Error getting documents: ", task.getException());
+            }
+        });
     }
 }

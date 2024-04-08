@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/admin_eventDialogStartDate"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="StartDate"
@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/admin_eventDialogEndDate"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="End Date"
@@ -78,10 +78,11 @@
 
             <TextView
                 android:id="@+id/admin_eventDialogLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Location"
+                android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="15sp"
@@ -91,10 +92,11 @@
 
             <TextView
                 android:id="@+id/admin_eventDialogCapacity"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Capacity"
+                android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                 android:textColor="@color/white"
                 android:textSize="15dp"
