@@ -136,5 +136,6 @@ public class Profile extends User {
         setUuid(user.getUuid());
         setUsername(user.getUsername());
         setProfileImageUrl(user.getProfileImageUrl());
+        setRole(user.getRole());
     }
 }

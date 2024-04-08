@@ -132,7 +132,6 @@ public class AdminBrowseProfiles extends Fragment {
         TextView userFirstName = dialog.findViewById(R.id.admin_userDialogFirstName);
         TextView userLastName = dialog.findViewById(R.id.admin_userDialogLastName);
         TextView userUUID = dialog.findViewById(R.id.admin_userDialogUUID);
-        TextView userGender = dialog.findViewById(R.id.admin_userDialogGender);
         Button deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
         Button makeAdminButton = dialog.findViewById(R.id.admin_amkeAdminUserButton);
 
@@ -148,7 +147,7 @@ public class AdminBrowseProfiles extends Fragment {
         userLastName.setText(user.getLastName());
         userUUID.setText("Uuid: " + user.getUuid());
 
-        if(user.getRole() == "admin"){
+        if(user.getRole().contains( "admin")){
             makeAdminButton.setText("Remove Admin");
             userRole.setText("Role: Admin");
         } else {
@@ -232,6 +231,10 @@ public class AdminBrowseProfiles extends Fragment {
         return true;
     }
 
+    /**
+     * Make user an admin
+     * @param user
+     */
     private void makeAdmin(User user){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference users = db.collection("users");
@@ -249,6 +252,10 @@ public class AdminBrowseProfiles extends Fragment {
         });
     }
 
+    /**
+     * Remove admin role from user
+     * @param user
+     */
     private void removeAdmin(User user){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference users = db.collection("users");
