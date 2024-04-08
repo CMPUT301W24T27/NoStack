@@ -1,5 +1,13 @@
 package com.example.nostack.handlers;
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.nostack.controllers.AttendanceController;
 import com.example.nostack.controllers.EventController;
@@ -33,6 +41,18 @@ public class NotificationHandler {
         return singleInstance;
     }
     public NotificationHandler() {}
+
+    public void handleNotificationPermissions(Context context, Activity activity) {
+        // notification permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context,
+                    android.Manifest.permission.POST_NOTIFICATIONS) !=
+                    PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
+    }
 
     public void sendEventMilestoneNotification(String fcmToken, Event event, String userId) {
         String title = "Congratulations! You have reached a milestone!";
@@ -109,6 +129,41 @@ public class NotificationHandler {
         }
 
         callFCMApi(jsonObject);
+    }
+
+    public void sendPushNotif(String token, String title, String body){
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        JSONObject jsonNotif = new JSONObject();
+        JSONObject wholeObj = new JSONObject();
+        try {
+            jsonNotif.put("title", title);
+            jsonNotif.put("body", body);
+            wholeObj.put("to", token);
+            wholeObj.put("notification", jsonNotif);
+        } catch (JSONException e) {
+            Log.d("Notification Handler", e.toString());
+        }
+
+        RequestBody rbody = RequestBody.create(mediaType, wholeObj.toString());
+        Request request = new Request.Builder()
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(rbody)
+                .addHeader("Authorization", "key=AAAAFi5a5Bw:APA91bF84egAggmbzLF7AtOljpEr0kanKZD7meP5LiJOu14Juc10vh1u9WWCQMkX4sr74nA2E_ooyKVy3Y5SpE2lWA2dXhO1LzoO70Zp0qgSfev8eiZRYNhKyyDLZrcsp7dUsYnhsJ61")
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("Notification Handler", e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("Notification Handler", response.toString());
+            }
+        });
     }
 
     public void callFCMApi(JSONObject jsonObject) {
