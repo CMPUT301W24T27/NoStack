@@ -93,9 +93,8 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
     @Override
     public void OnItemClick(int position) {
         Event event = eventArrayAdapter.getEvent(position);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event", event);
-        NavHostFragment.findNavController(AttendeeEvents.this).navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+        eventViewModel.fetchEvent(event.getId());
+        NavHostFragment.findNavController(AttendeeEvents.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
         navbarConfig.setInvisible();
     }
 

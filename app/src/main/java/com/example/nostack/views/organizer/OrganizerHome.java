@@ -157,9 +157,11 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
             skeleton.showOriginal();
         });
 
+
         view.findViewById(R.id.AddEventButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                eventViewModel.clearEventLiveData();
                 NavHostFragment.findNavController(OrganizerHome.this)
                         .navigate(R.id.action_organizerHome_to_organizerEvent);
             }
@@ -195,10 +197,9 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
     @Override
     public void OnItemClick(int position) {
         Event event = eventArrayAdapter.getEvent(position);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event", event);
+        eventViewModel.fetchEvent(event.getId());
         NavHostFragment.findNavController(OrganizerHome.this)
-                .navigate(R.id.action_organizerHome_to_organizer_event, bundle);
+                .navigate(R.id.action_organizerHome_to_organizer_event);
         navbarConfig.setInvisible();
     }
 }
