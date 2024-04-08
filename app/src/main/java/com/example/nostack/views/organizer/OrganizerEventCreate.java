@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
@@ -88,7 +89,7 @@ public class OrganizerEventCreate extends Fragment {
     private ImageView eventImageView;
     private SharedPreferences preferences;
     private SwitchCompat unlimitedButton;
-    private ActivityResultLauncher<String> imagePickerLauncher;
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
     private EventViewModel eventViewModel;
     private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
@@ -131,11 +132,10 @@ public class OrganizerEventCreate extends Fragment {
         imageUploader = new ImageUploader();
         currentUserHandler = CurrentUserHandler.getSingleton();
         navbarConfig = NavbarConfig.getSingleton();
-        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-            @Override
-            public void onActivityResult(Uri o) {
-                eventImageView.setTag(o);
-                eventImageView.setImageURI(o);
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                eventImageView.setTag(uri);
+                eventImageView.setImageURI(uri);
             }
         });
 
@@ -317,7 +317,9 @@ public class OrganizerEventCreate extends Fragment {
     }
 
     private void openImagePicker() {
-        imagePickerLauncher.launch("image/*");
+        imagePickerLauncher.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.
+                        PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     private Event createEvent() {

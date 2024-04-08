@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,6 +52,7 @@ public class UserProfile extends Fragment {
 
     private UserViewModel userViewModel;
     private ImageViewHandler imageViewHandler;
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
 
     public UserProfile() {
         // Required empty public constructor
@@ -58,8 +62,9 @@ public class UserProfile extends Fragment {
      * Allows the user to select a profile picture
      */
     private void selectProfilePicture() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, IMAGE_PICK_CODE);
+        imagePickerLauncher.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.
+                        PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     /**
@@ -163,6 +168,12 @@ public class UserProfile extends Fragment {
 
         imageUploader = new ImageUploader();
         imageViewHandler = ImageViewHandler.getSingleton();
+
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                uploadProfileImage(uri);
+            }
+        });
     }
 
     /**
