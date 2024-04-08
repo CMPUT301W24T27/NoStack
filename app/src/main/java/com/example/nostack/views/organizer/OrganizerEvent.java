@@ -1,7 +1,7 @@
 package com.example.nostack.views.organizer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,7 +38,6 @@ import com.example.nostack.services.QrCodeImageGenerator;
 import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -49,7 +48,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -71,6 +69,10 @@ public class OrganizerEvent extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
     private NotificationHandler notificationHandler;
+    public Dialog notificationDialog;
+    public AlertDialog.Builder notificationDialogBuilder;
+
+    public View notificationDialogView;
 
 
     public OrganizerEvent() {
@@ -173,7 +175,27 @@ public class OrganizerEvent extends Fragment {
         });
 
 
-        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
+        // Share QR code
+        view.findViewById(R.id.organizerShare).setOnClickListener(v -> {
+            if (event != null) {
+                QrCode qrCode = new QrCode(event.getId());
+
+                Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCode.getId());
+                String qrCodeText = "1" + "." + event.getId();
+
+                bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
+                Uri imageUri = getImageUri(bmp);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                shareIntent.setType("image/png");
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }
+        });
+
+
+        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // If event is not ended
@@ -242,6 +264,39 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
+        notificationDialogView = inflater.inflate(R.layout.event_organizer_create_notification, null);
+
+        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (notificationDialogView.getParent() != null) {
+                    ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
+                }
+
+                notificationDialogBuilder = new AlertDialog.Builder(getContext());
+                notificationDialogBuilder.setView(notificationDialogView);
+                notificationDialog = notificationDialogBuilder.create();
+
+                if (!notificationDialog.isShowing()) {
+                    notificationDialog.show();
+                }
+            }
+        });
+
+        notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // create the announcement
+                String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
+
+                notificationHandler.sendEventNotification(event, announcementMessage);
+
+                notificationDialog.dismiss();
+            };
+        });
+
         // Test notifications
         view.findViewById(R.id.AttendeeEventTitleText).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,6 +346,8 @@ public class OrganizerEvent extends Fragment {
                 FloatingActionButton qrButton = view.findViewById(R.id.OrganizerEventQRCodeButton);
                 qrButton.setImageResource(R.drawable.baseline_autorenew_24);
                 button.setImageResource(R.drawable.baseline_delete_forever_24);
+                view.findViewById(R.id.SendAnnouncementButton).setClickable(false);
+                view.findViewById(R.id.SendAnnouncementButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
                 FloatingActionButton button = view.findViewById(R.id.button_end_event);

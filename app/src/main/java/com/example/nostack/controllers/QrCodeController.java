@@ -41,7 +41,16 @@ public class QrCodeController {
     }
 
     public Task<DocumentSnapshot> getQrCode(String qrCodeId) {
-        return qrCollectionReference.document(qrCodeId).get();
+        try {
+            return qrCollectionReference.document(qrCodeId).get().addOnSuccessListener(task -> {
+                Log.d("QrCodeController", "Successfully fetched QrCode");
+            }).addOnFailureListener(e -> {
+                Log.e("QrCodeController", "Error fetching QrCode", e);
+            });
+        } catch (Exception e) {
+            Log.e("QrCodeController", "Error fetching QrCode", e);
+            return null;
+        }
     }
 
     public Task<QuerySnapshot> getInactiveQrCodes() {

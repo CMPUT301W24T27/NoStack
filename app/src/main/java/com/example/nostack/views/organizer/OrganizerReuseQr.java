@@ -3,6 +3,7 @@ package com.example.nostack.views.organizer;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -20,7 +21,10 @@ import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
+import com.example.nostack.views.activity.ScanActivity;
 import com.example.nostack.views.organizer.adapters.InactiveQrEventAdapter;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +55,7 @@ public class OrganizerReuseQr extends Fragment {
     private InactiveQrEventAdapter arrayAdapter;
     private ListView listView;
     private View previousView;
+    private boolean processingQr;
     public OrganizerReuseQr() {
         // Required empty public constructor
     }
@@ -158,6 +163,7 @@ public class OrganizerReuseQr extends Fragment {
             public void onClick(View v) {
                 if (selectedQrCode != null) {
                     eventViewModel.addEventWithReuse();
+                    Toast.makeText(getContext(), "Event " + event.getName()+ " was created successfully", Toast.LENGTH_SHORT).show();
                     if (NavHostFragment.findNavController(OrganizerReuseQr.this).popBackStack()) {
                         NavHostFragment.findNavController(OrganizerReuseQr.this).popBackStack();
                     };
@@ -167,8 +173,50 @@ public class OrganizerReuseQr extends Fragment {
             }
         });
 
+        view.findViewById(R.id.upload_own_qr_code).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanCode();
+            }
+        });
+
         return view;
     }
 
+    private void scanCode() {
+        ScanOptions scanOptions = new ScanOptions();
+        scanOptions.setPrompt("Scan the QR code");
+        scanOptions.setBeepEnabled(true);
+        scanOptions.setOrientationLocked(true);
+        scanOptions.setCaptureActivity(ScanActivity.class);
+        barLauncher.launch(scanOptions);
+    }
+
+    private ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if (result.getContents() != null && !processingQr) {
+            String codeToCheck;
+            if (result.getContents().charAt(0) == '0' && result.getContents().charAt(1) == '.') {
+                codeToCheck = result.getContents().substring(2);
+            } else {
+                codeToCheck = result.getContents();
+            }
+
+            qrCodeViewModel.createCustomQrCode(event.getId(), codeToCheck)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        eventViewModel.updateEventWithReuse(codeToCheck);
+                        eventViewModel.addEventWithReuse();
+                        processingQr = true;
+                        Toast.makeText(getContext(), "Event " + event.getName()+ " was created successfully", Toast.LENGTH_SHORT).show();
+                        if (NavHostFragment.findNavController(OrganizerReuseQr.this).popBackStack()) {
+                            NavHostFragment.findNavController(OrganizerReuseQr.this).popBackStack();
+                        }
+                    } else {
+                        processingQr = true;
+                        Toast.makeText(getContext(), "Invalid or Duplicate QR Code", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        }
+    });
 
 }

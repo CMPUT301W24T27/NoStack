@@ -17,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.LocationHandler;
+import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Profile;
 import com.example.nostack.models.User;
 import com.example.nostack.services.GenerateName;
@@ -46,6 +47,7 @@ public class StartUp extends Fragment {
     private AlertDialog dialog;
     private CurrentUserHandler currentUserHandler;
     private NavbarConfig navbarConfig;
+    private NotificationHandler notificationHandler;
 
     public StartUp() {
         // Required empty public constructor
@@ -104,6 +106,10 @@ public class StartUp extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // request notification permission
+        notificationHandler = new NotificationHandler();
+        notificationHandler.handleNotificationPermissions(getContext(), getActivity());
 
         View view = inflater.inflate(R.layout.fragment_start_up, container, false);
         String uuid = profile.getUuid();
