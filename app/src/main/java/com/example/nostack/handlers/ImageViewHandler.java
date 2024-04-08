@@ -121,15 +121,28 @@ public class ImageViewHandler {
                 d.setCornerRadius(100f);
                 imageView.setImageDrawable(d);
             }).addOnFailureListener(exception -> {
-                Log.w("User Profile", "Error getting profile image", exception);
+                Log.w("User Profile", "Error getting profile image(or deleted) " + user.getUsername());
+
+                // Generate profile image if user has no profile image
+                GenerateProfileImage(user.getFirstName(), user.getLastName(), imageView);
             });
         } else {
             // generate profile image if user has no profile image
-            Bitmap pfp = GenerateProfileImage.generateProfileImage(user.getFirstName(), user.getLastName());
-            Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, width, height, false);
-            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(resource, scaledBmp);
-            d.setCornerRadius(100f);
-            imageView.setImageDrawable(d);
+            GenerateProfileImage(user.getFirstName(), user.getLastName(), imageView);
         }
+    }
+
+    /**
+     * Generate profile image
+     * @param firstName
+     * @param lastName
+     * @param imageView
+     */
+    private void GenerateProfileImage(String firstName, String lastName, ImageView imageView) {
+        Bitmap pfp = GenerateProfileImage.generateProfileImage(firstName, lastName);
+        Bitmap scaledBmp = Bitmap.createScaledBitmap(pfp, 72, 72, false);
+        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(ownerActivity.getResources(), scaledBmp);
+        d.setCornerRadius(100f);
+        imageView.setImageDrawable(d);
     }
 }
