@@ -183,8 +183,41 @@ public class TestUS01 extends UiTest {
         onView(withText("Tue, Jun 11, 2024")).check(matches(isDisplayed()));
         onView(withText("Anywhere")).check(matches(isDisplayed()));
     }
+
     @Test
-    public void F_testOrganizerDeleteEvent(){
+    public void F_testOrganizerReuseQrCode(){
+        sleepForX(2000);
+        onView(withId(R.id.SignIn_SignUpButton)).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.nav_qr)).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.EventCreationTitleEditText)).perform(replaceText("Even NEWER Ui Test!"));
+        onView(withContentDescription("StartDateTime")).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2024, 7, 10));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(9, 0));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withContentDescription("EndDateTime")).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2024, 7, 11));
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(23, 55));
+        onView(withId(android.R.id.button1)).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.EventCreationLocationEditText)).perform(replaceText("Here"));
+        onView(withId(R.id.EventCreationLimitEditText)).perform(replaceText("200"));
+        sleepForX(3000);
+        onView(withId(R.id.EventCreationDescriptionEditText)).perform(replaceText("It is so new!"));
+        onView(withId(R.id.EventCreationReuseQRCheckBox)).perform(click());
+        onView(withId(R.id.EventCreationCreateEventButton)).perform(click());
+        sleepForX(3000);
+        onView(withText("New Ui Test!")).perform(click());
+        onView(withId(R.id.create_reuse_event)).perform(click());
+        onView(withText("Even NEWER Ui Test!")).perform(click());
+        onView(withText("Even NEWER Ui Test!")).check(matches(isDisplayed()));
+    }
+    @Test
+    public void G_testOrganizerDeleteEvent(){
         sleepForX(2000);
         onView(withId(R.id.SignIn_SignUpButton)).perform(click());
         sleepForX(3000);
@@ -194,5 +227,11 @@ public class TestUS01 extends UiTest {
         sleepForX(3000);
         onView(withText("Confirm")).perform(click());
         sleepForX(3000);
+        onView(withText("Even NEWER Ui Test!")).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.button_end_event)).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.button_end_event)).perform(click());
+        onView(withText("Confirm")).perform(click());
     }
 }

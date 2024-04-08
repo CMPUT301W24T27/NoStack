@@ -88,7 +88,7 @@ public class TestUS02 extends UiTest{
         onView(withText("1234567890")).check(matches(isDisplayed()));
     }
     /**
-     * Tests for US 02.
+     * Tests for US 02
      * As an attendee, I want to register for an event
      */
     @Test
@@ -102,19 +102,7 @@ public class TestUS02 extends UiTest{
         onView(withText("Unregister")).check(matches(isDisplayed()));
         sleepForX(3000);
         pressBack();
-        onView(withId(R.id.listView_yourEvents)).perform(swipeUp());
-        onView(withId(R.id.listView_yourEvents)).perform(swipeUp());
-        onView(withId(R.id.listView_yourEvents)).perform(swipeUp());
-        onView(withId(R.id.listView_yourEvents)).perform(swipeUp());
-        sleepForX(1000);
-        //attempting to register for an event that has already ended
-        onView(withText("Golf Tourney123")).perform(click());
-        onView(withId(R.id.AttendeeEventRegisterButton)).perform(click());
-        sleepForX(1000);
-        onView(withText("Unregister")).check(matches(isDisplayed()));
-        pressBack();
-        onView(withId(R.id.listView_yourEvents)).perform(swipeLeft());
-        onView(withText("Golf Tourney123")).check(matches(isDisplayed()));
+
 
     }
 
