@@ -1,13 +1,9 @@
 package com.example.nostack.views.organizer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -29,14 +24,10 @@ import com.example.nostack.models.Event;
 import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -58,6 +49,10 @@ public class OrganizerEvent extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
     private NotificationHandler notificationHandler;
+    public Dialog notificationDialog;
+    public AlertDialog.Builder notificationDialogBuilder;
+
+    public View notificationDialogView;
 
 
     public OrganizerEvent() {
@@ -141,7 +136,7 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
@@ -202,6 +197,39 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
+        notificationDialogView = inflater.inflate(R.layout.event_organizer_create_notification, null);
+
+        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (notificationDialogView.getParent() != null) {
+                    ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
+                }
+
+                notificationDialogBuilder = new AlertDialog.Builder(getContext());
+                notificationDialogBuilder.setView(notificationDialogView);
+                notificationDialog = notificationDialogBuilder.create();
+
+                if (!notificationDialog.isShowing()) {
+                    notificationDialog.show();
+                }
+            }
+        });
+
+        notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // create the announcement
+                String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
+
+                notificationHandler.sendEventNotification(event, announcementMessage);
+
+                notificationDialog.dismiss();
+            };
+        });
+
         // Test notifications
         view.findViewById(R.id.AttendeeEventTitleText).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,8 +277,8 @@ public class OrganizerEvent extends Fragment {
                 eventTitle.setText(event.getName() + " (Ended)");
                 Button button = view.findViewById(R.id.button_end_event);
                 button.setText("Delete Event");
-                view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
-                view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
+                view.findViewById(R.id.SendAnnouncementButton).setClickable(false);
+                view.findViewById(R.id.SendAnnouncementButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
                 Button button = view.findViewById(R.id.button_end_event);
