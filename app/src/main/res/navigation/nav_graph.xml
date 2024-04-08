@@ -108,6 +108,9 @@
         <action
             android:id="@+id/action_organizer_event_to_usersSignups"
             app:destination="@id/usersSignups" />
+        <action
+            android:id="@+id/action_organizer_event_to_organizerEventAnnouncements"
+            app:destination="@id/organizerEventAnnouncements" />
 
     </fragment>
     <fragment
@@ -177,6 +180,11 @@
             android:id="@+id/action_announcementHistory_to_attendeeHome"
             app:destination="@id/attendeeHome" />
     </fragment>
+    <fragment
+        android:id="@+id/organizerEventAnnouncements"
+        android:name="com.example.nostack.views.organizer.OrganizerEventAnnouncements"
+        android:label="fragment_organizer_event_announcements"
+        tools:layout="@layout/fragment_organizer_event_announcements" />
 
 
 </navigation>

@@ -86,8 +86,7 @@ public class OrganizerEventAnnouncements extends Fragment {
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(OrganizerEventAnnouncements.this)
-                        .navigate(R.id.action_announcementHistory_to_attendeeHome);
+                NavHostFragment.findNavController(OrganizerEventAnnouncements.this).popBackStack();
             }
         });
 
@@ -98,10 +97,10 @@ public class OrganizerEventAnnouncements extends Fragment {
         announcementListView.setAdapter(arrayAdapter);
 
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            if (event != null) {
-                dataList.clear();
+            if (event != null && event.getAnnouncements() != null && !event.getAnnouncements().isEmpty()) {
+                arrayAdapter.clear();
                 for (HashMap<String, String> ann: event.getAnnouncements()) {
-                    dataList.add(ann);
+                    arrayAdapter.add(ann);
                 }
                 arrayAdapter.notifyDataSetChanged();
                 Log.d("OrganizerEventAnnouncements", "Announcement: " + event.getAnnouncements().toString());

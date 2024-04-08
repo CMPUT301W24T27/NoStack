@@ -267,6 +267,15 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
+        view.findViewById(R.id.SeeAnnouncements).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventViewModel.fetchEvent(event.getId());
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAnnouncements);
+            }
+        });
+
         notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
