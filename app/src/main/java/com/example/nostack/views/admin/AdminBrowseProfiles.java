@@ -134,7 +134,7 @@ public class AdminBrowseProfiles extends Fragment {
         TextView userUUID = dialog.findViewById(R.id.admin_userDialogUUID);
         TextView userGender = dialog.findViewById(R.id.admin_userDialogGender);
         Button deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
-
+        Button makeAdminButton = dialog.findViewById(R.id.admin_amkeAdminUserButton);
 
         if (user.getUsername() != null){
             userTitle.setText(user.getUsername());
@@ -143,11 +143,17 @@ public class AdminBrowseProfiles extends Fragment {
         }
         userEmail.setText("Email: " + user.getEmailAddress());
         userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
-        userRole.setText("Role: " + user.getRole());
+        userRole.setText("Role: " + (user.getRole() == null ? "User" : user.getRole().substring(0, 1).toUpperCase() + user.getRole().substring(1)));
         userFirstName.setText(user.getFirstName());
         userLastName.setText(user.getLastName());
         userUUID.setText("Uuid: " + user.getUuid());
-        userGender.setText("Gender: " + user.getGender());
+
+        if(user.getRole() == "admin"){
+            makeAdminButton.setText("Remove Admin");
+            userRole.setText("Role: Admin");
+        } else {
+            makeAdminButton.setText("Make Admin");
+        }
 
         imageViewHandler.setUserProfileImage(user, userBanner,getResources(), null);
 
@@ -159,6 +165,20 @@ public class AdminBrowseProfiles extends Fragment {
                 // Close dialog
                 dialog.dismiss();
                 Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        makeAdminButton.setOnClickListener(v -> {
+            if(user.getRole() == null){
+                makeAdmin(user);
+                userRole.setText("Role: Admin");
+                Toast.makeText(getContext(), "User is now an admin.", Toast.LENGTH_SHORT).show();
+                makeAdminButton.setText("Remove Admin");
+            } else {
+                removeAdmin(user);
+                userRole.setText("Role: User");
+                Toast.makeText(getContext(), "User is no longer an admin.", Toast.LENGTH_SHORT).show();
+                makeAdminButton.setText("Make Admin");
             }
         });
     }
@@ -210,5 +230,39 @@ public class AdminBrowseProfiles extends Fragment {
         });
 
         return true;
+    }
+
+    private void makeAdmin(User user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("users");
+        Query query = users.whereEqualTo("uuid", user.getUuid());
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().update("role", "admin");
+                    user.setRole("admin");
+                }
+            } else {
+                Log.d("Make Admin", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    private void removeAdmin(User user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference users = db.collection("users");
+        Query query = users.whereEqualTo("uuid", user.getUuid());
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().update("role", null);
+                    user.setRole(null);
+                }
+            } else {
+                Log.d("Remove Admin", "Error getting documents: ", task.getException());
+            }
+        });
     }
 }
