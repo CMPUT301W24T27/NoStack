@@ -28,6 +28,7 @@ import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewAdapter;
 import com.example.nostack.views.admin.adapters.ProfileArrayRecycleViewInterface;
 import com.example.nostack.views.user.UserArrayAdapter;
 import com.faltenreich.skeletonlayout.Skeleton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -113,6 +114,7 @@ public class AdminBrowseProfiles extends Fragment {
         allUsers.getAllUsers().observe(getViewLifecycleOwner(), users -> {
             UserArrayAdapter.clear();
             for (User user : users) {
+                Log.d("AdminBrowseProfiles", user.getUuid() + " " + user.getRole());
                 UserArrayAdapter.addUser(user);
             }
             UserArrayAdapter.notifyDataSetChanged();
@@ -132,7 +134,7 @@ public class AdminBrowseProfiles extends Fragment {
         TextView userFirstName = dialog.findViewById(R.id.admin_userDialogFirstName);
         TextView userLastName = dialog.findViewById(R.id.admin_userDialogLastName);
         TextView userUUID = dialog.findViewById(R.id.admin_userDialogUUID);
-        Button deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
+        FloatingActionButton deleteUserButton = dialog.findViewById(R.id.admin_deleteUserButton);
         Button makeAdminButton = dialog.findViewById(R.id.admin_amkeAdminUserButton);
 
         if (user.getUsername() != null){
@@ -140,14 +142,16 @@ public class AdminBrowseProfiles extends Fragment {
         } else {
             userTitle.setText("Username: N/A");
         }
-        userEmail.setText("Email: " + user.getEmailAddress());
-        userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber());
+        userEmail.setText("Email: " + user.getEmailAddress() == null ? "N/A" : user.getEmailAddress());
+        userPhoneNumber.setText("Phone Number: " + user.getPhoneNumber() == null ? "N/A" : user.getPhoneNumber());
         userRole.setText("Role: " + (user.getRole() == null ? "User" : user.getRole().substring(0, 1).toUpperCase() + user.getRole().substring(1)));
         userFirstName.setText(user.getFirstName());
         userLastName.setText(user.getLastName());
-        userUUID.setText("Uuid: " + user.getUuid());
+        userUUID.setText("UUID: " + user.getUuid());
 
-        if(user.getRole().contains( "admin")){
+        boolean isAdmin = user.getRole() != null && user.getRole().contains( "admin");
+
+        if(isAdmin){
             makeAdminButton.setText("Remove Admin");
             userRole.setText("Role: Admin");
         } else {

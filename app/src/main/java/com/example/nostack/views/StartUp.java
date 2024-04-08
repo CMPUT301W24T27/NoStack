@@ -158,7 +158,8 @@ public class StartUp extends Fragment {
         view.findViewById(R.id.AdministratorSignInButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(!(profile.getRole().contains("admin"))){
+                boolean isAdmin = profile.getRole() != null && profile.getRole().contains("admin");
+                if(!isAdmin){
                     Toast.makeText(getActivity(), "Unauthorized", Toast.LENGTH_SHORT).show();
                     return;
                 }
