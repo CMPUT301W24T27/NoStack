@@ -174,6 +174,7 @@ public class OrganizerEvent extends Fragment {
                                     eventViewModel.deleteEvent(event, new EventViewModel.DeleteEventCallback() {
                                         @Override
                                         public void onEventDeleted() {
+                                            eventViewModel.clearEventLiveData();
                                             NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
                                         }
 
@@ -244,7 +245,7 @@ public class OrganizerEvent extends Fragment {
                 eventStartTime.setText(startTime + " - " + endTime);
             }
 
-            if (event.getActive() == null || !event.getActive()) {
+            if (!event.getActive()) {
                 eventTitle.setText(event.getName() + " (Ended)");
                 Button button = view.findViewById(R.id.button_end_event);
                 button.setText("Delete Event");
@@ -252,6 +253,8 @@ public class OrganizerEvent extends Fragment {
                 view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
+                Button button = view.findViewById(R.id.button_end_event);
+                button.setText("End Event");
                 view.findViewById(R.id.button_end_event).setClickable(true);
                 view.findViewById(R.id.button_end_event).setAlpha(1f);
             }
