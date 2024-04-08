@@ -2,6 +2,8 @@ package com.example.nostack.models;
 
 import android.util.Log;
 
+import java.util.HashMap;
+
 /**
  * User will
  * Contain and can display a user’s personal info,
@@ -19,6 +21,7 @@ public class User {
     private String uuid;
     private String profileImageUrl;
     private String fcmToken;
+    private HashMap<String, String> notifications;
 
     /**
      * Get the role of the user
@@ -194,6 +197,13 @@ public class User {
     */
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+    public HashMap<String, String> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(HashMap<String, String> notifications) {
+        this.notifications = notifications;
     }
 
     /**

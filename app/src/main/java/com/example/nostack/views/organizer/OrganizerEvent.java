@@ -1,35 +1,29 @@
 package com.example.nostack.views.organizer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
+import com.example.nostack.controllers.AttendanceController;
+import com.example.nostack.controllers.EventController;
+import com.example.nostack.controllers.UserController;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
@@ -38,11 +32,10 @@ import com.example.nostack.services.QrCodeImageGenerator;
 import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
-import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.handlers.ImageViewHandler;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +43,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -71,6 +67,15 @@ public class OrganizerEvent extends Fragment {
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
     private NotificationHandler notificationHandler;
+    public Dialog notificationDialog;
+    public AlertDialog.Builder notificationDialogBuilder;
+    public View notificationDialogView;
+    Date announcementDate;
+    HashMap<String, String> announcementMap = new HashMap<>();
+    EventController eventController = new EventController();
+    UserController userController = new UserController();
+    AttendanceController attendanceController = new AttendanceController();
+    ArrayList<String> attendees = new ArrayList<>();
 
 
     public OrganizerEvent() {
@@ -240,6 +245,67 @@ public class OrganizerEvent extends Fragment {
                 NavHostFragment.findNavController(OrganizerEvent.this)
                         .navigate(R.id.action_organizerEvent_to_organizerEventCreate2);
             }
+        });
+
+        notificationDialogView = inflater.inflate(R.layout.event_organizer_create_notification, null);
+
+        view.findViewById(R.id.CreateNotificationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (notificationDialogView.getParent() != null) {
+                    ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
+                }
+
+                notificationDialogBuilder = new AlertDialog.Builder(getContext());
+                notificationDialogBuilder.setView(notificationDialogView);
+                notificationDialog = notificationDialogBuilder.create();
+
+                if (!notificationDialog.isShowing()) {
+                    notificationDialog.show();
+                }
+            }
+        });
+
+        view.findViewById(R.id.SeeAnnouncements).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventViewModel.fetchEvent(event.getId());
+                NavHostFragment.findNavController(OrganizerEvent.this)
+                        .navigate(R.id.action_organizer_event_to_organizerEventAnnouncements);
+            }
+        });
+
+        notificationDialogView.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // get the announcement time
+                announcementDate = new Date();
+                Long announcementTime = announcementDate.getTime();
+
+                // convert announcementTime to string (assuming you want it as a string)
+                String announcementTimeStr = String.valueOf(announcementTime);
+
+                // create the announcement dialogue
+                String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
+
+                String announcementTitleMessage = event.getName() + "." + announcementMessage;
+
+                // put the announcement time and message into the map
+                announcementMap.put(announcementTimeStr, announcementTitleMessage);
+
+                // put announcement into then event and then into each attendee in firebase
+                eventController.addAnnouncement(event.getId(), announcementMap).addOnCompleteListener(task -> {
+                    List<String> attendees = event.getAttendees();
+                    for (int i = 0; i < attendees.size(); i++){
+                        String attendeeID = attendees.get(i);
+                        userController.addNotification(attendeeID, announcementMap);
+                    }
+                    notificationHandler.sendEventNotification(event, announcementMessage);
+                    notificationDialog.dismiss();
+                });
+            };
         });
 
         // Test notifications
