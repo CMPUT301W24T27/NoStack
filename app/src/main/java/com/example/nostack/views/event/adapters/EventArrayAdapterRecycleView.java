@@ -34,18 +34,9 @@ import java.util.ArrayList;
 public class EventArrayAdapterRecycleView extends RecyclerView.Adapter<MyViewHolder> {
 
     private ArrayList<Event> events;
-    private LayoutInflater inflater;
     private Fragment currFragment;
     private Context context;
     private final EventArrayRecycleViewInterface eventArrayRecycleViewInterface;
-    private final ImageViewHandler imageViewHandler = ImageViewHandler.getSingleton();
-    TextView eventTitle;
-    TextView eventStartDateTitle;
-    TextView eventTimeTitle;
-    TextView eventLocationTitle;
-    ImageView eventImage;
-
-
 
     public EventArrayAdapterRecycleView(Context context, ArrayList<Event> events, Fragment currfragment, EventArrayRecycleViewInterface eventArrayRecycleViewInterface) {
         this.events = events;

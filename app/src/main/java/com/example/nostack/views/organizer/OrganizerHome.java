@@ -28,10 +28,13 @@ import com.example.nostack.models.Event;
 import com.example.nostack.models.Image;
 import com.example.nostack.models.ImageDimension;
 import com.example.nostack.services.GenerateProfileImage;
+import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -62,6 +65,8 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
     private EventViewModel eventViewModel;
     private EventArrayAdapterRecycleView eventArrayAdapter;
     private ImageViewHandler imageViewHandler;
+    private NavbarConfig navbarConfig;
+    private Skeleton skeleton;
 
 
     public OrganizerHome() {
@@ -103,6 +108,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
         imageViewHandler = ImageViewHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         dataList = new ArrayList<>();
     }
 
@@ -128,6 +134,9 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Skeleton
+        skeleton = SkeletonProvider.getSingleton().eventListSkeleton(eventList);
+        skeleton.showSkeleton();
 
         // Watch for errors
         eventViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
@@ -145,7 +154,7 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
                 eventArrayAdapter.addEvent(event);
             }
             eventArrayAdapter.notifyDataSetChanged();
-
+            skeleton.showOriginal();
         });
 
 
@@ -156,6 +165,15 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
                 NavHostFragment.findNavController(OrganizerHome.this)
                         .navigate(R.id.action_organizerHome_to_organizerEvent);
             }
+        });
+
+        // Navbar config
+        navbarConfig.setOrganizer(getResources());
+        navbarConfig.setHeroAction(() -> {
+            AppCompatActivity ownerActivity = navbarConfig.getOwnerActivity();
+            NavHostFragment navHostFragment = (NavHostFragment) ownerActivity.getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+            navHostFragment.getNavController().navigate(R.id.action_organizerHome_to_organizerEvent);
+            navbarConfig.setInvisible();
         });
 
         return view;
@@ -182,5 +200,6 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
         eventViewModel.fetchEvent(event.getId());
         NavHostFragment.findNavController(OrganizerHome.this)
                 .navigate(R.id.action_organizerHome_to_organizer_event);
+        navbarConfig.setInvisible();
     }
 }

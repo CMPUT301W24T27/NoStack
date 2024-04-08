@@ -31,6 +31,7 @@ import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.ImageDimension;
 import com.example.nostack.models.QrCode;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
@@ -59,6 +60,7 @@ public class AttendeeHome extends Fragment {
     private CurrentUserHandler currentUserHandler;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private ImageViewHandler imageViewHandler;
+    private NavbarConfig navbarConfig;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
@@ -107,6 +109,8 @@ public class AttendeeHome extends Fragment {
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
         imageViewHandler = ImageViewHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
+
     }
 
     /**
@@ -136,6 +140,10 @@ public class AttendeeHome extends Fragment {
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
         locationHandler.handleLocationPermissions();
+
+        // Navbar
+        navbarConfig.setAttendee(getResources());
+        navbarConfig.setHeroAction(() -> scanCode());
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {

@@ -1,7 +1,6 @@
 package com.example.nostack.viewmodels;
 
 import android.net.Uri;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +12,7 @@ import com.example.nostack.controllers.ImageController;
 import com.example.nostack.models.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.security.auth.callback.Callback;
-
 /*
  *  ImageViewModel is a ViewModel class that is used to store and manage state for UI components that require Image data
  * */
@@ -35,20 +33,24 @@ public class ImageViewModel extends ViewModel {
      */
     public interface DeleteImageCallback {
         void onImageDeleted();
+
         void onImageDeleteFailed();
     }
 
     private final MutableLiveData<Image> image = new MutableLiveData<>();
     private final MutableLiveData<Image> imageLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<Image>> allImagesLiveData = new MutableLiveData<>();
-    private final  MutableLiveData<String> errorLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final ImageController imageController = ImageController.getInstance();
+
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
     }
+
     public void clearErrorLiveData() {
         errorLiveData.setValue(null);
     }
+
     /**
      * Set the image object to be stored in the ViewModel state
      *
@@ -73,10 +75,11 @@ public class ImageViewModel extends ViewModel {
      *
      * @return void
      */
-    public void fetchAllImages(){
-        List<String> paths = Arrays.asList("event/banner","user/profile");
+    public void fetchAllImages() {
+        List<String> paths = Arrays.asList("event/banner", "user/profile");
         List<Image> images = new ArrayList<>();
-        for (String path : paths){
+
+        for (String path : paths) {
             imageController.getAllImages(path).addOnSuccessListener(new OnSuccessListener<ListResult>() {
                 @Override
                 public void onSuccess(ListResult listResult) {
@@ -92,7 +95,7 @@ public class ImageViewModel extends ViewModel {
                                         Image image = new Image();
                                         image.setUrl(String.valueOf(storageRef));
                                         image.setPath(String.valueOf(storageRef));
-                                        image.setSize(String.valueOf(storageMetadata.getSizeBytes()));
+                                        image.setSize(storageMetadata.getSizeBytes());
                                         image.setType(storageMetadata.getContentType());
                                         image.setId(storageMetadata.getName());
                                         long millis = storageMetadata.getCreationTimeMillis();
@@ -104,11 +107,7 @@ public class ImageViewModel extends ViewModel {
 //                                        Log.d("ImageViewModel - Image", String.valueOf(image));
 //                                        Log.d("ImageViewModel - Image", String.valueOf(images.size()));
 
-                                        // Check if all images are fetched, then update LiveData
-                                        if (images.size() == listResult.getItems().size()) {
-                                            allImagesLiveData.postValue(images);
-                                            Log.d("ImageViewModel - LiveData", String.valueOf(allImagesLiveData.getValue()));
-                                        }
+                                        allImagesLiveData.setValue(images);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -119,6 +118,8 @@ public class ImageViewModel extends ViewModel {
                             }
                         });
                     }
+
+
                 }
             });
         }
@@ -126,21 +127,20 @@ public class ImageViewModel extends ViewModel {
 
     /**
      * returns the LiveData object containing all images
-     * @return LiveData<List<Image>>
+     *
+     * @return LiveData<List < Image>>
      */
     public LiveData<List<Image>> getAllImages() {
         return allImagesLiveData;
     }
 
-
-
     /**
      * Delete image
+     *
      * @param image
      * @return void
-     *
      */
-    public void deleteImage(Image image, DeleteImageCallback callback){
+    public void deleteImage(Image image, DeleteImageCallback callback) {
         imageController.deleteImage(image).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

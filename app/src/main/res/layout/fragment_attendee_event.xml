@@ -139,7 +139,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:backgroundTint="@color/yellow"
+            android:backgroundTint="@color/SignInUpTextColor"
             android:text="Register"
             android:textAppearance="@style/TextAppearance.AppCompat.Display3"
             android:textColor="@color/black"
@@ -166,7 +166,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/outline_arrow_back_24"
-            app:tint="@color/yellow" />
+            app:tint="@color/SignInUpTextColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/editButton"
@@ -185,12 +185,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/outline_edit_24"
-            app:tint="@color/yellow" />
+            app:tint="@color/SignInUpTextColor" />
 
         <ImageView
             android:id="@+id/backgroundGradiant"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:backgroundTint="@color/SignInUpTextColor"
             android:scaleType="fitXY"
             android:src="@drawable/transparent_gradiant_background"
             app:layout_constraintBottom_toBottomOf="@+id/AttendeeEventImage"

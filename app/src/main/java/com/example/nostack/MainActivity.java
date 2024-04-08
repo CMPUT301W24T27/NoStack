@@ -8,14 +8,18 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.handlers.LocationHandler;
+import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
         ImageViewHandler.setOwnerActivity(this);
         ImageViewHandler.setSingleton();
 
+        // Register NavbarConfig
+        NavbarConfig.setOwnerActivity(this);
+        NavbarConfig.setSingleton();
+
+        // Register SkeletonProvider
+        SkeletonProvider.setOwnerActivity(this);
+        SkeletonProvider.setSingleton();
+
 
         // Register receiver for notifications
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
@@ -45,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         }, new IntentFilter("Notification"));
+
     }
 
     @Override
@@ -59,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-  }
+}
 
 
 
