@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Class for handling images
+ */
 public class ImageController {
     private static ImageController singleInstance = null;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -26,6 +29,10 @@ public class ImageController {
     private final CollectionReference imageCollectionReference = FirebaseFirestore.getInstance().collection("images");
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
+    /**
+     * Get the instance of the ImageController
+     * @return void
+     */
     public static ImageController getInstance() {
         if (singleInstance == null) {
             singleInstance = new ImageController();
@@ -33,9 +40,17 @@ public class ImageController {
         return singleInstance;
     }
 
+    /**
+     * Empty public constructor
+     */
     public ImageController() {
     }
 
+    /**
+     * Get all images
+     * @param path
+     * @return Task<ListResult> The list of images
+     */
     public Task<ListResult> getAllImages(String path) {
 
         String storagePath = path;
@@ -44,10 +59,21 @@ public class ImageController {
         return storageRef.listAll();
     }
 
+    /**
+     * Get image by id
+     * @param id The id of the image
+     * @return Task<DocumentSnapshot> The image
+     */
     public Task<DocumentSnapshot> getImage(String id) {
         return imageCollectionReference.document(id).get();
     }
 
+    /**
+     * Add image to storage
+     * @param storagePath The path to the storage
+     * @param imageUri The image uri
+     * @return Task<String> The image url
+     */
     public Task<String> addImage(String storagePath, Uri imageUri) {
         String uuid = UUID.randomUUID().toString();
         StorageReference storageRef = storage.getReference().child(storagePath + uuid);
@@ -71,8 +97,8 @@ public class ImageController {
 
     /**
      * Remove image from database reference
-     * @param image
-     * @return
+     * @param image The image to remove
+     * @return void
      */
     public Task<Void> removeReference(Image image) {
         Map<String, Object> updates = new HashMap<>();
@@ -83,8 +109,8 @@ public class ImageController {
 
     /**
      * Delete image from storage and database
-     * @param image
-     * @return
+     * @param image The image to delete
+     * @return void
      */
     public Task<Void> deleteImage(Image image) {
         StorageReference storageRef = storage.getReferenceFromUrl(image.getUrl());
