@@ -174,17 +174,7 @@ public class OrganizerEvent extends Fragment {
                                     eventViewModel.deleteEvent(event, new EventViewModel.DeleteEventCallback() {
                                         @Override
                                         public void onEventDeleted() {
-                                            Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
-                                            eventViewModel.fetchAllEvents();
-                                            eventViewModel.getAllEvents();
-                                            Handler handler = new Handler(Looper.getMainLooper());
-                                            Runnable runnable = new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
-                                                }
-                                            };
-                                            handler.postDelayed(runnable,1000);
+                                            NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
                                         }
 
                                         @Override
