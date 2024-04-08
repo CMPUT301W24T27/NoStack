@@ -10,14 +10,17 @@ import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 
+import android.app.Activity;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.test.espresso.action.GeneralClickAction;
 import androidx.test.espresso.action.GeneralLocation;
 import androidx.test.espresso.action.ViewActions;
@@ -47,13 +50,10 @@ public class TestUS02 extends UiTest{
     // As an attendee, I want to edit my profile
     @Test
     public void testAttendeeEditProfile() {
-        sleepForX(2000);
+        sleepForX(3000);
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
         sleepForX(2000);
-        onView(withText("Welcome, ")).check(matches(isDisplayed()));
-        onView(withText("Scan QR Code")).check(matches(isDisplayed()));
-        sleepForX(1000);
-        onView(withId(R.id.admin_profileButton)).perform(click());
+        onView(withId(R.id.nav_profile)).perform(click());
         onView(withText("Your Profile")).check(matches(isDisplayed()));
         onView(withText("First Name")).check(matches(isDisplayed()));
         onView(withText("Last Name")).check(matches(isDisplayed()));

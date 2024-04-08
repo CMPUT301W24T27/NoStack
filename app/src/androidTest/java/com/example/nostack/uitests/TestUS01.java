@@ -57,11 +57,11 @@ public class TestUS01 extends UiTest {
     // As an organizer, I want to create an event
     @Test
     public void A_testOrganizerCreateEvent() {
-        sleepForX(2000);
+        sleepForX(3000);
         onView(withId(R.id.SignIn_SignUpButton)).perform(click());
         sleepForX(3000);
-        onView(withId(R.id.AddEventButton)).perform(click());
-        sleepForX(1000);
+        onView(withId(R.id.nav_qr)).perform(click());
+        sleepForX(3000);
         onView(withId(R.id.EventCreationTitleEditText)).perform(replaceText("Ui Test Event"));
 
         onView(withContentDescription("StartDateTime")).perform(click());
@@ -127,7 +127,6 @@ public class TestUS01 extends UiTest {
         onView(withId(R.id.EventCreationDescriptionEditText)).perform(replaceText("Brand New!"));
         sleepForX(3000);
         onView(withText("Update Event")).perform(click());
-        pressBack();
         sleepForX(3000);
         onView(withText("New Ui Test!")).check(matches(isDisplayed()));
         onView(withText("Brand New!")).check(matches(isDisplayed()));
@@ -183,5 +182,17 @@ public class TestUS01 extends UiTest {
         onView(withText("Mon, Jun 10, 2024 to")).check(matches(isDisplayed()));
         onView(withText("Tue, Jun 11, 2024")).check(matches(isDisplayed()));
         onView(withText("Anywhere")).check(matches(isDisplayed()));
+    }
+    @Test
+    public void F_testOrganizerDeleteEvent(){
+        sleepForX(2000);
+        onView(withId(R.id.SignIn_SignUpButton)).perform(click());
+        sleepForX(3000);
+        onView(withText("New Ui Test!")).perform(click());
+        sleepForX(3000);
+        onView(withId(R.id.button_end_event)).perform(click());
+        sleepForX(3000);
+        onView(withText("Confirm")).perform(click());
+        sleepForX(3000);
     }
 }
