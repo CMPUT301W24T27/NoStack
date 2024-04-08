@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class UserController {
@@ -86,6 +87,11 @@ public class UserController {
         return userRef.update("fcmToken", fcmToken)
                 .addOnSuccessListener(aVoid -> Log.d("UserController", "User FCM token successfully updated."))
                 .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
+    }
+
+    public Task<Void> addNotification(String userId, HashMap<String, String> announcement) {
+        return userCollectionReference.document(userId)
+                .update("announcements", FieldValue.arrayUnion(announcement));
     }
 
     // TODO: Deleting a user, may be a little too nuanced, will be done later on.

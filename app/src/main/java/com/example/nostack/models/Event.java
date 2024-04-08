@@ -4,8 +4,10 @@ import com.example.nostack.models.Announcement;
 import com.example.nostack.models.QrCode;
 
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -23,7 +25,7 @@ public class Event implements Serializable {
     private String eventBannerImgUrl;
     private String id;
     private ArrayList<String> attendees;
-    private ArrayList<Announcement> announcements;
+    private ArrayList<HashMap<String, String>> announcements;
     private Date startDate;
     private Date endDate;
     private Date createdDate;
@@ -104,21 +106,21 @@ public class Event implements Serializable {
      * This function gets an ArrayList of the announcements at the event
      * @return Returns an ArrayList of the announcements at event
      */
-    public ArrayList<Announcement> getAnnouncements() {
+    public ArrayList<HashMap<String, String>> getAnnouncements() {
         return announcements;
     }
     /**
      * This function adds the announcements to the event
      * @param announcement The announcement to be added to the event
      */
-    public void addAnnouncement(Announcement announcement) {
+    public void addAnnouncement(HashMap<String, String> announcement) {
         announcements.add(announcement);
     }
     /**
      * This function gets the start date of the event
      * @return Returns the start date of the event
      */
-    public void setAnnouncements(ArrayList<Announcement> announcements) {
+    public void setAnnouncements(ArrayList<HashMap<String, String>> announcements) {
         this.announcements = announcements;
     }
     public Date getStartDate() {

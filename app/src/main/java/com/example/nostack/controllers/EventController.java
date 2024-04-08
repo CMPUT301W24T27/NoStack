@@ -322,4 +322,9 @@ public class EventController {
             return Tasks.whenAll(tasks);
         });
     }
+
+    public Task<Void> addAnnouncement(String eventId, HashMap<String, String> announcement) {
+        return eventCollectionReference.document(eventId)
+                .update("announcements", FieldValue.arrayUnion(announcement));
+    }
 }
