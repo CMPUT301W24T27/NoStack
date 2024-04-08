@@ -18,6 +18,7 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -99,10 +100,14 @@ public class ImageViewModel extends ViewModel {
                                         image.setType(storageMetadata.getContentType());
                                         image.setId(storageMetadata.getName());
                                         long millis = storageMetadata.getCreationTimeMillis();
-                                        Date date = new Date(TimeUnit.SECONDS.toMillis(millis));
-                                        image.setCreated(String.valueOf(date));
+                                        Date date = new Date(millis);
+
+                                        // Format to MM/DD/YYYY
+                                        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                                        String formattedDate = formatter.format(date);
+                                        image.setCreated(formattedDate);
+
                                         images.add(image);
-                                        //images.add(uri.toString());
 //                                        Log.d("ImageViewModel - get Images", String.valueOf(uri));
 //                                        Log.d("ImageViewModel - Image", String.valueOf(image));
 //                                        Log.d("ImageViewModel - Image", String.valueOf(images.size()));
