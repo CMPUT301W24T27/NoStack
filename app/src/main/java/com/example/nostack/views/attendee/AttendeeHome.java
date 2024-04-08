@@ -253,9 +253,9 @@ public class AttendeeHome extends Fragment {
 
     public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null && !processingQr) {
-            if (result.getContents().charAt(0) == '0') {
+            if (result.getContents().charAt(0) == '0' && result.getContents().charAt(1) == '.'){
                 handleCheckInQR(result.getContents().substring(2));
-            } else if (result.getContents().charAt(0) == '1') {
+            } else if (result.getContents().charAt(0) == '1' && result.getContents().charAt(1) == '.') {
                 handleEventDescQR(result.getContents().substring(2));
             } else {
                 handleCheckInQR(result.getContents());

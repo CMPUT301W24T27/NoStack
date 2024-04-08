@@ -136,7 +136,7 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        view.findViewById(R.id.SendAnnouncementButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
