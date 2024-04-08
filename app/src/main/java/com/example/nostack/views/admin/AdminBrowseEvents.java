@@ -36,7 +36,9 @@ import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
@@ -151,8 +153,12 @@ public class AdminBrowseEvents extends Fragment implements EventArrayRecycleView
         } else {
             eventTitle.setText("Event Name: N/A");
         }
-        eventStartDate.setText("Start Date: " + event.getStartDate());
-        eventEndDate.setText("End Date: " + event.getEndDate());
+        Date startDate = event.getStartDate();
+        Date endDate = event.getEndDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+
+        eventStartDate.setText("Start Date: " + formatter.format(startDate));
+        eventEndDate.setText("End Date: " + formatter.format(endDate));
         eventLocation.setText("Location: " + event.getLocation());
         eventCapacity.setText("Capacity: " + (event.getCapacity() <= 0 ? "Unlimited" : event.getCapacity()));
         eventDescription.setText(event.getDescription() == null ? "No description" : event.getDescription());

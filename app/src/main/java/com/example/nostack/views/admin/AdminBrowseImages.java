@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
+import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Image;
 import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.ImageViewModel;
@@ -143,8 +144,10 @@ public class AdminBrowseImages extends Fragment {
         imageType.setText(image.getType());
         imageCreated.setText((image.getCreated()));
 
-        image.getImage(getContext()).addOnSuccessListener(drawable -> {
+        image.getFullImage(getContext()).addOnSuccessListener(drawable -> {
             imageBanner.setImageDrawable(drawable);
+            imageBanner.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
         });
 
         dialog.findViewById(R.id.admin_deleteImageButton).setOnClickListener(v -> {

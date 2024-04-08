@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.VideoView;
+
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -172,6 +174,11 @@ public class StartUp extends Fragment {
         view.findViewById(R.id.AdministratorSignInButton).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                boolean isAdmin = profile.getRole() != null && profile.getRole().contains("admin");
+                if(!isAdmin){
+                    Toast.makeText(getActivity(), "Unauthorized", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 NavHostFragment.findNavController(StartUp.this)
                         .navigate(R.id.action_startUp_to_adminHome);
             }
