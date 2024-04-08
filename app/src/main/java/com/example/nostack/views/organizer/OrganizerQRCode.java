@@ -21,6 +21,7 @@ import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.services.QrCodeImageGenerator;
+import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -44,9 +45,13 @@ public class OrganizerQRCode extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Event event;
+    private QrCode qrCode;
+    private String qrCodeText;
+    private Bitmap bmp;
     private String mParam2;
     private final Integer QR_CODE_DIMENSION = 500;
     private QrCodeViewModel qrCodeViewModel;
+    private EventViewModel eventViewModel;
     public OrganizerQRCode() {
         // Required empty public constructor
     }
@@ -76,11 +81,8 @@ public class OrganizerQRCode extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("eventData");
-        }
-
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
     }
 
     /**
@@ -110,18 +112,20 @@ public class OrganizerQRCode extends Fragment {
             }
         });
 
-        // Get QR Code
-        qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
-        QrCode qrCode = qrCodeViewModel.getQrCode().getValue();
-
-        String qrCodeText = "0" + "." + qrCode.getId();
-        Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
-        ImageView qrCodeImageView = view.findViewById(R.id.OrganizerQRImage);
-        qrCodeImageView.setImageBitmap(bmp);
+        qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), qr -> {
+            if (qr != null) {
+                qrCode = qr;
+                qrCodeText = "0" + "." + qrCode.getId();
+                bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
+                ImageView qrCodeImageView = view.findViewById(R.id.OrganizerQRImage);
+                qrCodeImageView.setImageBitmap(bmp);
+            }
+        });
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                qrCodeViewModel.clearQrCodeLiveData();
                 NavHostFragment.findNavController(OrganizerQRCode.this).popBackStack();
             }
         });
@@ -129,9 +133,7 @@ public class OrganizerQRCode extends Fragment {
         view.findViewById(R.id.OrganizerEventPageButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData",event);
-                NavHostFragment.findNavController(OrganizerQRCode.this).navigate(R.id.action_organizerQRCode_to_organizerEventPageQRCode,bundle);
+                NavHostFragment.findNavController(OrganizerQRCode.this).navigate(R.id.action_organizerQRCode_to_organizerEventPageQRCode);
             }
         });
 
