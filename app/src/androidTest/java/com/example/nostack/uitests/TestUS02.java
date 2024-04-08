@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 
+import android.Manifest;
 import android.app.Activity;
 import android.util.Log;
 
@@ -39,13 +40,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import kotlin.jvm.JvmField;
-
+/**
+ * This class tests the functionality of the Attendee editing their profile and registering for an event.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestUS02 extends UiTest{
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<MainActivity>(MainActivity.class);
     @Rule public GrantPermissionRule permissionLocation = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    @Rule
+    public GrantPermissionRule permissionNotification = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
     // Tests for US 02.
     // As an attendee, I want to edit my profile
     @Test
@@ -102,8 +107,28 @@ public class TestUS02 extends UiTest{
         onView(withText("Unregister")).check(matches(isDisplayed()));
         sleepForX(3000);
         pressBack();
+        onView(withId(R.id.listView_yourEvents)).perform(swipeLeft());
 
-
+    }
+    /**
+     * Tests for US 02
+     * As an attendee, I want to be able to naviagte through the app
+     */
+    @Test
+    public void testAttendeeUseNavbar() {
+        sleepForX(2000);
+        onView(withId(R.id.AttendeeSignInButton)).perform(click());
+        sleepForX(2000);
+        onView(withId(R.id.nav_profile)).perform(click());
+        sleepForX(2000);
+        onView(withText("Your Profile")).check(matches(isDisplayed()));
+        onView(withId(R.id.backButton)).perform(click());
+        sleepForX(2000);
+        onView(withId(R.id.nav_home)).perform(click());
+        sleepForX(2000);
+        onView(withText("Welcome to NoStack")).check(matches(isDisplayed()));
+        onView(withId(R.id.AttendeeSignInButton)).perform(click());
+        sleepForX(2000);
     }
 
 }
