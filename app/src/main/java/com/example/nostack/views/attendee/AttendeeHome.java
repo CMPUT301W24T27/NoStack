@@ -243,6 +243,8 @@ public class AttendeeHome extends Fragment {
      */
     private void scanCode() {
         processingQr = false;
+        eventViewModel.clearEventLiveData();
+        qrCodeViewModel.clearQrCodeLiveData();
         ScanOptions scanOptions = new ScanOptions();
         scanOptions.setPrompt("Scan the QR code");
         scanOptions.setBeepEnabled(true);
@@ -283,15 +285,13 @@ public class AttendeeHome extends Fragment {
 
         qrCodeViewModel.fetchQrCode(qrCodeId);
         try {
-            qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), new Observer<QrCode>() {
-                @Override
-                public void onChanged(QrCode qrCode) {
+            qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), qrCode ->
+                 {
                     if (qrCode != null) {
                         String eventUID = qrCode.getEventId();
                         eventViewModel.fetchEvent(eventUID);
-                        eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
-                            @Override
-                            public void onChanged(Event event) {
+                        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
+                            {
                                 if (event != null && !processingQr) {
                                     processingQr = true;
                                     Location location = locationHandler.getLocation();
@@ -329,7 +329,6 @@ public class AttendeeHome extends Fragment {
                             }
                         });
                     }
-                }
             });
         } catch (Exception e) {
             Log.e("AttendeeHome", "Invalid QR Code");

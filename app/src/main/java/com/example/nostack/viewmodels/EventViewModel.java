@@ -68,10 +68,15 @@ public class EventViewModel extends ViewModel {
         eventController.getEvent(eventId)
                 .addOnSuccessListener(documentSnapshot -> {
                     Event event = documentSnapshot.toObject(Event.class);
-                    eventLiveData.postValue(event);
+                    if (event != null) {
+                        eventLiveData.postValue(event);
+                        return;
+                    }
+                    errorLiveData.postValue("Error fetching null event");
+                    eventLiveData.postValue(null);
                 }).addOnFailureListener(e -> {
                     Log.e("EventViewModel", "Error fetching event", e);
-                    errorLiveData.postValue(e.getMessage());
+                    errorLiveData.postValue("Error fetching event");
                 });
     }
 
