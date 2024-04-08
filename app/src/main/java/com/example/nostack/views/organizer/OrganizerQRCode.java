@@ -115,7 +115,10 @@ public class OrganizerQRCode extends Fragment {
         qrCodeViewModel.getQrCode().observe(getViewLifecycleOwner(), qr -> {
             if (qr != null) {
                 qrCode = qr;
-                qrCodeText = "0" + "." + qrCode.getId();
+                qrCodeText = qrCode.getId();
+                if (!qr.getIsCustom()) {
+                    qrCodeText = "0" + "." + qrCode.getId();
+                }
                 bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
                 ImageView qrCodeImageView = view.findViewById(R.id.OrganizerQRImage);
                 qrCodeImageView.setImageBitmap(bmp);
