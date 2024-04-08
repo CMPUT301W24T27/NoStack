@@ -9,6 +9,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.Attendance;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -399,5 +400,41 @@ public class EventController {
             }
             return Tasks.whenAll(tasks);
         });
+    }
+
+    public Task<ArrayList<HashMap<String, String>>> getUserAnnouncement(String eventId) {
+        TaskCompletionSource<ArrayList<HashMap<String, String>>> taskCompletionSource = new TaskCompletionSource<>();
+        DocumentReference userRef = eventCollectionReference.document(eventId);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Extract the announcement HashMap from the document
+                    ArrayList<HashMap<String, String>> announcement = (ArrayList<HashMap<String, String>>) document.get("announcements");
+                    if (announcement != null) {
+                        taskCompletionSource.setResult(announcement);
+                        Log.d("UserController", "User announcement successfully retrieved.");
+                    } else {
+                        // If there's no announcement data
+                        taskCompletionSource.setResult(new ArrayList<HashMap<String, String>>()); // Return an empty HashMap
+                        Log.d("UserController", "User does not have an announcement.");
+                    }
+                } else {
+                    taskCompletionSource.setException(new Exception("No such user."));
+                    Log.e("UserController", "Failed to retrieve user announcement. User does not exist.");
+                }
+            } else {
+                taskCompletionSource.setException(task.getException());
+                Log.e("UserController", "Failed to retrieve user announcement.", task.getException());
+            }
+        });
+
+        return taskCompletionSource.getTask();
+    }
+
+    public Task<Void> addAnnouncement(String eventId, HashMap<String, String> announcement) {
+        return eventCollectionReference.document(eventId)
+                .update("announcements", FieldValue.arrayUnion(announcement));
     }
 }
