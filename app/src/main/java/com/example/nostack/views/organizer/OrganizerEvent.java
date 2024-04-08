@@ -1,8 +1,13 @@
 package com.example.nostack.views.organizer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,11 +160,37 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        view.findViewById(R.id.button_end_event).setOnClickListener(new View.OnClickListener() {
+        Button endButton = view.findViewById(R.id.button_end_event);
+        endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventViewModel.endEvent(event.getId(), currentUserHandler.getCurrentUserId());
-                Toast.makeText(getContext(), "Event has been successfully ended.", Toast.LENGTH_SHORT).show();
+                if (event.getActive() == null || !event.getActive()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Delete Event")
+                            .setMessage("Are you sure you want to delete this event?")
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    eventViewModel.deleteEvent(event, new EventViewModel.DeleteEventCallback() {
+                                        @Override
+                                        public void onEventDeleted() {
+                                            eventViewModel.clearEventLiveData();
+                                            NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
+                                        }
+
+                                        @Override
+                                        public void onEventDeleteFailed() {
+                                            Toast.makeText(getContext(), "Failed to delete event...", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("Cancel",null)
+                            .show();
+                } else {
+                    eventViewModel.endEvent(event.getId(), currentUserHandler.getCurrentUserId());
+                    Toast.makeText(getContext(), "Event has been successfully ended.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -214,14 +245,16 @@ public class OrganizerEvent extends Fragment {
                 eventStartTime.setText(startTime + " - " + endTime);
             }
 
-            if (event.getActive() == null || !event.getActive()) {
+            if (!event.getActive() || event.getActive() == null) {
                 eventTitle.setText(event.getName() + " (Ended)");
-                view.findViewById(R.id.button_end_event).setClickable(false);
-                view.findViewById(R.id.button_end_event).setAlpha(0.5f);
+                Button button = view.findViewById(R.id.button_end_event);
+                button.setText("Delete Event");
                 view.findViewById(R.id.OrganizerEventQRCodeButton).setClickable(false);
                 view.findViewById(R.id.OrganizerEventQRCodeButton).setAlpha(0.5f);
             } else {
                 eventTitle.setText(event.getName());
+                Button button = view.findViewById(R.id.button_end_event);
+                button.setText("End Event");
                 view.findViewById(R.id.button_end_event).setClickable(true);
                 view.findViewById(R.id.button_end_event).setAlpha(1f);
             }

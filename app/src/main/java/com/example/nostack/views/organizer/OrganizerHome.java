@@ -35,6 +35,7 @@ import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
 import com.faltenreich.skeletonlayout.Skeleton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;

@@ -206,7 +206,6 @@ public class AttendeeHome extends Fragment {
         view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                processingQr = false;
                 scanCode();
             }
         });
@@ -243,6 +242,7 @@ public class AttendeeHome extends Fragment {
      * This method allows the user to scan a QR code by launching the ScanActivity
      */
     private void scanCode() {
+        processingQr = false;
         ScanOptions scanOptions = new ScanOptions();
         scanOptions.setPrompt("Scan the QR code");
         scanOptions.setBeepEnabled(true);
