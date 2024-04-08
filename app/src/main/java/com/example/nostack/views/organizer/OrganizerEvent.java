@@ -21,6 +21,7 @@ import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.NotificationHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.viewmodels.AttendanceViewModel;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
@@ -47,6 +48,7 @@ public class OrganizerEvent extends Fragment {
     // TODO: Rename and change types of parameters
     private Event event;
     private EventViewModel eventViewModel;
+    private AttendanceViewModel attendanceViewModel;
     private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
     private ImageViewHandler imageViewHandler;
@@ -84,11 +86,9 @@ public class OrganizerEvent extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("event");
-        }
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
+        attendanceViewModel = new ViewModelProvider(requireActivity()).get(AttendanceViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
         notificationHandler = NotificationHandler.getSingleton();
@@ -121,19 +121,17 @@ public class OrganizerEvent extends Fragment {
             }
         });
 
-        // Fetch event (in our case update it) and Get event
-        eventViewModel.fetchEvent(event.getId());
-        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            this.event = event;
-            updateScreenInformation(view);
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), ev -> {
+            if (ev != null) {
+                event = ev;
+                updateScreenInformation(view);
+            }
         });
-
-        // Fetch the QrCode
-        qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                eventViewModel.clearEventLiveData();
                 NavHostFragment.findNavController(OrganizerEvent.this).popBackStack();
             }
         });
@@ -141,22 +139,19 @@ public class OrganizerEvent extends Fragment {
         view.findViewById(R.id.OrganizerEventQRCodeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
+                qrCodeViewModel.fetchQrCode(event.getCheckInQrId());
                 NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerQRCode, bundle);
+                        .navigate(R.id.action_organizer_event_to_organizerQRCode);
             }
         });
 
         view.findViewById(R.id.button_see_attendees).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
-
+                attendanceViewModel.fetchAttendanceByEvent(event.getId());
+                attendanceViewModel.fetchPresentAttByEvent(event.getId());
                 NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList, bundle);
+                        .navigate(R.id.action_organizer_event_to_organizerEventAttendeeList);
             }
         });
 
@@ -171,10 +166,8 @@ public class OrganizerEvent extends Fragment {
         view.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("eventData", event);
                 NavHostFragment.findNavController(OrganizerEvent.this)
-                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2, bundle);
+                        .navigate(R.id.action_organizerEvent_to_organizerEventCreate2);
             }
         });
 

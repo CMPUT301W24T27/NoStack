@@ -60,4 +60,5 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("org.osmdroid:osmdroid-android:6.1.7")
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation ("com.faltenreich:skeletonlayout:5.0.0")
 }

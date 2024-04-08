@@ -19,10 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nostack.R;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
+import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
 import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,6 +44,8 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
+    private Skeleton skeleton;
 
     public AttendeeEvents() {
     }
@@ -55,6 +60,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
         super.onCreate(savedInstanceState);
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         dataList = new ArrayList<>();
     }
 
@@ -72,21 +78,24 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_attendee_home_browse, container, false);
-        eventList = rootView.findViewById(R.id.listView_yourEvents);
+        View rootView = inflater.inflate(R.layout.fragment_attendee_home_upcoming, container, false);
+        eventList = rootView.findViewById(R.id.listView_upcomingEvents);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
         eventList.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Skeleton
+        skeleton = SkeletonProvider.getSingleton().eventListSkeleton(eventList);
+        skeleton.showSkeleton();
+
         return rootView;
     }
 
     @Override
     public void OnItemClick(int position) {
         Event event = eventArrayAdapter.getEvent(position);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event", event);
-        NavHostFragment.findNavController(AttendeeEvents.this).navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
-        return;
+        eventViewModel.fetchEvent(event.getId());
+        NavHostFragment.findNavController(AttendeeEvents.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
+        navbarConfig.setInvisible();
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -108,7 +117,7 @@ public class AttendeeEvents extends Fragment implements EventArrayRecycleViewInt
                 eventArrayAdapter.addEvent(event);
             }
             eventArrayAdapter.notifyDataSetChanged();
-
+            skeleton.showOriginal();
         });
     }
 }

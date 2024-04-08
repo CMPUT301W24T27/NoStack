@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -34,6 +36,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.services.ImageUploader;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +48,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -85,10 +89,11 @@ public class OrganizerEventCreate extends Fragment {
     private ImageView eventImageView;
     private SharedPreferences preferences;
     private SwitchCompat unlimitedButton;
-    private ActivityResultLauncher<String> imagePickerLauncher;
+    private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
     private EventViewModel eventViewModel;
     private QrCodeViewModel qrCodeViewModel;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
     private Boolean isEditing;
     private Boolean isUnlimited;
 
@@ -126,11 +131,11 @@ public class OrganizerEventCreate extends Fragment {
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         imageUploader = new ImageUploader();
         currentUserHandler = CurrentUserHandler.getSingleton();
-        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-            @Override
-            public void onActivityResult(Uri o) {
-                eventImageView.setTag(o);
-                eventImageView.setImageURI(o);
+        navbarConfig = NavbarConfig.getSingleton();
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                eventImageView.setTag(uri);
+                eventImageView.setImageURI(uri);
             }
         });
 
@@ -160,7 +165,10 @@ public class OrganizerEventCreate extends Fragment {
         eventCreationTitle = view.findViewById(R.id.EventCreationTitle);
 
         // Check if the event is being edited
-        checkEditEvent();
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), ev -> {
+            event = ev;
+            checkEditEvent();
+        });
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,12 +215,15 @@ public class OrganizerEventCreate extends Fragment {
                     } catch (Exception e) {
                         eventBannerUri = Uri.parse((String) eventImageView.getTag());
                     }
+
                     Uri compressedImageUri = null;
-                    try {
-                        compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
-                    } catch (Exception e) {
-                        Log.w("Event creation", "Image compression failed:", e);
-                        compressedImageUri = null;
+                    if(eventBannerUri != null){
+                        try {
+                            compressedImageUri = ImageUploader.compressImage(eventBannerUri, 0.5, getContext());
+                        } catch (Exception e) {
+                            Log.w("Event creation", "Image compression failed:", e);
+                            compressedImageUri = null;
+                        }
                     }
 
                     // Watch for errors
@@ -224,8 +235,25 @@ public class OrganizerEventCreate extends Fragment {
                     });
 
                     if (isEditing) {
-                        eventViewModel.updateEvent(event, compressedImageUri);
-                    } else {
+                        eventViewModel.updateEvent(event, compressedImageUri, new EventViewModel.UpdateImageCallback() {
+                            @Override
+                            public void onImageUpdated(Uri uri) {
+                                if(uri == null){
+                                    return;
+                                }
+                                eventImageView.setTag(uri);
+                                eventImageView.setImageURI(Uri.parse(uri.toString()));
+                                Log.d("URI", uri.toString());
+                            }
+
+                            @Override
+                            public void onImageUpdateFailed() {
+                                Toast.makeText(getContext(), "Failed to update image", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
+                    }
+                    else {
                         Boolean reuse = eventReuseQrCheckBox.isChecked();
                         if (reuse) {
                             eventViewModel.setEventWithReuse(event, compressedImageUri);
@@ -291,7 +319,9 @@ public class OrganizerEventCreate extends Fragment {
     }
 
     private void openImagePicker() {
-        imagePickerLauncher.launch("image/*");
+        imagePickerLauncher.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.
+                        PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     private Event createEvent() {

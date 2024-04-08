@@ -203,7 +203,7 @@ tools:context=".views.attendee.AttendeeEvent">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/outline_arrow_back_24"
-        app:tint="@color/yellow" />
+        app:tint="@color/SignInUpTextColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/editButton"
@@ -222,7 +222,7 @@ tools:context=".views.attendee.AttendeeEvent">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/outline_edit_24"
-        app:tint="@color/yellow" />
+        app:tint="@color/SignInUpTextColor" />
 
     <ImageView
         android:id="@+id/backgroundGradiant"

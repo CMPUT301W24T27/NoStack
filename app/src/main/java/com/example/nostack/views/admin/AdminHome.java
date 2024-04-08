@@ -22,6 +22,7 @@ import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.ImageDimension;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.organizer.OrganizerHome;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -48,6 +49,7 @@ public class AdminHome extends Fragment {
     private DotsIndicator dotsIndicator;
     private ImageViewHandler imageViewHandler;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
     private static final Class[] fragments = new Class[]{AdminBrowseEvents.class, AdminBrowseProfiles.class, AdminBrowseImages.class};
 
     public AdminHome() {
@@ -81,6 +83,7 @@ public class AdminHome extends Fragment {
         }
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
         userViewModel = new ViewModelProvider((AppCompatActivity) getActivity()).get(UserViewModel.class);
     }
 
@@ -88,17 +91,10 @@ public class AdminHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
-        TextView userWelcome = (TextView) view.findViewById(R.id.text_userWelcome);
         viewPager = view.findViewById(R.id.admin_viewPager2);
         viewPager.setAdapter(new MyFragmentAdapter(this));
         dotsIndicator = view.findViewById(R.id.admin_dots_indicator);
         dotsIndicator.attachTo(viewPager);
-
-        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                userWelcome.setText(user.getUsername());
-            }
-        });
 
         view.findViewById(R.id.admin_profileButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +106,7 @@ public class AdminHome extends Fragment {
 
         ImageButton profileImage = view.findViewById(R.id.admin_profileButton);
         imageViewHandler.setUserProfileImage(currentUserHandler.getCurrentUser(), profileImage, getResources(), new ImageDimension(100, 100));
-
-
+        navbarConfig.setAdmin(getResources());
         // Inflate the layout for this fragment
         return view;
     }

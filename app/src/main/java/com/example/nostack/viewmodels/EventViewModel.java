@@ -22,9 +22,13 @@ import com.example.nostack.services.ImageUploader;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.N;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
@@ -43,6 +47,14 @@ public class EventViewModel extends ViewModel {
     private final UserController userController = UserController.getInstance();
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
     private final NotificationHandler notificationHandler = NotificationHandler.getSingleton();
+
+    /**
+     * Delete event callback
+     */
+    public interface DeleteEventCallback {
+        void onEventDeleted();
+        void onEventDeleteFailed();
+    }
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
@@ -65,6 +77,9 @@ public class EventViewModel extends ViewModel {
 
     public LiveData<Event> getEvent() {
         return eventLiveData;
+    }
+    public void clearEventLiveData() {
+        eventLiveData.setValue(null);
     }
 
     public void fetchAllEvents() {
@@ -152,7 +167,7 @@ public class EventViewModel extends ViewModel {
         };
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
@@ -168,42 +183,75 @@ public class EventViewModel extends ViewModel {
         fetchEvent(event.getId());
     }
 
-    public void updateEvent(Event event, @Nullable Uri imageUri) {
+    public interface UpdateImageCallback {
+        void onImageUpdated(Uri imageUrl);
+        void onImageUpdateFailed();
+    }
+
+    public void updateEvent(Event event, @Nullable Uri imageUri, @Nullable UpdateImageCallback callback) {
         event.setCreatedDate(new Date());
         Runnable addEventRunnable = () -> eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
-                    fetchAllEvents();
-                    fetchOrganizerEvents(userId);
-
+                    fetchEvent(event.getId());
                 }).addOnFailureListener( e-> {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());
                 });
 
         if (imageUri != null) {
-            String storagePath = "event/banner";
+            String storagePath = "event/banner/";
             imageController.addImage(storagePath, imageUri)
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
                         addEventRunnable.run();
+                        Uri imageURI = Uri.parse(imageUrl);
+                        callback.onImageUpdated(imageURI);
                     }).addOnFailureListener(e -> {
                         Log.e("EventViewModel", "Error uploading image", e);
                         errorLiveData.postValue(e.getMessage());
+                        callback.onImageUpdateFailed();
                     });
         } else {
             addEventRunnable.run();
         }
-
-        fetchEvent(event.getId());
     }
 
-    public void deleteEvent(String eventId) {
-        eventController.deleteEvent(eventId)
-                .addOnSuccessListener(aVoid -> getAllEvents())
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                });
+    /**
+     * Delete an event
+     * @param event event to delete
+     * @param callback callback to handle success or failure
+     */
+    public void deleteEvent(Event event, DeleteEventCallback callback) {
+        eventController.deleteEvent(event.getId())
+            .addOnSuccessListener(aVoid -> {
+                getAllEvents();
+
+                // Delete event banners
+                if (event.getEventBannerImgUrl() != null) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl(event.getEventBannerImgUrl());
+
+                    storageRef.delete()
+                        .addOnSuccessListener(a -> {
+                            callback.onEventDeleted();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d("EventViewModel", "Error deleting event banner, image", e);
+                            callback.onEventDeleteFailed();
+                        });
+                }
+                else{
+                    callback.onEventDeleted();
+                }
+
+            })
+            .addOnFailureListener(e -> {
+                // Handle failure
+                Log.d("EventViewModel", "Error deleting event banner, event", e);
+
+                callback.onEventDeleteFailed();
+            });
     }
 
     public Task<Void> registerToEvent(String userId, String eventId) {

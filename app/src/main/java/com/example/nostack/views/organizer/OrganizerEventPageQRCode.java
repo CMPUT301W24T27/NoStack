@@ -13,12 +13,15 @@ import android.widget.ImageView;
 
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nostack.R;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.QrCode;
 import com.example.nostack.services.QrCodeImageGenerator;
+import com.example.nostack.viewmodels.EventViewModel;
+import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -42,6 +45,10 @@ public class OrganizerEventPageQRCode extends Fragment {
 
     // TODO: Rename and change types of parameters
     private Event event;
+    private EventViewModel eventViewModel;
+    String qrCodeText;
+    Bitmap bmp;
+
     private String mParam2;
 
     public OrganizerEventPageQRCode() {
@@ -72,9 +79,7 @@ public class OrganizerEventPageQRCode extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("eventData");
-        }
+        eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
     }
 
     /**
@@ -96,10 +101,13 @@ public class OrganizerEventPageQRCode extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_event_page_q_r_code, container, false);
 
-        String qrCodeText = "1" + "." + event.getId();
-        Bitmap bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
-        ImageView qrCodeImageView = view.findViewById(R.id.OrganizerEventQRImage);
-        qrCodeImageView.setImageBitmap(bmp);
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), newEvent -> {
+            event = newEvent;
+            qrCodeText = "1" + "." + event.getId();
+            bmp = QrCodeImageGenerator.generateQrCodeImage(qrCodeText);
+            ImageView qrCodeImageView = view.findViewById(R.id.OrganizerEventQRImage);
+            qrCodeImageView.setImageBitmap(bmp);
+        });
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override

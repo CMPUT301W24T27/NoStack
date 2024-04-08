@@ -51,10 +51,6 @@ public class AttendeeEvent extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("event");
-            Log.d("AttendeeEvent", "Event: " + event.getName());
-        }
         eventViewModel = new ViewModelProvider(requireActivity()).get(EventViewModel.class);
         imageViewHandler = ImageViewHandler.getSingleton();
         currentUserHandler = CurrentUserHandler.getSingleton();
@@ -95,11 +91,11 @@ public class AttendeeEvent extends Fragment {
             }
         });
 
-        // Fetch event (in our case update it) and Get event
-        eventViewModel.fetchEvent(event.getId());
-        eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
-            this.event = event;
-            updateScreenInformation(view);
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), ev -> {
+            if (ev != null) {
+                event = ev;
+                updateScreenInformation(view);
+            }
         });
 
         Button register = view.findViewById(R.id.AttendeeEventRegisterButton);
@@ -130,6 +126,7 @@ public class AttendeeEvent extends Fragment {
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                eventViewModel.clearEventLiveData();
                 NavHostFragment.findNavController(AttendeeEvent.this).popBackStack();
             }
         });

@@ -31,6 +31,7 @@ import com.example.nostack.handlers.LocationHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.ImageDimension;
 import com.example.nostack.models.QrCode;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.viewmodels.QrCodeViewModel;
 import com.example.nostack.viewmodels.UserViewModel;
@@ -59,10 +60,12 @@ public class AttendeeHome extends Fragment {
     private CurrentUserHandler currentUserHandler;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private ImageViewHandler imageViewHandler;
+    private NavbarConfig navbarConfig;
     private static final Class[] fragments = new Class[]{AttendeeBrowse.class, AttendeeEvents.class};
     private ViewPager2 viewPager;
     private DotsIndicator dotsIndicator;
     private LocationHandler locationHandler;
+    private Boolean processingQr = true;
 
 
     public AttendeeHome() {
@@ -106,6 +109,8 @@ public class AttendeeHome extends Fragment {
         qrCodeViewModel = new ViewModelProvider(requireActivity()).get(QrCodeViewModel.class);
         currentUserHandler = CurrentUserHandler.getSingleton();
         imageViewHandler = ImageViewHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
+
     }
 
     /**
@@ -135,6 +140,10 @@ public class AttendeeHome extends Fragment {
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         locationHandler = new LocationHandler(getContext(), getActivity(), locationManager);
         locationHandler.handleLocationPermissions();
+
+        // Navbar
+        navbarConfig.setAttendee(getResources());
+        navbarConfig.setHeroAction(() -> scanCode());
 
         Log.d("AttendeeHome", "UserViewModel: " + userViewModel.getUser().getValue());
         userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -197,6 +206,7 @@ public class AttendeeHome extends Fragment {
         view.findViewById(R.id.scanQRButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processingQr = false;
                 scanCode();
             }
         });
@@ -243,7 +253,7 @@ public class AttendeeHome extends Fragment {
     }
 
     public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
-        if (result.getContents() != null) {
+        if (result.getContents() != null && !processingQr) {
             if (result.getContents().charAt(0) == '0') {
                 handleCheckInQR(result.getContents().substring(2));
             } else if (result.getContents().charAt(0) == '1') {
@@ -257,11 +267,11 @@ public class AttendeeHome extends Fragment {
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
             @Override
             public void onChanged(Event event) {
-                if (event != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("event", event);
+                if (event != null && !processingQr) {
+                    processingQr = true;
+                    eventViewModel.fetchEvent(eventUID);
                     NavHostFragment.findNavController(AttendeeHome.this)
-                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                            .navigate(R.id.action_attendeeHome_to_attendeeEvent);
                 }
             }
         });
@@ -280,9 +290,8 @@ public class AttendeeHome extends Fragment {
                     eventViewModel.getEvent().observe(getViewLifecycleOwner(), new Observer<Event>() {
                         @Override
                         public void onChanged(Event event) {
-                            if (event != null) {
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("event", event);
+                            if (event != null && !processingQr) {
+                                processingQr = true;
                                 Location location = locationHandler.getLocation();
                                 eventViewModel.eventCheckIn(currentUserHandler.getCurrentUserId(), eventUID, location)
                                         .addOnSuccessListener(aVoid -> {
@@ -293,8 +302,13 @@ public class AttendeeHome extends Fragment {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     dialogInterface.dismiss();
-                                                    NavHostFragment.findNavController(AttendeeHome.this)
-                                                            .navigate(R.id.action_attendeeHome_to_attendeeEvent, bundle);
+                                                    eventViewModel.fetchEvent(eventUID);
+                                                    try {
+                                                        processingQr = false;
+                                                        NavHostFragment.findNavController(AttendeeHome.this).navigate(R.id.action_attendeeHome_to_attendeeEvent);
+                                                    } catch (Exception e){
+                                                        Log.e("AttendeeHome", "Error navigating to AttendeeEvent");
+                                                    }
                                                 }
                                             }).show();
                                         })

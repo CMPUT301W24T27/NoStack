@@ -103,15 +103,23 @@ public class OrganizerReuseQr extends Fragment {
 
         // Get Event
         eventViewModel.getEventWithReuse().observe(getViewLifecycleOwner(), e -> {
-            event = e.first;
+            if (e.first != null) {
+                event = e.first;
+            }
+
         });
 
         // Fetch and get QrCodes
         qrCodeViewModel.getInactiveQrCodes().observe(getViewLifecycleOwner(), qrCodes -> {
-            for (Pair<Event, QrCode> p: qrCodes) {
-                arrayAdapter.addQrCode(p);
+            if (qrCodes != null && qrCodes.size() > 0) {
+                for (Pair<Event, QrCode> p: qrCodes) {
+                    if(p.first == null || p.second == null) {
+                        continue;
+                    }
+                    arrayAdapter.addQrCode(p);
+                }
+                arrayAdapter.notifyDataSetChanged();
             }
-            arrayAdapter.notifyDataSetChanged();
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
