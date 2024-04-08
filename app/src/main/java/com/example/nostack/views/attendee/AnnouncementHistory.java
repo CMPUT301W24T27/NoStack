@@ -16,6 +16,7 @@ import com.example.nostack.R;
 import com.example.nostack.controllers.UserController;
 import com.example.nostack.handlers.CurrentUserHandler;
 import com.example.nostack.models.User;
+import com.example.nostack.services.NavbarConfig;
 import com.example.nostack.viewmodels.UserViewModel;
 import com.example.nostack.views.event.adapters.AnnouncementHistoryArrayAdapter;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +47,7 @@ public class AnnouncementHistory extends Fragment {
     private UserController userController;
     private ListView announcementListView;
     private CurrentUserHandler currentUserHandler;
+    private NavbarConfig navbarConfig;
 
 
 
@@ -77,6 +79,7 @@ public class AnnouncementHistory extends Fragment {
         dataList = new ArrayList<>();
         userController = UserController.getInstance();
         currentUserHandler = CurrentUserHandler.getSingleton();
+        navbarConfig = NavbarConfig.getSingleton();
     }
 
     @Override
@@ -84,6 +87,8 @@ public class AnnouncementHistory extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_announcement_history, container, false);
+
+        navbarConfig.setInvisible();
 
         view.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override

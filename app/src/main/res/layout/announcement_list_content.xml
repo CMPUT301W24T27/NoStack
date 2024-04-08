@@ -10,14 +10,23 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2.5dp">
+        android:layout_marginBottom="2.5dp"
+        android:paddingHorizontal="20dp">
+
+        <TextView
+            android:id="@+id/AnnouncementTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:text="Announcement Title"
+            android:textColor="@color/lightBlue"/>
 
         <TextView
             android:id="@+id/AnnouncementDescription"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="25dp"
+            android:textSize="18dp"
             android:text="Announcement Description"
             android:textColor="@color/white"/>
 

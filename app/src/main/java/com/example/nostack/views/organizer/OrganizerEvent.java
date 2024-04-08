@@ -281,8 +281,10 @@ public class OrganizerEvent extends Fragment {
                 // create the announcement dialogue
                 String announcementMessage = ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).getText().toString();
 
+                String announcementTitleMessage = event.getName() + "." + announcementMessage;
+
                 // put the announcement time and message into the map
-                announcementMap.put(announcementTimeStr, announcementMessage);
+                announcementMap.put(announcementTimeStr, announcementTitleMessage);
 
                 // put announcement into then event and then into each attendee in firebase
                 eventController.addAnnouncement(event.getId(), announcementMap).addOnCompleteListener(task -> {

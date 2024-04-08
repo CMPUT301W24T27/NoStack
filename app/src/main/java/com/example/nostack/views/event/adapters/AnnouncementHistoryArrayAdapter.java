@@ -45,8 +45,18 @@ public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String
         HashMap<String, String> announcementHash =  getItem(position);
         String dateunix = announcementHash.keySet().iterator().next();
         String message = announcementHash.get(dateunix);
+
+        //split the message at "."
+        String[] messageSplit = message.split("\\.");
+
+        String announcementTitleText = messageSplit[0];
+        String announcementDescText = messageSplit[1];
+
+        TextView announcementTitle = view.findViewById(R.id.AnnouncementTitle);
         TextView announcementDesc = view.findViewById(R.id.AnnouncementDescription);
-        announcementDesc.setText(message);
+
+        announcementTitle.setText(announcementTitleText);
+        announcementDesc.setText(announcementDescText);
 
         return view;
     }
