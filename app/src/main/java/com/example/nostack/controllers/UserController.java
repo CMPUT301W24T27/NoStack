@@ -21,11 +21,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Class for handling users
+ */
 public class UserController {
     private static UserController singleInstance = null;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection("users");
 
+    /**
+     * Get the instance of the UserController
+     * @return void
+     */
     public static UserController getInstance() {
         if (singleInstance == null) {
             singleInstance = new UserController();
@@ -33,25 +40,52 @@ public class UserController {
         return singleInstance;
     }
 
+    /**
+     * Empty public constructor
+     */
     public UserController() {
     }
 
+    /**
+     * Get all users
+     * @return Task<QuerySnapshot> The user collection
+     */
     public Task<QuerySnapshot> getAllUsers() {
         return userCollectionReference.get();
     }
 
+    /**
+     * Get user by id
+     * @param userId The user id
+     * @return Task<QuerySnapshot> The user by id
+     */
     public Task<QuerySnapshot> getUser(String userId) {
         return userCollectionReference.whereEqualTo("uuid", userId).get();
     }
 
+    /**
+     * Update user
+     * @param user The user object
+    * @return Task<Void> The user object
+     */
     public Task<Void> updateUser(User user) {
         return userCollectionReference.document(user.getUuid()).set(user);
     }
 
+    /**
+     * Add user
+     * @param user The user object
+     * @return Task<Void> The user object
+     */
     public Task<Void> addUser(User user) {
         return userCollectionReference.document(user.getUuid()).set(user);
     }
 
+    /**
+     * Remove user profile pic
+     * @param userId The user id
+     * @return Task<Void> The user object
+     */
     public Task<Void> removeUserProfileImage(String userId) {
         DocumentReference userRef = userCollectionReference.document(userId);
         return userRef.update("profileImageUrl", null)
@@ -59,6 +93,11 @@ public class UserController {
                 .addOnFailureListener(e -> Log.e("UserController", "Failed to remove user profile image.", e));
     }
 
+    /**
+     * get user fcm token
+     * @param userId The user id
+     * @return Task<String> The user fcm token
+     */
     public Task<String> getUserFcmToken(String userId) {
         TaskCompletionSource<String> taskCompletionSource = new TaskCompletionSource<>();
 
@@ -83,6 +122,12 @@ public class UserController {
         return taskCompletionSource.getTask();
     }
 
+    /**
+     * Set user fcm token
+     * @param userId The user id
+     * @param fcmToken The fcm token
+     * @return Task<Void>
+     */
     public Task<Void> setUserFcmToken(String userId, String fcmToken) {
         DocumentReference userRef = userCollectionReference.document(userId);
         return userRef.update("fcmToken", fcmToken)
@@ -90,11 +135,22 @@ public class UserController {
                 .addOnFailureListener(e -> Log.e("UserController", "Failed to update user FCM token.", e));
     }
 
+    /**
+     * add notificaiton to user
+     * @param userId The user id
+     * @param announcement The announcement
+     * @return void
+     */
     public Task<Void> addNotification(String userId, HashMap<String, String> announcement) {
         return userCollectionReference.document(userId)
                 .update("announcements", FieldValue.arrayUnion(announcement));
     }
 
+    /**
+     * Get user announcement
+     * @param userId The user id
+     * @return Task<ArrayList<HashMap<String, String>>> The user announcement
+     */
     public Task<ArrayList<HashMap<String, String>>> getUserAnnouncement(String userId) {
         TaskCompletionSource<ArrayList<HashMap<String, String>>> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference userRef = userCollectionReference.document(userId);
@@ -126,6 +182,11 @@ public class UserController {
         return taskCompletionSource.getTask();
     }
 
+    /**
+     * Delete user
+     * @param userId the user id
+     * @return void
+     */
     // TODO: Deleting a user, may be a little too nuanced, will be done later on.
     public Task<Void> deleteUser(String userId) {
         return Tasks.whenAll();
