@@ -38,6 +38,10 @@ public class InactiveQrEventAdapter extends ArrayAdapter<Pair<Event, QrCode>> {
 
         Pair<Event, QrCode> currentPair = qrEventList.get(position);
 
+        if (currentPair == null) {
+            return listItem;
+        }
+
         TextView eventName = listItem.findViewById(R.id.reuse_qr_event_name);
         eventName.setText(currentPair.first.getName());
 

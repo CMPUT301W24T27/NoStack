@@ -78,6 +78,9 @@ public class EventViewModel extends ViewModel {
     public LiveData<Event> getEvent() {
         return eventLiveData;
     }
+    public void clearEventLiveData() {
+        eventLiveData.setValue(null);
+    }
 
     public void fetchAllEvents() {
         eventController.getAllEvents()
@@ -190,8 +193,7 @@ public class EventViewModel extends ViewModel {
         Runnable addEventRunnable = () -> eventController.addEvent(event)
                 .addOnSuccessListener(a -> {
                     String userId = currentUserHandler.getCurrentUserId();
-                    fetchAllEvents();
-                    fetchOrganizerEvents(userId);
+                    fetchEvent(event.getId());
                 }).addOnFailureListener( e-> {
                     Log.e("EventViewModel", "Error adding event", e);
                     errorLiveData.postValue(e.getMessage());
@@ -203,7 +205,6 @@ public class EventViewModel extends ViewModel {
                     .addOnSuccessListener(imageUrl -> {
                         event.setEventBannerImgUrl(imageUrl);
                         addEventRunnable.run();
-
                         Uri imageURI = Uri.parse(imageUrl);
                         callback.onImageUpdated(imageURI);
                     }).addOnFailureListener(e -> {
@@ -214,8 +215,6 @@ public class EventViewModel extends ViewModel {
         } else {
             addEventRunnable.run();
         }
-
-        fetchEvent(event.getId());
     }
 
     /**

@@ -73,5 +73,9 @@ public class QrCodeViewModel extends ViewModel {
         return inactiveQrEventList;
     }
 
+    public void clearQrCodeLiveData() {
+        qrCodeLiveData.setValue(null);
+    }
+
 
 }

@@ -165,7 +165,10 @@ public class OrganizerEventCreate extends Fragment {
         eventCreationTitle = view.findViewById(R.id.EventCreationTitle);
 
         // Check if the event is being edited
-        checkEditEvent();
+        eventViewModel.getEvent().observe(getViewLifecycleOwner(), ev -> {
+            event = ev;
+            checkEditEvent();
+        });
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,7 +251,6 @@ public class OrganizerEventCreate extends Fragment {
                                 Toast.makeText(getContext(), "Failed to update image", Toast.LENGTH_SHORT).show();
                             }
                         });
-
                         NavHostFragment.findNavController(OrganizerEventCreate.this).popBackStack();
                     }
                     else {
