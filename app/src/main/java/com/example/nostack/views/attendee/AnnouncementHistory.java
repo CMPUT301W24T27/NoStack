@@ -3,13 +3,27 @@ package com.example.nostack.views.attendee;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.nostack.R;
+import com.example.nostack.controllers.UserController;
+import com.example.nostack.handlers.CurrentUserHandler;
+import com.example.nostack.models.User;
+import com.example.nostack.viewmodels.UserViewModel;
+import com.example.nostack.views.event.adapters.AnnouncementHistoryArrayAdapter;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +40,14 @@ public class AnnouncementHistory extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private AnnouncementHistoryArrayAdapter arrayAdapter;
+    private ArrayList<HashMap<String,String>> dataList;
+    private UserController userController;
+    private ListView announcementListView;
+    private CurrentUserHandler currentUserHandler;
+
+
 
     public AnnouncementHistory() {
         // Required empty public constructor
@@ -52,10 +74,9 @@ public class AnnouncementHistory extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        dataList = new ArrayList<>();
+        userController = UserController.getInstance();
+        currentUserHandler = CurrentUserHandler.getSingleton();
     }
 
     @Override
@@ -70,8 +91,35 @@ public class AnnouncementHistory extends Fragment {
                 NavHostFragment.findNavController(AnnouncementHistory.this)
                         .navigate(R.id.action_announcementHistory_to_attendeeHome);
             }
-        }
-        );
+        });
+
+        announcementListView = view.findViewById(R.id.announcement_history_recycler_view);
+
+        arrayAdapter = new AnnouncementHistoryArrayAdapter(getContext(), dataList, this);
+
+        announcementListView.setAdapter(arrayAdapter);
+
+
+        userController.getUserAnnouncement(currentUserHandler.getCurrentUserId()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                ArrayList<HashMap<String, String>> announcements = task.getResult();
+                if (!announcements.isEmpty()) {
+                    // Use the announcement data as needed
+                    arrayAdapter.clear();
+                    for (HashMap<String, String> ann: announcements) {
+                        arrayAdapter.add(ann);
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+                    Log.d("UserActivity", "Announcement: " + announcements.toString());
+                } else {
+
+                    Log.d("UserActivity", "User does not have an announcement.");
+                }
+            } else {
+                Log.e("UserActivity", "Failed to retrieve user announcement.", task.getException());
+            }
+        });
+
         return view;
     }
 }

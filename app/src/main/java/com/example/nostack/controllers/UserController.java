@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -92,6 +93,37 @@ public class UserController {
     public Task<Void> addNotification(String userId, HashMap<String, String> announcement) {
         return userCollectionReference.document(userId)
                 .update("announcements", FieldValue.arrayUnion(announcement));
+    }
+
+    public Task<ArrayList<HashMap<String, String>>> getUserAnnouncement(String userId) {
+        TaskCompletionSource<ArrayList<HashMap<String, String>>> taskCompletionSource = new TaskCompletionSource<>();
+        DocumentReference userRef = userCollectionReference.document(userId);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Extract the announcement HashMap from the document
+                    ArrayList<HashMap<String, String>> announcement = (ArrayList<HashMap<String, String>>) document.get("announcements");
+                    if (announcement != null) {
+                        taskCompletionSource.setResult(announcement);
+                        Log.d("UserController", "User announcement successfully retrieved.");
+                    } else {
+                        // If there's no announcement data
+                        taskCompletionSource.setResult(new ArrayList<HashMap<String, String>>()); // Return an empty HashMap
+                        Log.d("UserController", "User does not have an announcement.");
+                    }
+                } else {
+                    taskCompletionSource.setException(new Exception("No such user."));
+                    Log.e("UserController", "Failed to retrieve user announcement. User does not exist.");
+                }
+            } else {
+                taskCompletionSource.setException(task.getException());
+                Log.e("UserController", "Failed to retrieve user announcement.", task.getException());
+            }
+        });
+
+        return taskCompletionSource.getTask();
     }
 
     // TODO: Deleting a user, may be a little too nuanced, will be done later on.
