@@ -48,6 +48,7 @@ public class NavbarConfig {
 
     /**
      * Get the singleton instance of NavbarConfig
+     *
      * @return NavbarConfig
      */
     public static NavbarConfig getSingleton() {
@@ -59,6 +60,7 @@ public class NavbarConfig {
 
     /**
      * Set the owner activity of NavbarConfig
+     *
      * @param activity
      */
     public static void setOwnerActivity(AppCompatActivity activity) {
@@ -67,6 +69,7 @@ public class NavbarConfig {
 
     /**
      * Get the owner activity of NavbarConfig
+     *
      * @return AppCompatActivity
      */
     public static AppCompatActivity getOwnerActivity() {
@@ -75,27 +78,30 @@ public class NavbarConfig {
 
     /**
      * Set the navbar for the attendee
+     *
      * @param resources
      */
-    public void setAttendee(Resources resources){
+    public void setAttendee(Resources resources) {
         setCommonActions(resources);
         scanQRButton.setVisibility(scanQRButton.VISIBLE);
-
+        scanQRButton.setImageResource(R.drawable.navbarcamera);
     }
 
     /**
      * Set the navbar for the organizer
+     *
      * @param resources
      */
-    public void setOrganizer(Resources resources){
+    public void setOrganizer(Resources resources) {
         // Set common actions
         setCommonActions(resources);
+        scanQRButton.setImageResource(R.drawable.navbar_edit_calendar);
         scanQRButton.setVisibility(scanQRButton.VISIBLE);
-
     }
 
     /**
      * Set the navbar for the admin
+     *
      * @param resources
      */
     public void setAdmin(Resources resources) {
@@ -108,15 +114,16 @@ public class NavbarConfig {
 
     /**
      * Set the hero button action
+     *
      * @param heroAction callback to the action
      */
-    public void setHeroAction(HeroAction heroAction){
+    public void setHeroAction(HeroAction heroAction) {
         scanQRButton.setOnClickListener(v -> {
             heroAction.callback();
         });
     }
 
-    public void setCommonActions(Resources resources){
+    public void setCommonActions(Resources resources) {
         // Set home button action
         homeButton.setOnClickListener(v -> {
             navHostFragment.getNavController().navigate(R.id.startUp);
@@ -138,24 +145,14 @@ public class NavbarConfig {
     /**
      * Set the visibility of the navbar
      */
-    public void setVisible(){
+    public void setVisible() {
         navbar.setVisibility(navbar.VISIBLE);
     }
 
     /**
      * Set the invisibility of the navbar
      */
-    public void setInvisible(){
+    public void setInvisible() {
         navbar.setVisibility(navbar.INVISIBLE);
     }
-
-    /**
-     * Set the icon of the navbar Floating Action Button to Camera
-     */
-    public void setIconCamera() {scanQRButton.setImageResource(R.drawable.navbarcamera);}
-
-    /**
-     * Set the icon of the navbar Floating Action Button to Add Icon
-     */
-    public void setIconEventAdd() {scanQRButton.setImageResource(R.drawable.navbar_edit_calendar);}
 }

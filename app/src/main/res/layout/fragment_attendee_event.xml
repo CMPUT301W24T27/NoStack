@@ -57,10 +57,10 @@
                 android:layout_width="27dp"
                 android:layout_height="27dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/baseline_location_on_24"
+                android:src="@drawable/location_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:tint="@color/yellow" />
+                app:tint="@color/white" />
 
             <TextView
                 android:id="@+id/AttendeeEventLocationText"

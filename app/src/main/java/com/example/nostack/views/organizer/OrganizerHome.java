@@ -131,7 +131,6 @@ public class OrganizerHome extends Fragment implements EventArrayRecycleViewInte
 
         View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
 
-        NavbarConfig.getSingleton().setIconEventAdd();
         eventList = view.findViewById(R.id.organizerEventList);
         eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(),dataList,this, this);
         eventList.setAdapter(eventArrayAdapter);
