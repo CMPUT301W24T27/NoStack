@@ -245,7 +245,7 @@ public class OrganizerEvent extends Fragment {
                 eventStartTime.setText(startTime + " - " + endTime);
             }
 
-            if (!event.getActive()) {
+            if (!event.getActive() || event.getActive() == null) {
                 eventTitle.setText(event.getName() + " (Ended)");
                 Button button = view.findViewById(R.id.button_end_event);
                 button.setText("Delete Event");
