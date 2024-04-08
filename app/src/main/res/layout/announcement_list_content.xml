@@ -22,6 +22,15 @@
             android:textColor="@color/lightBlue"/>
 
         <TextView
+            android:id="@+id/AnnouncementTime"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="13dp"
+            android:text="Announcement Time"
+            android:textColor="@color/grey"/>
+
+        <TextView
             android:id="@+id/AnnouncementDescription"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
