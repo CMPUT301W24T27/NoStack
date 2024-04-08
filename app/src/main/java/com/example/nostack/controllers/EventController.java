@@ -402,6 +402,11 @@ public class EventController {
         });
     }
 
+    /**
+     * get User Announcement
+     * @param eventId The event id
+     * @return Task<ArrayList<HashMap<String, String>>> The list of announcements
+     */
     public Task<ArrayList<HashMap<String, String>>> getUserAnnouncement(String eventId) {
         TaskCompletionSource<ArrayList<HashMap<String, String>>> taskCompletionSource = new TaskCompletionSource<>();
         DocumentReference userRef = eventCollectionReference.document(eventId);
