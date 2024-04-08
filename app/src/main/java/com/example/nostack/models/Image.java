@@ -111,4 +111,24 @@ public class Image {
             return d;
         });
     }
+
+    public Task<RoundedBitmapDrawable> getFullImage(Context context){
+        if(url == null) {
+            Log.d("Image", "URL is null");
+            return null;
+        }
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        return storageRef.getBytes(ONE_MEGABYTE).continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            byte[] bytes = task.getResult();
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), bmp);
+            d.setCornerRadius(50f);
+            return d;
+        });
+    }
 }

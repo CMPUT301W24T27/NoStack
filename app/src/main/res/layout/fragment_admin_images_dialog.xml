@@ -17,12 +17,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="256dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="@+id/admin_imageDialog"
+            app:layout_constraintHorizontal_bias="0.489"
             app:layout_constraintStart_toStartOf="@+id/admin_imageDialog"
-            app:layout_constraintTop_toBottomOf="@+id/admin_imageDialog">
+            app:layout_constraintTop_toBottomOf="@+id/admin_imageDialogTitle">
 
             <TextView
                 android:id="@+id/admin_imageDialogSize"
@@ -68,33 +69,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/admin_imageDialog"
-            android:layout_width="250dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="405dp"
+            android:layout_height="161dp"
+            android:layout_marginTop="4dp"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.481"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/admin_imageDialogTitle"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_image_24" />
-
-        <TextView
-            android:id="@+id/admin_imageDialogTitle"
-            android:layout_width="310dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="40dp"
-            android:text="Image Title"
-            android:textAlignment="center"
-            android:textColor="@color/SignInUpTextColor"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/admin_deleteImageButton"
@@ -110,6 +98,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <TextView
+            android:id="@+id/admin_imageDialogTitle"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Image Title"
+            android:textAlignment="center"
+            android:textColor="@color/SignInUpTextColor"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/admin_imageDialog" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
