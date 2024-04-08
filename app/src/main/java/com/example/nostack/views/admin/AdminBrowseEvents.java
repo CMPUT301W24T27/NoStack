@@ -19,13 +19,20 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nostack.R;
 import com.example.nostack.handlers.ImageViewHandler;
 import com.example.nostack.models.Event;
 import com.example.nostack.models.User;
+import com.example.nostack.services.NavbarConfig;
+import com.example.nostack.services.SkeletonProvider;
 import com.example.nostack.viewmodels.EventViewModel;
 import com.example.nostack.views.event.adapters.EventArrayAdapter;
+import com.example.nostack.views.event.adapters.EventArrayAdapterRecycleView;
+import com.example.nostack.views.event.adapters.EventArrayRecycleViewInterface;
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -34,12 +41,15 @@ import java.util.ArrayList;
 /**
  * Creates the AttendeeBrowse fragment which is used to display the events that the user can attend
  */
-public class AdminBrowseEvents extends Fragment {
-    private EventArrayAdapter eventArrayAdapter;
-    private ListView eventList;
+public class AdminBrowseEvents extends Fragment implements EventArrayRecycleViewInterface {
+//    private EventArrayAdapter eventArrayAdapter;
+    private RecyclerView eventList;
+    private EventArrayAdapterRecycleView eventArrayAdapter;
+
     private ArrayList<Event> dataList;
     private EventViewModel eventViewModel;
     private ImageViewHandler imageViewHandler;
+    private Skeleton skeleton;
 
     public AdminBrowseEvents() {
     }
@@ -70,11 +80,26 @@ public class AdminBrowseEvents extends Fragment {
      * @return Returns the modified view
      */
     @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.fragment_admin_home_browseevents, container, false);
+//        eventList = rootView.findViewById(R.id.admin_viewPager2);
+//        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
+//        eventList.setAdapter(eventArrayAdapter);
+//        return rootView;
+//    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_admin_home_browseevents, container, false);
         eventList = rootView.findViewById(R.id.admin_viewPager2);
-        eventArrayAdapter = new EventArrayAdapter(getContext(), dataList, this);
+        eventArrayAdapter = new EventArrayAdapterRecycleView(getContext(), dataList, this, this);
         eventList.setAdapter(eventArrayAdapter);
+        eventList.setItemViewCacheSize(100);
+        eventList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Skeleton
+        skeleton = SkeletonProvider.getSingleton().eventListSkeleton(eventList);
+        skeleton.showSkeleton();
+
         return rootView;
     }
 
@@ -97,14 +122,15 @@ public class AdminBrowseEvents extends Fragment {
                 eventArrayAdapter.addEvent(event);
             }
             eventArrayAdapter.notifyDataSetChanged();
+            skeleton.showOriginal();
         });
 
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                showDialog(EventArrayAdapter.getEvent(position));
-            }
-        });
+//        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+//                showDialog(EventArrayAdapter.getEvent(position));
+//            }
+//        });
     }
     private void showDialog(Event event){
         Dialog dialog = new Dialog(getActivity());
@@ -161,5 +187,10 @@ public class AdminBrowseEvents extends Fragment {
                 Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void OnItemClick(int position) {
+        showDialog(eventArrayAdapter.getEvent(position));
     }
 }
