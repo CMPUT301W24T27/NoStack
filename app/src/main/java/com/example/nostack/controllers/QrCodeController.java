@@ -20,12 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class for handling QR codes
+ */
 public class QrCodeController {
     private static QrCodeController singleInstance = null;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference qrCollectionReference = FirebaseFirestore.getInstance().collection("qr-codes");
     private final CurrentUserHandler currentUserHandler = CurrentUserHandler.getSingleton();
 
+    /**
+     * Get the instance of the QrCodeController
+     * @return void
+     */
     public static QrCodeController getInstance() {
         if (singleInstance == null) {
             singleInstance = new QrCodeController();
@@ -33,13 +40,25 @@ public class QrCodeController {
         return singleInstance;
     }
 
+    /**
+     * Empty public constructor
+     */
     public QrCodeController() {
     }
 
+    /**
+     * Get all QR codes
+     * @return Task<QuerySnapshot> The QR code collection
+     */
     public Task<QuerySnapshot> getAllQrCodes() {
         return qrCollectionReference.get();
     }
 
+    /**
+     * Get QR codes by by id
+     * @param qrCodeId The QR code id
+     * @return Task<QuerySnapshot> The QR codes by id
+     */
     public Task<DocumentSnapshot> getQrCode(String qrCodeId) {
         try {
             return qrCollectionReference.document(qrCodeId).get().addOnSuccessListener(task -> {
@@ -53,12 +72,22 @@ public class QrCodeController {
         }
     }
 
+    /**
+     * get inactive  QR codes
+     * @return Task<QuerySnapshot> The inactive QR codes
+     */
     public Task<QuerySnapshot> getInactiveQrCodes() {
         return qrCollectionReference
                 .whereEqualTo("active", false)
                 .get();
     }
 
+    /**
+     * Reuse a QR code
+     * @param eventId The event ID
+     * @param qrCodeId The QR code ID
+     * @return void
+     */
     public Task<Void> reuseQrCode(String eventId, String qrCodeId) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("eventId", eventId);
@@ -68,8 +97,8 @@ public class QrCodeController {
 
     /**
      * Deactivate a QR code
-     * @param qrCodeId
-     * @return
+     * @param qrCodeId The QR code ID
+     * @return void
      */
     public Task<Void> deactivateQrCode(String qrCodeId) {
         Map<String, Object> updates = new HashMap<>();
@@ -79,8 +108,8 @@ public class QrCodeController {
 
     /**
      * Reactivate a QR code
-     * @param qrCodeId
-     * @return
+     * @param qrCodeId The QR code ID
+     * @return  void
      */
     public Task<Void> reactivateQrCode(String qrCodeId) {
         Map<String, Object> updates = new HashMap<>();
@@ -90,7 +119,7 @@ public class QrCodeController {
 
     /**
      * Reactivate all QR codes by event ID
-     * @param eventId
+     * @param eventId The event ID
      * @return void
      */
     public Task<Void> reactivateQrCodeByEventId(String eventId) {
@@ -112,7 +141,7 @@ public class QrCodeController {
 
     /**
      * Deactivate all QR codes by event ID
-     * @param eventId
+     * @param eventId The event ID
      * @return void
      */
     public Task<Void> deactivateQrCodeByEventId(String eventId) {
@@ -131,10 +160,20 @@ public class QrCodeController {
                 });
     }
 
+    /**
+     * Add a QR code
+     * @param qrCode The QR code
+     * @return void
+     */
     public Task<Void> addQrCode(QrCode qrCode) {
         return qrCollectionReference.document(qrCode.getId()).set(qrCode);
     }
 
+    /**
+     * Update a QR code
+     * @param qrCodeId The QR code ID
+     * @return void
+     */
     // TODO: Deleting a QrCode, may be a little too nuanced, will be done later on.
     public Task<Void> deleteQrCode(String qrCodeId) {
         return Tasks.whenAll();
