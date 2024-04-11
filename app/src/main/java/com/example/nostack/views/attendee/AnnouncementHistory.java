@@ -113,7 +113,7 @@ public class AnnouncementHistory extends Fragment {
                 ArrayList<HashMap<String, String>> announcements = task.getResult();
                 if (!announcements.isEmpty()) {
                     // Use the announcement data as needed
-                    arrayAdapter.clear();
+//                    arrayAdapter.clear();
 
                     Collections.sort(announcements, new Comparator<Map<String, String>>() {
                         @Override
