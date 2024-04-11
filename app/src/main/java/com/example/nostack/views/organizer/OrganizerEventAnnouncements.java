@@ -24,8 +24,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,7 +102,20 @@ public class OrganizerEventAnnouncements extends Fragment {
         eventViewModel.getEvent().observe(getViewLifecycleOwner(), event -> {
             if (event != null && event.getAnnouncements() != null && !event.getAnnouncements().isEmpty()) {
                 arrayAdapter.clear();
-                for (HashMap<String, String> ann: event.getAnnouncements()) {
+
+                ArrayList<HashMap<String, String>> announcements = new ArrayList<>();
+                announcements = event.getAnnouncements();
+
+                Collections.sort(announcements, new Comparator<Map<String, String>>() {
+                    @Override
+                    public int compare(Map<String, String> map1, Map<String, String> map2) {
+                        String key1 = map1.keySet().iterator().next();
+                        String key2 = map2.keySet().iterator().next();
+                        return key2.compareTo(key1);
+                    }
+                });
+
+                for (HashMap<String, String> ann: announcements) {
                     arrayAdapter.add(ann);
                 }
                 arrayAdapter.notifyDataSetChanged();

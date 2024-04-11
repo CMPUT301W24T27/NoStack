@@ -22,8 +22,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String, String>> {
     private ArrayList<HashMap<String, String>> announcements;
@@ -53,9 +58,15 @@ public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String
         String announcementDescText = messageSplit[1];
 
         // convert dateunix to date time
-        long date = Long.parseLong(dateunix);
-        java.util.Date time=new java.util.Date((long)date*1000);
-        String dateStr = time.toString();
+        long dateMillis = Long.parseLong(dateunix);
+//        java.util.Date time = new java.util.Date((long)date/1000);
+//        String dateStr = time.toString();
+
+        Date date = new Date(dateMillis);
+
+        // Format to MM/DD/YYYY
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+        String formattedDate = formatter.format(date);
 
         TextView announcementTitle = view.findViewById(R.id.AnnouncementTitle);
         TextView announcementDesc = view.findViewById(R.id.AnnouncementDescription);
@@ -63,7 +74,7 @@ public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String
 
         announcementTitle.setText(announcementTitleText);
         announcementDesc.setText(announcementDescText);
-        announcementDate.setText(dateStr);
+        announcementDate.setText(formattedDate);
 
         return view;
     }
