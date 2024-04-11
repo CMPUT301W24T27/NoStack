@@ -57,11 +57,8 @@ public class AnnouncementHistoryArrayAdapter extends ArrayAdapter<HashMap<String
         String announcementTitleText = messageSplit[0];
         String announcementDescText = messageSplit[1];
 
-        // convert dateunix to date time
+        // Convert date to readable format
         long dateMillis = Long.parseLong(dateunix);
-//        java.util.Date time = new java.util.Date((long)date/1000);
-//        String dateStr = time.toString();
-
         Date date = new Date(dateMillis);
 
         // Format to MM/DD/YYYY

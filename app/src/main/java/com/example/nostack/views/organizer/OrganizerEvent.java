@@ -257,6 +257,9 @@ public class OrganizerEvent extends Fragment {
                     ((ViewGroup) notificationDialogView.getParent()).removeView(notificationDialogView);
                 }
 
+                // clear the edit text field
+                ((TextView) notificationDialogView.findViewById(R.id.NotificationCreationDescriptionEditText)).setText("");
+
                 notificationDialogBuilder = new AlertDialog.Builder(getContext());
                 notificationDialogBuilder.setView(notificationDialogView);
                 notificationDialog = notificationDialogBuilder.create();
